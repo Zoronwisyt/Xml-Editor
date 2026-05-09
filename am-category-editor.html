@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A.M Category Text Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a26;--border:#2a2a3a;--accent:#6c5ce7;--accent2:#a29bfe;--text:#e8e8f0;--dim:#6b6b80;--danger:#ff6b6b;--success:#51cf66;--warn:#ffd43b}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:24px 16px 80px}
+header{margin-bottom:24px}
+h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#ff6b9d,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;display:inline-block}
+.subtitle{color:var(--dim);font-size:.85rem}
+.btn{padding:10px 20px;border:none;border-radius:8px;font-family:inherit;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-success{background:linear-gradient(135deg,#20c997,var(--success));color:#000}
+.btn-success:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.drop-zone{border:2px dashed var(--border);border-radius:16px;padding:60px 40px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:20px;background:linear-gradient(135deg,rgba(108,92,231,.02),rgba(162,155,254,.02))}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:linear-gradient(135deg,rgba(108,92,231,.06),rgba(162,155,254,.06))}
+.drop-zone p{color:var(--dim);font-size:.9rem;margin-top:4px}
+.drop-zone .icon{font-size:2.5rem;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(108,92,231,.3))}
+#fileInput{display:none}
+.stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;transition:all .2s}
+.stat:hover{border-color:var(--accent);transform:translateY(-1px)}
+.stat span{color:var(--accent2);font-weight:700}
+.pair-grid{display:flex;flex-direction:column;gap:10px}
+.pair-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .25s;position:relative;overflow:hidden}
+.pair-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent);opacity:0;transition:opacity .2s}
+.pair-card:hover{border-color:rgba(108,92,231,.4);box-shadow:0 4px 20px rgba(108,92,231,.08)}
+.pair-card:hover::before{opacity:1}
+.pair-card.modified{border-color:var(--warn)}
+.pair-card.modified::before{background:var(--warn);opacity:1}
+.pair-card.single-layer{border-left:3px solid var(--dim)}
+.pair-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.pair-index{font-weight:800;font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:.8px}
+.pair-time{font-size:.68rem;color:var(--dim);font-family:'Courier New',monospace;background:var(--surface);padding:3px 8px;border-radius:4px}
+.pair-body{display:flex;gap:10px;align-items:center}
+.pair-body input{flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.95rem;font-weight:600;transition:all .2s}
+.pair-body input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,92,231,.15)}
+.pair-body input.changed{border-color:var(--warn);background:rgba(255,212,59,.03)}
+.pair-body .arrow{color:var(--dim);font-size:1.2rem;flex-shrink:0}
+.pair-card.modified .arrow{color:var(--warn)}
+.pair-body .original{color:var(--dim);font-size:.82rem;min-width:110px;text-align:center;flex-shrink:0;background:var(--surface);padding:8px;border-radius:6px;font-weight:600;letter-spacing:.5px;word-break:break-all}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;margin-left:8px}
+.badge-mod{background:rgba(255,212,59,.15);color:var(--warn)}
+.badge-type{background:rgba(108,92,231,.15);color:var(--accent2);margin-left:6px}
+.bulk-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px}
+.bulk-section h3{font-size:.88rem;font-weight:700;margin-bottom:12px;color:var(--accent2)}
+.bulk-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bulk-row input,.bulk-row select{padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.85rem}
+.bulk-row input:focus,.bulk-row select:focus{outline:none;border-color:var(--accent)}
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 22px;border-radius:10px;font-size:.85rem;font-weight:600;transform:translateY(100px);opacity:0;transition:all .3s;z-index:99;backdrop-filter:blur(8px)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-success{background:rgba(81,207,102,.9);color:#000}
+.toast-error{background:rgba(255,107,107,.9);color:#fff}
+.hidden{display:none}
+.pair-ids{font-size:.62rem;color:var(--dim);font-family:'Courier New',monospace;margin-top:6px;opacity:.6}
+.footer-bar{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border)}
+.change-count{position:fixed;top:16px;right:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.8rem;z-index:50;backdrop-filter:blur(8px)}
+.change-count span{color:var(--warn);font-weight:700}
+.file-info{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.8rem;color:var(--dim);display:flex;justify-content:space-between;align-items:center}
+.file-info strong{color:var(--text)}
+.file-info .reload{cursor:pointer;color:var(--accent);text-decoration:underline}
+.preview-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center}
+.preview-content{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.preview-content h3{color:var(--accent2);margin-bottom:12px}
+.preview-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.preview-item .from{color:var(--danger);text-decoration:line-through}
+.preview-item .to{color:var(--success);font-weight:600}
+.preview-item .at{color:var(--dim);font-size:.7rem;font-family:monospace;margin-left:auto}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>⚡ A.M Category Text Editor</h1>
+    <p class="subtitle">Auto-detects all text pairs from any Alight Motion XML — edit each one manually</p>
+  </header>
+
+  <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
+    <div class="icon">📂</div>
+    <p>Drop any Alight Motion XML here or click to browse</p>
+    <input type="file" id="fileInput" accept=".xml">
+  </div>
+
+  <div id="changeCount" class="change-count hidden">Pending: <span id="pendingCount">0</span> changes</div>
+
+  <div id="editor" class="hidden">
+    <div id="fileInfo" class="file-info"></div>
+    <div class="stats" id="stats"></div>
+
+    <div class="bulk-section">
+      <h3>⚡ Bulk Replace</h3>
+      <div class="bulk-row">
+        <select id="bulkFilter"></select>
+        <span style="color:var(--dim);font-size:1.1rem">→</span>
+        <input type="text" id="bulkValue" placeholder="New category text..." style="flex:1;min-width:150px">
+        <button class="btn btn-primary" onclick="applyBulk()">Apply</button>
+        <button class="btn btn-danger" onclick="resetAll()">Reset All</button>
+      </div>
+    </div>
+
+    <div class="pair-grid" id="pairGrid"></div>
+
+    <div class="footer-bar">
+      <button class="btn btn-success" onclick="exportXml()">💾 Export Modified XML</button>
+      <button class="btn btn-outline" onclick="previewChanges()">👁 Preview Changes</button>
+      <button class="btn btn-outline" onclick="location.reload()">🔄 Load Different XML</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</div>
+
+<script>
+let xmlText = '', xmlDoc = null, pairs = [], fileName = '';
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const editor = document.getElementById('editor');
+
+['dragenter','dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
+['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('dragover'); }));
+dropZone.addEventListener('drop', ev => { if(ev.dataTransfer.files.length) loadFile(ev.dataTransfer.files[0]); });
+fileInput.addEventListener('change', ev => { if(ev.target.files.length) loadFile(ev.target.files[0]); });
+
+function loadFile(file) {
+  fileName = file.name;
+  const reader = new FileReader();
+  reader.onload = e => { xmlText = e.target.result; parseXml(); };
+  reader.readAsText(file);
+}
+
+function formatTime(ms) {
+  const s = Math.floor(ms/1000), m = Math.floor(s/60), sec = s%60, millis = ms%1000;
+  return `${m}:${String(sec).padStart(2,'0')}.${String(millis).padStart(3,'0')}`;
+}
+
+/* ── Generic text-pair detection ── */
+function collectAllTexts(node, path, results) {
+  // Recursively collect all <text> elements and track their scene depth
+  for (const child of node.children) {
+    if (child.tagName === 'text') {
+      const cEl = child.querySelector('content');
+      if (cEl) results.push({ el: child, path, contentEl: cEl });
+    } else if (child.tagName === 'embedScene' || child.tagName === 'scene') {
+      const sub = child.tagName === 'embedScene' ? child.querySelector('scene') : child;
+      if (sub) collectAllTexts(sub, path + '/' + (child.getAttribute('label') || child.tagName), results);
+    }
+  }
+}
+
+function parseXml() {
+  const parser = new DOMParser();
+  xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+  pairs = [];
+
+  // Collect every <text> with a <content> child from all scene depths
+  const allTexts = [];
+  const rootScene = xmlDoc.querySelector('scene');
+  if (!rootScene) { showToast('No <scene> found in XML', 'error'); return; }
+  collectAllTexts(rootScene, 'root', allTexts);
+
+  // Group by (path + startTime + endTime) — texts in the same scene at the same time window
+  const groups = {};
+  allTexts.forEach(t => {
+    const st = t.el.getAttribute('startTime') || '0';
+    const et = t.el.getAttribute('endTime') || '0';
+    const key = `${t.path}|${st}|${et}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(t);
+  });
+
+  let idx = 0;
+  // Sort groups by startTime
+  const sortedKeys = Object.keys(groups).sort((a,b) => {
+    const stA = +a.split('|')[1], stB = +b.split('|')[1];
+    return stA - stB;
+  });
+
+  sortedKeys.forEach(key => {
+    const els = groups[key];
+    const used = new Set();
+
+    for (let i = 0; i < els.length; i++) {
+      if (used.has(i)) continue;
+      const a = els[i];
+      const aLabel = a.el.getAttribute('label') || '';
+      const aContent = a.contentEl.textContent;
+
+      // Try to find a matching partner
+      let bestJ = -1, bestScore = 0;
+      for (let j = i + 1; j < els.length; j++) {
+        if (used.has(j)) continue;
+        const b = els[j];
+        const bLabel = b.el.getAttribute('label') || '';
+        const bContent = b.contentEl.textContent;
+
+        let score = 0;
+        // Exact content match
+        if (aContent === bContent) score += 10;
+        // Case-insensitive match
+        else if (aContent.toUpperCase() === bContent.toUpperCase()) score += 8;
+
+        // Label "X" / "X Copy" pattern
+        if (bLabel === aLabel + ' Copy' || aLabel === bLabel + ' Copy') score += 5;
+        // Same font
+        if (a.el.getAttribute('font') === b.el.getAttribute('font')) score += 2;
+        // Same font size
+        if (a.el.getAttribute('size') === b.el.getAttribute('size')) score += 1;
+
+        if (score > bestScore && score >= 8) { bestScore = score; bestJ = j; }
+      }
+
+      if (bestJ >= 0) {
+        used.add(i); used.add(bestJ);
+        const b = els[bestJ];
+        const aLbl = a.el.getAttribute('label') || '';
+        const bLbl = b.el.getAttribute('label') || '';
+        // Primary = the non-copy one
+        const primary = aLbl.includes('Copy') ? b : a;
+        const secondary = primary === a ? b : a;
+
+        pairs.push({
+          index: idx++,
+          startTime: +(primary.el.getAttribute('startTime') || 0),
+          endTime: +(primary.el.getAttribute('endTime') || 0),
+          label1: primary.el.getAttribute('label') || '',
+          label2: secondary.el.getAttribute('label') || '',
+          id1: primary.el.getAttribute('id') || '',
+          id2: secondary.el.getAttribute('id') || '',
+          contentEl1: primary.contentEl,
+          contentEl2: secondary.contentEl,
+          original: primary.contentEl.textContent,
+          textEl1: primary.el,
+          textEl2: secondary.el,
+          type: 'pair',
+          path: primary.path
+        });
+      } else {
+        // Standalone text — no pair found, still let user edit it
+        used.add(i);
+        pairs.push({
+          index: idx++,
+          startTime: +(a.el.getAttribute('startTime') || 0),
+          endTime: +(a.el.getAttribute('endTime') || 0),
+          label1: aLabel,
+          label2: null,
+          id1: a.el.getAttribute('id') || '',
+          id2: null,
+          contentEl1: a.contentEl,
+          contentEl2: null,
+          original: aContent,
+          textEl1: a.el,
+          textEl2: null,
+          type: 'single',
+          path: a.path
+        });
+      }
+    }
+  });
+
+  renderEditor();
+}
+
+function renderEditor() {
+  dropZone.classList.add('hidden');
+  editor.classList.remove('hidden');
+
+  // File info
+  const sceneTitle = xmlDoc.querySelector('scene')?.getAttribute('title') || 'Unknown';
+  document.getElementById('fileInfo').innerHTML =
+    `<div>📄 <strong>${fileName}</strong> — Project: <strong>${sceneTitle}</strong></div>
+     <span class="reload" onclick="location.reload()">Load different file</span>`;
+
+  // Dynamic stats
+  const categories = {};
+  let pairCount = 0, singleCount = 0;
+  pairs.forEach(p => {
+    categories[p.original] = (categories[p.original] || 0) + 1;
+    if (p.type === 'pair') pairCount++; else singleCount++;
+  });
+
+  let statsHtml = `<div class="stat">Total: <span>${pairs.length}</span></div>`;
+  statsHtml += `<div class="stat">Pairs: <span>${pairCount}</span></div>`;
+  if (singleCount) statsHtml += `<div class="stat">Singles: <span>${singleCount}</span></div>`;
+  // Show top categories (up to 6)
+  const sorted = Object.entries(categories).sort((a,b) => b[1]-a[1]);
+  sorted.slice(0, 6).forEach(([k,v]) => {
+    const display = k.length > 14 ? k.slice(0,12)+'…' : k;
+    statsHtml += `<div class="stat">${display}: <span>${v}</span></div>`;
+  });
+  if (sorted.length > 6) statsHtml += `<div class="stat">+${sorted.length-6} more</div>`;
+  document.getElementById('stats').innerHTML = statsHtml;
+
+  // Dynamic bulk filter
+  let filterHtml = '<option value="all">All Texts</option>';
+  sorted.forEach(([k, v]) => {
+    const display = k.length > 20 ? k.slice(0,18)+'…' : k;
+    filterHtml += `<option value="${encodeForAttr(k)}">Only "${display}" (${v})</option>`;
+  });
+  document.getElementById('bulkFilter').innerHTML = filterHtml;
+
+  // Cards
+  let html = '';
+  pairs.forEach((p, i) => {
+    const typeLabel = p.type === 'pair' ? 'Paired' : 'Single Layer';
+    const typeCls = p.type === 'single' ? ' single-layer' : '';
+    const escapedOrig = encodeForAttr(p.original);
+    html += `
+    <div class="pair-card${typeCls}" id="card-${i}">
+      <div class="pair-header">
+        <div>
+          <span class="pair-index">#${i+1}</span>
+          <span class="badge badge-type">${typeLabel}</span>
+          <span class="badge hidden badge-mod" id="badge-${i}">modified</span>
+        </div>
+        <span class="pair-time">${formatTime(p.startTime)} → ${formatTime(p.endTime)}</span>
+      </div>
+      <div class="pair-body">
+        <div class="original">${escapeHtml(p.original)}</div>
+        <div class="arrow">→</div>
+        <input type="text" id="input-${i}" value="${escapedOrig}"
+               data-original="${escapedOrig}" data-index="${i}"
+               oninput="onEdit(${i})" spellcheck="false">
+      </div>
+      <div class="pair-ids">ID${p.id2 ? 's' : ''}: ${p.id1}${p.id2 ? ', '+p.id2 : ''} · ${p.label1}${p.label2 ? ' + '+p.label2 : ''}</div>
+    </div>`;
+  });
+  document.getElementById('pairGrid').innerHTML = html;
+
+  // Restore actual values into inputs (handles special chars)
+  pairs.forEach((p, i) => { document.getElementById(`input-${i}`).value = p.original; });
+
+  updatePendingCount();
+}
+
+function encodeForAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function onEdit(i) {
+  const input = document.getElementById(`input-${i}`);
+  const card = document.getElementById(`card-${i}`);
+  const badge = document.getElementById(`badge-${i}`);
+  const changed = input.value !== pairs[i].original;
+  input.classList.toggle('changed', changed);
+  card.classList.toggle('modified', changed);
+  badge.classList.toggle('hidden', !changed);
+  updatePendingCount();
+}
+
+function updatePendingCount() {
+  let count = 0;
+  pairs.forEach((p, i) => {
+    const input = document.getElementById(`input-${i}`);
+    if (input && input.value !== p.original) count++;
+  });
+  const el = document.getElementById('changeCount');
+  document.getElementById('pendingCount').textContent = count;
+  el.classList.toggle('hidden', count === 0);
+}
+
+function applyBulk() {
+  const filterRaw = document.getElementById('bulkFilter').value;
+  const filter = filterRaw === 'all' ? 'all' : decodeForAttr(filterRaw);
+  const newVal = document.getElementById('bulkValue').value.trim();
+  if (!newVal) { showToast('Enter a value first', 'error'); return; }
+  let count = 0;
+  pairs.forEach((p, i) => {
+    if (filter === 'all' || p.original === filter) {
+      document.getElementById(`input-${i}`).value = newVal;
+      onEdit(i);
+      count++;
+    }
+  });
+  showToast(`Applied "${newVal}" to ${count} text(s)`, 'success');
+}
+
+function decodeForAttr(s) { return s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&'); }
+
+function resetAll() {
+  pairs.forEach((p, i) => {
+    document.getElementById(`input-${i}`).value = p.original;
+    onEdit(i);
+  });
+  showToast('All values reset', 'success');
+}
+
+function previewChanges() {
+  let changes = [];
+  pairs.forEach((p, i) => {
+    const v = document.getElementById(`input-${i}`).value;
+    if (v !== p.original) changes.push({ from: p.original, to: v, time: formatTime(p.startTime), idx: i+1 });
+  });
+  if (!changes.length) { showToast('No changes yet', 'error'); return; }
+  let html = `<div class="preview-modal" onclick="if(event.target===this)this.remove()">
+    <div class="preview-content"><h3>📋 ${changes.length} Change${changes.length>1?'s':''}</h3>`;
+  changes.forEach(c => {
+    html += `<div class="preview-item"><span>#${c.idx}:</span>
+      <span class="from">${escapeHtml(c.from)}</span><span>→</span>
+      <span class="to">${escapeHtml(c.to)}</span><span class="at">${c.time}</span></div>`;
+  });
+  html += `<div style="margin-top:16px;text-align:right"><button class="btn btn-outline" onclick="this.closest('.preview-modal').remove()">Close</button></div></div></div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function exportXml() {
+  let changeCount = 0;
+  pairs.forEach((p, i) => {
+    const newVal = document.getElementById(`input-${i}`).value.trim();
+    if (newVal && newVal !== p.original) {
+      p.contentEl1.textContent = newVal;
+      if (p.contentEl2) p.contentEl2.textContent = newVal;
+      // Update labels
+      p.textEl1.setAttribute('label', newVal);
+      if (p.textEl2) p.textEl2.setAttribute('label', newVal + ' Copy');
+      changeCount++;
+    }
+  });
+  if (!changeCount) { showToast('No changes to export', 'error'); return; }
+
+  const serializer = new XMLSerializer();
+  let output = serializer.serializeToString(xmlDoc);
+  if (!output.startsWith('<?xml')) output = "<?xml version='1.0' encoding='UTF-8' ?>\n" + output;
+
+  const blob = new Blob([output], { type: 'application/xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const base = fileName.replace(/\.xml$/i, '');
+  a.download = `${base} - Modified.xml`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast(`Exported with ${changeCount} modified!`, 'success');
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast-${type} show`;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
