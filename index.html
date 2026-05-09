@@ -3,91 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.M Category Text Editor</title>
+<title>A.M Duo XML Editor</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a26;--border:#2a2a3a;--accent:#6c5ce7;--accent2:#a29bfe;--text:#e8e8f0;--dim:#6b6b80;--danger:#ff6b6b;--success:#51cf66;--warn:#ffd43b}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.app{max-width:960px;margin:0 auto;padding:24px 16px 80px}
-header{margin-bottom:24px}
-h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#ff6b9d,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;display:inline-block}
-.subtitle{color:var(--dim);font-size:.85rem}
-.btn{padding:10px 20px;border:none;border-radius:8px;font-family:inherit;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
-.btn-success{background:linear-gradient(135deg,#20c997,var(--success));color:#000}
-.btn-success:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
-.btn-danger:hover{background:var(--danger);color:#fff}
-.drop-zone{border:2px dashed var(--border);border-radius:16px;padding:60px 40px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:20px;background:linear-gradient(135deg,rgba(108,92,231,.02),rgba(162,155,254,.02))}
-.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:linear-gradient(135deg,rgba(108,92,231,.06),rgba(162,155,254,.06))}
-.drop-zone p{color:var(--dim);font-size:.9rem;margin-top:4px}
-.drop-zone .icon{font-size:2.5rem;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(108,92,231,.3))}
+:root{
+  --bg:#050508;
+  --surface:rgba(20, 20, 28, 0.6);
+  --card:rgba(30, 30, 42, 0.7);
+  --border:rgba(255, 255, 255, 0.08);
+  --border-hover:rgba(255, 255, 255, 0.15);
+  --accent:#8b5cf6;
+  --accent2:#d946ef;
+  --text:#f8fafc;
+  --dim:#94a3b8;
+  --danger:#ef4444;
+  --success:#10b981;
+  --warn:#f59e0b;
+  --glass: blur(16px);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(217, 70, 239, 0.15), transparent 25%);
+  background-attachment: fixed;
+}
+.app{max-width:1000px;margin:0 auto;padding:40px 20px 80px}
+header{margin-bottom:32px;text-align:center;animation:fadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;letter-spacing:-0.5px;}
+h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.subtitle{color:var(--dim);font-size:1.05rem;font-weight:400;max-width:600px;margin:0 auto;line-height:1.5;}
+.btn{padding:12px 24px;border:none;border-radius:12px;font-family:inherit;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);display:inline-flex;align-items:center;gap:8px;backdrop-filter:var(--glass);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5);}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 15px rgba(16,185,129,0.3);}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4);}
+.btn-outline{background:var(--surface);border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover{border-color:var(--border-hover);background:var(--card);transform:translateY(-2px);}
+.btn-danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--danger);}
+.btn-danger:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:translateY(-2px);}
+.drop-zone{border:2px dashed var(--border);border-radius:24px;padding:80px 40px;text-align:center;cursor:pointer;transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);margin-bottom:30px;background:var(--surface);backdrop-filter:var(--glass);position:relative;overflow:hidden;}
+.drop-zone::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(217,70,239,0.1));opacity:0;transition:opacity .4s;}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);transform:scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,0.4);}
+.drop-zone:hover::before,.drop-zone.dragover::before{opacity:1;}
+.drop-zone p{color:var(--dim);font-size:1.1rem;margin-top:8px;position:relative;z-index:1;}
+.drop-zone .icon{font-size:3.5rem;margin-bottom:12px;filter:drop-shadow(0 8px 16px rgba(139,92,246,0.4));position:relative;z-index:1;transition:transform 0.3s;}
+.drop-zone:hover .icon{transform:translateY(-5px);}
 #fileInput{display:none}
-.stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;transition:all .2s}
-.stat:hover{border-color:var(--accent);transform:translateY(-1px)}
-.stat span{color:var(--accent2);font-weight:700}
-.pair-grid{display:flex;flex-direction:column;gap:10px}
-.pair-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .25s;position:relative;overflow:hidden}
-.pair-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent);opacity:0;transition:opacity .2s}
-.pair-card:hover{border-color:rgba(108,92,231,.4);box-shadow:0 4px 20px rgba(108,92,231,.08)}
-.pair-card:hover::before{opacity:1}
-.pair-card.modified{border-color:var(--warn)}
-.pair-card.modified::before{background:var(--warn);opacity:1}
-.pair-card.single-layer{border-left:3px solid var(--dim)}
-.pair-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
-.pair-index{font-weight:800;font-size:.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:.8px}
-.pair-time{font-size:.68rem;color:var(--dim);font-family:'Courier New',monospace;background:var(--surface);padding:3px 8px;border-radius:4px}
-.pair-body{display:flex;gap:10px;align-items:center}
-.pair-body input{flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.95rem;font-weight:600;transition:all .2s}
-.pair-body input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,92,231,.15)}
-.pair-body input.changed{border-color:var(--warn);background:rgba(255,212,59,.03)}
-.pair-body .arrow{color:var(--dim);font-size:1.2rem;flex-shrink:0}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--surface);padding:8px;border-radius:16px;backdrop-filter:var(--glass);border:1px solid var(--border);}
+.tab{flex:1;text-align:center;padding:14px 24px;font-weight:600;font-size:1rem;color:var(--dim);cursor:pointer;border-radius:12px;transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);}
+.tab:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.tab.active{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 15px rgba(139,92,246,0.3);}
+.tab-content{display:none;animation:fadeInScale .4s cubic-bezier(0.16, 1, 0.3, 1);}
+.tab-content.active{display:block;}
+@keyframes fadeInScale{from{opacity:0;transform:translateY(10px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;margin-bottom:24px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 20px;font-size:.9rem;transition:all .3s;backdrop-filter:var(--glass);}
+.stat:hover{border-color:var(--border-hover);transform:translateY(-2px);background:var(--card);}
+.stat span{color:var(--accent2);font-weight:800;font-size:1.2rem;display:block;margin-top:4px;}
+.pair-grid{display:flex;flex-direction:column;gap:12px}
+.pair-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);backdrop-filter:var(--glass);}
+.pair-card:hover{border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+.pair-card.modified{border-color:var(--warn);background:rgba(245,158,11,0.05);}
+.pair-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.pair-index{font-weight:800;font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;background:rgba(139,92,246,0.15);padding:4px 10px;border-radius:8px;}
+.pair-time{font-size:.75rem;color:var(--dim);font-family:'Courier New',monospace;background:rgba(0,0,0,0.3);padding:4px 10px;border-radius:8px;}
+.pair-body{display:flex;gap:12px;align-items:center}
+.pair-body.unlinked{flex-direction:column;align-items:stretch;}
+.pair-row{display:flex;gap:12px;align-items:center;flex:1;}
+.pair-row input{flex:1;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:var(--text);font-family:inherit;font-size:1rem;font-weight:500;transition:all .3s;}
+.pair-row input:focus{outline:none;border-color:var(--accent);background:rgba(0,0,0,0.4);box-shadow:0 0 0 4px rgba(139,92,246,0.15);}
+.pair-row input.changed{border-color:var(--warn);background:rgba(245,158,11,0.05);}
+.pair-row .arrow{color:var(--dim);font-size:1.2rem;flex-shrink:0}
 .pair-card.modified .arrow{color:var(--warn)}
-.pair-body .original{color:var(--dim);font-size:.82rem;min-width:110px;text-align:center;flex-shrink:0;background:var(--surface);padding:8px;border-radius:6px;font-weight:600;letter-spacing:.5px;word-break:break-all}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;margin-left:8px}
-.badge-mod{background:rgba(255,212,59,.15);color:var(--warn)}
-.badge-type{background:rgba(108,92,231,.15);color:var(--accent2);margin-left:6px}
-.bulk-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px}
-.bulk-section h3{font-size:.88rem;font-weight:700;margin-bottom:12px;color:var(--accent2)}
-.bulk-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.bulk-row input,.bulk-row select{padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.85rem}
-.bulk-row input:focus,.bulk-row select:focus{outline:none;border-color:var(--accent)}
-.toast{position:fixed;bottom:24px;right:24px;padding:14px 22px;border-radius:10px;font-size:.85rem;font-weight:600;transform:translateY(100px);opacity:0;transition:all .3s;z-index:99;backdrop-filter:blur(8px)}
+.pair-row .original{color:var(--dim);font-size:.9rem;min-width:140px;text-align:center;flex-shrink:0;background:rgba(0,0,0,0.2);padding:12px;border-radius:10px;font-weight:500;word-break:break-all;}
+.badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-mod{background:rgba(245,158,11,0.15);color:var(--warn)}
+.badge-type{background:rgba(217,70,239,0.1);color:var(--accent2);border:1px solid rgba(217,70,239,0.2);}
+.bulk-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;backdrop-filter:var(--glass);}
+.bulk-section h3{font-size:1.1rem;font-weight:700;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.bulk-section h3::before{content:'⚡';font-size:1.2rem;}
+.bulk-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bulk-row input,.bulk-row select{padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:var(--text);font-family:inherit;font-size:.95rem;transition:all .3s;}
+.bulk-row input:focus,.bulk-row select:focus{outline:none;border-color:var(--accent);background:rgba(0,0,0,0.4);}
+.toast{position:fixed;bottom:30px;right:30px;padding:16px 24px;border-radius:12px;font-size:.95rem;font-weight:600;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);z-index:99;backdrop-filter:var(--glass);box-shadow:0 10px 30px rgba(0,0,0,0.4);}
 .toast.show{transform:translateY(0);opacity:1}
-.toast-success{background:rgba(81,207,102,.9);color:#000}
-.toast-error{background:rgba(255,107,107,.9);color:#fff}
-.hidden{display:none}
-.pair-ids{font-size:.62rem;color:var(--dim);font-family:'Courier New',monospace;margin-top:6px;opacity:.6}
-.footer-bar{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border)}
-.change-count{position:fixed;top:16px;right:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.8rem;z-index:50;backdrop-filter:blur(8px)}
-.change-count span{color:var(--warn);font-weight:700}
-.file-info{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.8rem;color:var(--dim);display:flex;justify-content:space-between;align-items:center}
-.file-info strong{color:var(--text)}
-.file-info .reload{cursor:pointer;color:var(--accent);text-decoration:underline}
-.preview-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center}
-.preview-content{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
-.preview-content h3{color:var(--accent2);margin-bottom:12px}
-.preview-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.preview-item .from{color:var(--danger);text-decoration:line-through}
-.preview-item .to{color:var(--success);font-weight:600}
-.preview-item .at{color:var(--dim);font-size:.7rem;font-family:monospace;margin-left:auto}
+.toast-success{background:rgba(16,185,129,0.9);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.toast-error{background:rgba(239,68,68,0.9);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.hidden{display:none !important}
+.pair-ids{font-size:.75rem;color:var(--dim);font-family:'Courier New',monospace;margin-top:16px;opacity:.6;background:rgba(0,0,0,0.2);padding:8px 12px;border-radius:8px;display:inline-block;}
+.footer-bar{margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--border);align-items:center;}
+.change-count{position:fixed;top:20px;right:20px;background:var(--surface);border:1px solid var(--warn);border-radius:12px;padding:12px 20px;font-size:.95rem;z-index:50;backdrop-filter:var(--glass);box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:fadeInDown .4s;}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.change-count span{color:var(--warn);font-weight:800;font-size:1.1rem;margin:0 4px;}
+.file-info{background:linear-gradient(135deg,var(--surface),var(--card));border:1px solid var(--border);border-radius:16px;padding:16px 24px;margin-bottom:24px;font-size:.95rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;backdrop-filter:var(--glass);}
+.file-info .reload{cursor:pointer;color:var(--accent2);font-weight:600;padding:8px 16px;background:rgba(217,70,239,0.1);border-radius:10px;transition:all .2s;}
+.file-info .reload:hover{background:rgba(217,70,239,0.2);transform:translateY(-1px);}
+
+.link-btn{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:var(--accent2);padding:6px 12px;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;}
+.link-btn:hover{background:rgba(139,92,246,0.3);}
+.link-btn.unlinked{background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3);}
+.link-btn.unlinked:hover{background:rgba(239,68,68,0.3);}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 </head>
 <body>
 <div class="app">
   <header>
-    <h1>⚡ A.M Category Text Editor</h1>
-    <p class="subtitle">Auto-detects all text pairs from any Alight Motion XML — edit each one manually</p>
+    <h1><span>A.M</span> Duo Editor</h1>
+    <p class="subtitle">Edit texts (linked or unlinked pairs) and copy/paste shake effects across XMLs!</p>
   </header>
 
   <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
     <div class="icon">📂</div>
-    <p>Drop any Alight Motion XML here or click to browse</p>
+    <p>Drop your <strong>Project XML</strong> or <strong>Effects Preset XML</strong> here</p>
+    <p style="font-size:0.75rem;margin-top:8px;opacity:0.7;">(You can load a preset, copy its effects, then drop your project here to paste them!)</p>
     <input type="file" id="fileInput" accept=".xml">
   </div>
 
@@ -95,25 +134,44 @@ h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--acce
 
   <div id="editor" class="hidden">
     <div id="fileInfo" class="file-info"></div>
-    <div class="stats" id="stats"></div>
-
-    <div class="bulk-section">
-      <h3>⚡ Bulk Replace</h3>
-      <div class="bulk-row">
-        <select id="bulkFilter"></select>
-        <span style="color:var(--dim);font-size:1.1rem">→</span>
-        <input type="text" id="bulkValue" placeholder="New category text..." style="flex:1;min-width:150px">
-        <button class="btn btn-primary" onclick="applyBulk()">Apply</button>
-        <button class="btn btn-danger" onclick="resetAll()">Reset All</button>
-      </div>
+    
+    <div class="tabs">
+      <div class="tab active" id="tab-btn-texts" onclick="switchTab('texts')">📝 Duo Texts Editor</div>
+      <div class="tab" id="tab-btn-effects" onclick="switchTab('effects')">✨ Effects & Media</div>
     </div>
 
-    <div class="pair-grid" id="pairGrid"></div>
+    <!-- TEXTS TAB -->
+    <div id="tab-content-texts" class="tab-content active">
+      <div class="stats" id="stats"></div>
+      <div class="bulk-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3>⚡ Bulk Replace</h3>
+          <div>
+            <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;" onclick="toggleAllLinks(true)">🔗 Link All</button>
+            <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;" onclick="toggleAllLinks(false)">💔 Unlink All</button>
+          </div>
+        </div>
+        <div class="bulk-row" style="margin-top:12px;">
+          <select id="bulkFilter"></select>
+          <span style="color:var(--dim);font-size:1.1rem">→</span>
+          <input type="text" id="bulkValue" placeholder="New category text..." style="flex:1;min-width:150px">
+          <button class="btn btn-primary" onclick="applyBulk()">Apply</button>
+          <button class="btn btn-danger" onclick="resetAllTexts()">Reset</button>
+        </div>
+      </div>
+      <div class="pair-grid" id="pairGrid"></div>
+    </div>
+
+    <!-- EFFECTS TAB -->
+    <div id="tab-content-effects" class="tab-content">
+      <div id="clipboardStatus"></div>
+      <div class="pair-grid" id="effectsGrid"></div>
+    </div>
 
     <div class="footer-bar">
       <button class="btn btn-success" onclick="exportXml()">💾 Export Modified XML</button>
-      <button class="btn btn-outline" onclick="previewChanges()">👁 Preview Changes</button>
-      <button class="btn btn-outline" onclick="location.reload()">🔄 Load Different XML</button>
+      <button class="btn btn-outline" onclick="location.reload()">🔄 Start Over</button>
+      <span style="color:var(--dim);font-size:0.85rem;margin-left:auto;align-self:center;">Pro Tip: You can drag a new XML at any time. Your clipboard will remain safe!</span>
     </div>
   </div>
 
@@ -121,15 +179,39 @@ h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--acce
 </div>
 
 <script>
-let xmlText = '', xmlDoc = null, pairs = [], fileName = '';
+let xmlText = '', xmlDoc = null, fileName = '';
+let textPairs = [];
+let mediaLayers = [];
+let effectClipboard = [];
 
+const RAW_CATEGORIES = [
+  "Strength", "Speed", "Intelligence", "Battle Intelligence", "Durability", "Stamina", "Endurance", "Agility", "Reflexes", "Reaction Speed", "Travel Speed", "Combat Speed", "Attack Speed", "Destructive Capacity", "Attack Potency", "Power", "Offensive Power", "Defensive Power", "Skill", "Combat Skill", "Swordsmanship", "Weapon Mastery", "Hand-To-Hand Combat", "Accuracy", "Precision", "Experience", "Adaptability", "Tactical Ability", "Strategy", "Battle Experience", "Abilities", "Hax", "Versatility", "Techniques", "Transformations", "Energy Control", "Aura", "Presence", "Range", "Mobility", "Regeneration", "Resistance", "Immunities", "Feats", "Statements", "Scaling", "Potential", "Talent", "Mentality", "Mindset", "Clutch Factor", "Fear Factor", "Menace", "Cold Moments", "Drip", "Writing", "Character Design", "Emotional Impact", "Villain Presence", "Main Character Energy", "Legacy", "Goat Status", "Overall", "Difficulty", "Winner"
+];
+const PINNED_CATEGORIES = RAW_CATEGORIES.map(s => s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase());
+
+// Initialize Fuse.js for fuzzy matching
+const fuse = new Fuse(RAW_CATEGORIES.map(cat => ({ title: cat })), {
+  keys: ['title'],
+  includeScore: true,
+  threshold: 0.3 // Adjust for strictness. 0.3 is fairly strict but handles typos
+});
+
+// DOM Elements
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const editor = document.getElementById('editor');
 
-['dragenter','dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
-['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('dragover'); }));
+// Drag and Drop
+['dragenter','dragover'].forEach(e => {
+  dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); });
+  document.body.addEventListener(e, ev => { ev.preventDefault(); });
+});
+['dragleave','drop'].forEach(e => {
+  dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('dragover'); });
+  document.body.addEventListener(e, ev => { ev.preventDefault(); });
+});
 dropZone.addEventListener('drop', ev => { if(ev.dataTransfer.files.length) loadFile(ev.dataTransfer.files[0]); });
+document.body.addEventListener('drop', ev => { if(ev.dataTransfer.files.length && !dropZone.contains(ev.target)) loadFile(ev.dataTransfer.files[0]); });
 fileInput.addEventListener('change', ev => { if(ev.target.files.length) loadFile(ev.target.files[0]); });
 
 function loadFile(file) {
@@ -144,9 +226,10 @@ function formatTime(ms) {
   return `${m}:${String(sec).padStart(2,'0')}.${String(millis).padStart(3,'0')}`;
 }
 
-/* ── Generic text-pair detection ── */
+// ---------------------------------------------------------
+// XML PARSING
+// ---------------------------------------------------------
 function collectAllTexts(node, path, results) {
-  // Recursively collect all <text> elements and track their scene depth
   for (const child of node.children) {
     if (child.tagName === 'text') {
       const cEl = child.querySelector('content');
@@ -161,15 +244,16 @@ function collectAllTexts(node, path, results) {
 function parseXml() {
   const parser = new DOMParser();
   xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-  pairs = [];
+  textPairs = [];
+  mediaLayers = [];
 
-  // Collect every <text> with a <content> child from all scene depths
-  const allTexts = [];
   const rootScene = xmlDoc.querySelector('scene');
-  if (!rootScene) { showToast('No <scene> found in XML', 'error'); return; }
+  if (!rootScene) { showToast('No <scene> found in XML. Is it a valid project?', 'error'); return; }
+
+  // 1. TEXT PAIRS PARSING
+  const allTexts = [];
   collectAllTexts(rootScene, 'root', allTexts);
 
-  // Group by (path + startTime + endTime) — texts in the same scene at the same time window
   const groups = {};
   allTexts.forEach(t => {
     const st = t.el.getAttribute('startTime') || '0';
@@ -179,58 +263,43 @@ function parseXml() {
     groups[key].push(t);
   });
 
-  let idx = 0;
-  // Sort groups by startTime
-  const sortedKeys = Object.keys(groups).sort((a,b) => {
-    const stA = +a.split('|')[1], stB = +b.split('|')[1];
-    return stA - stB;
-  });
-
+  let textIdx = 0;
+  const sortedKeys = Object.keys(groups).sort((a,b) => +a.split('|')[1] - +b.split('|')[1]);
   sortedKeys.forEach(key => {
     const els = groups[key];
     const used = new Set();
-
     for (let i = 0; i < els.length; i++) {
       if (used.has(i)) continue;
       const a = els[i];
       const aLabel = a.el.getAttribute('label') || '';
       const aContent = a.contentEl.textContent;
-
-      // Try to find a matching partner
       let bestJ = -1, bestScore = 0;
       for (let j = i + 1; j < els.length; j++) {
         if (used.has(j)) continue;
         const b = els[j];
         const bLabel = b.el.getAttribute('label') || '';
         const bContent = b.contentEl.textContent;
-
         let score = 0;
-        // Exact content match
+        const aStripped = aContent.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        const bStripped = bContent.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+
         if (aContent === bContent) score += 10;
-        // Case-insensitive match
-        else if (aContent.toUpperCase() === bContent.toUpperCase()) score += 8;
+        else if (aContent.toUpperCase() === bContent.toUpperCase()) score += 9;
+        else if (aStripped.length > 0 && aStripped === bStripped) score += 8;
 
-        // Label "X" / "X Copy" pattern
         if (bLabel === aLabel + ' Copy' || aLabel === bLabel + ' Copy') score += 5;
-        // Same font
         if (a.el.getAttribute('font') === b.el.getAttribute('font')) score += 2;
-        // Same font size
         if (a.el.getAttribute('size') === b.el.getAttribute('size')) score += 1;
-
         if (score > bestScore && score >= 8) { bestScore = score; bestJ = j; }
       }
 
       if (bestJ >= 0) {
         used.add(i); used.add(bestJ);
         const b = els[bestJ];
-        const aLbl = a.el.getAttribute('label') || '';
-        const bLbl = b.el.getAttribute('label') || '';
-        // Primary = the non-copy one
-        const primary = aLbl.includes('Copy') ? b : a;
+        const primary = (aLabel.includes('Copy') && !bLabel.includes('Copy')) ? b : a;
         const secondary = primary === a ? b : a;
-
-        pairs.push({
-          index: idx++,
+        textPairs.push({
+          index: textIdx++,
           startTime: +(primary.el.getAttribute('startTime') || 0),
           endTime: +(primary.el.getAttribute('endTime') || 0),
           label1: primary.el.getAttribute('label') || '',
@@ -243,56 +312,119 @@ function parseXml() {
           textEl1: primary.el,
           textEl2: secondary.el,
           type: 'pair',
-          path: primary.path
+          isLinked: true // New property for DUO pairs
         });
       } else {
-        // Standalone text — no pair found, still let user edit it
         used.add(i);
-        pairs.push({
-          index: idx++,
+        textPairs.push({
+          index: textIdx++,
           startTime: +(a.el.getAttribute('startTime') || 0),
           endTime: +(a.el.getAttribute('endTime') || 0),
           label1: aLabel,
-          label2: null,
           id1: a.el.getAttribute('id') || '',
-          id2: null,
           contentEl1: a.contentEl,
-          contentEl2: null,
           original: aContent,
           textEl1: a.el,
-          textEl2: null,
-          type: 'single',
-          path: a.path
+          type: 'single'
         });
       }
     }
   });
 
+  // 2. EFFECTS & MEDIA PARSING
+  const layerNodes = Array.from(xmlDoc.querySelectorAll('*')).filter(el => {
+    return el.hasAttribute('label') && el.hasAttribute('startTime') && el.tagName !== 'scene';
+  });
+
+  layerNodes.forEach((el, index) => {
+    const allEffects = Array.from(el.querySelectorAll('effect'));
+    const ownEffects = allEffects.filter(eff => eff.closest('[label][startTime]') === el);
+    mediaLayers.push({
+      index,
+      el,
+      tagName: el.tagName,
+      label: el.getAttribute('label') || el.tagName,
+      effects: ownEffects,
+      modified: false
+    });
+  });
+
+  mediaLayers.sort((a,b) => +(a.el.getAttribute('startTime')||0) - +(b.el.getAttribute('startTime')||0));
+
   renderEditor();
+  showToast('XML loaded successfully!', 'success');
+}
+
+// ---------------------------------------------------------
+// UI RENDERING
+// ---------------------------------------------------------
+function switchTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+  document.getElementById(`tab-content-${tabId}`).classList.add('active');
 }
 
 function renderEditor() {
   dropZone.classList.add('hidden');
   editor.classList.remove('hidden');
 
-  // File info
   const sceneTitle = xmlDoc.querySelector('scene')?.getAttribute('title') || 'Unknown';
   document.getElementById('fileInfo').innerHTML =
     `<div>📄 <strong>${fileName}</strong> — Project: <strong>${sceneTitle}</strong></div>
-     <span class="reload" onclick="location.reload()">Load different file</span>`;
+     <div style="font-size:0.85rem;opacity:0.8;margin-top:4px;">(You can drop a new XML anywhere to load it)</div>`;
 
-  // Dynamic stats
+  renderTextsTab();
+  renderEffectsTab();
+  updatePendingCount();
+}
+
+// ---- TEXTS TAB ----
+function toggleAllLinks(linkStatus) {
+  let count = 0;
+  textPairs.forEach(p => {
+    if (p.type === 'pair' && p.isLinked !== linkStatus) {
+      p.isLinked = linkStatus;
+      count++;
+    }
+  });
+  if (count > 0) {
+    renderTextsTab();
+    showToast(linkStatus ? 'All pairs linked' : 'All pairs unlinked', 'success');
+  }
+}
+
+function toggleLink(i) {
+  textPairs[i].isLinked = !textPairs[i].isLinked;
+  // Preserve current values
+  let val1 = '', val2 = '';
+  if (textPairs[i].isLinked) {
+    // going from unlinked to linked, copy value 1 to both
+    val1 = document.getElementById(`input-text-${i}-1`)?.value || textPairs[i].original;
+    textPairs[i].currentVal1 = val1;
+    textPairs[i].currentVal2 = val1;
+  } else {
+    // going from linked to unlinked
+    val1 = document.getElementById(`input-text-${i}`)?.value || textPairs[i].original;
+    textPairs[i].currentVal1 = val1;
+    textPairs[i].currentVal2 = val1;
+  }
+  
+  renderTextsTab();
+  onTextEdit(i);
+}
+
+function renderTextsTab() {
   const categories = {};
   let pairCount = 0, singleCount = 0;
-  pairs.forEach(p => {
+  textPairs.forEach(p => {
     categories[p.original] = (categories[p.original] || 0) + 1;
     if (p.type === 'pair') pairCount++; else singleCount++;
   });
 
-  let statsHtml = `<div class="stat">Total: <span>${pairs.length}</span></div>`;
+  let statsHtml = `<div class="stat">Total: <span>${textPairs.length}</span></div>`;
   statsHtml += `<div class="stat">Pairs: <span>${pairCount}</span></div>`;
   if (singleCount) statsHtml += `<div class="stat">Singles: <span>${singleCount}</span></div>`;
-  // Show top categories (up to 6)
   const sorted = Object.entries(categories).sort((a,b) => b[1]-a[1]);
   sorted.slice(0, 6).forEach(([k,v]) => {
     const display = k.length > 14 ? k.slice(0,12)+'…' : k;
@@ -301,7 +433,6 @@ function renderEditor() {
   if (sorted.length > 6) statsHtml += `<div class="stat">+${sorted.length-6} more</div>`;
   document.getElementById('stats').innerHTML = statsHtml;
 
-  // Dynamic bulk filter
   let filterHtml = '<option value="all">All Texts</option>';
   sorted.forEach(([k, v]) => {
     const display = k.length > 20 ? k.slice(0,18)+'…' : k;
@@ -309,63 +440,147 @@ function renderEditor() {
   });
   document.getElementById('bulkFilter').innerHTML = filterHtml;
 
-  // Cards
-  let html = '';
-  pairs.forEach((p, i) => {
-    const typeLabel = p.type === 'pair' ? 'Paired' : 'Single Layer';
+  let pinnedHtml = '';
+  let otherHtml = '';
+  textPairs.forEach((p, i) => {
+    const typeLabel = p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
     const typeCls = p.type === 'single' ? ' single-layer' : '';
-    const escapedOrig = encodeForAttr(p.original);
-    html += `
-    <div class="pair-card${typeCls}" id="card-${i}">
+    
+    // Ensure we have values
+    if (p.currentVal1 === undefined) p.currentVal1 = p.original;
+    if (p.currentVal2 === undefined) p.currentVal2 = p.original;
+
+    let bodyHtml = '';
+    let linkBtn = '';
+
+    if (p.type === 'pair') {
+      if (p.isLinked) {
+        linkBtn = `<button class="link-btn" onclick="toggleLink(${i})" title="Linked: Editing will change both layers">🔗 Linked</button>`;
+        bodyHtml = `
+          <div class="pair-body">
+            <div class="pair-row">
+              <div class="original" title="Layer 1 & 2">${escapeHtml(p.original)}</div>
+              <div class="arrow">→</div>
+              <input type="text" id="input-text-${i}" value="${encodeForAttr(p.currentVal1)}"
+                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="Shared Text">
+            </div>
+          </div>`;
+      } else {
+        linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">💔 Unlinked</button>`;
+        bodyHtml = `
+          <div class="pair-body unlinked">
+            <div class="pair-row" style="margin-bottom:8px;">
+              <div class="original" style="border-left:3px solid var(--accent)" title="Layer 1">${escapeHtml(p.original)}</div>
+              <div class="arrow">→</div>
+              <input type="text" id="input-text-${i}-1" value="${encodeForAttr(p.currentVal1)}"
+                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="Layer 1 Text">
+            </div>
+            <div class="pair-row">
+              <div class="original" style="border-left:3px solid var(--accent2)" title="Layer 2 (Copy)">${escapeHtml(p.original)}</div>
+              <div class="arrow">→</div>
+              <input type="text" id="input-text-${i}-2" value="${encodeForAttr(p.currentVal2)}"
+                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="Layer 2 Text">
+            </div>
+          </div>`;
+      }
+    } else {
+      // Single Layer
+      bodyHtml = `
+        <div class="pair-body">
+          <div class="pair-row">
+            <div class="original">${escapeHtml(p.original)}</div>
+            <div class="arrow">→</div>
+            <input type="text" id="input-text-${i}" value="${encodeForAttr(p.currentVal1)}"
+                   oninput="onTextEdit(${i})" spellcheck="false">
+          </div>
+        </div>`;
+    }
+
+    const cardHtml = `
+    <div class="pair-card${typeCls}" id="card-text-${i}">
       <div class="pair-header">
-        <div>
+        <div style="display:flex;align-items:center;gap:8px;">
           <span class="pair-index">#${i+1}</span>
-          <span class="badge badge-type">${typeLabel}</span>
-          <span class="badge hidden badge-mod" id="badge-${i}">modified</span>
+          <span class="badge badge-type" style="border:none;margin:0;">${typeLabel}</span>
+          ${linkBtn}
+          <span class="badge hidden badge-mod" id="badge-text-${i}" style="margin:0;">modified</span>
         </div>
         <span class="pair-time">${formatTime(p.startTime)} → ${formatTime(p.endTime)}</span>
       </div>
-      <div class="pair-body">
-        <div class="original">${escapeHtml(p.original)}</div>
-        <div class="arrow">→</div>
-        <input type="text" id="input-${i}" value="${escapedOrig}"
-               data-original="${escapedOrig}" data-index="${i}"
-               oninput="onEdit(${i})" spellcheck="false">
-      </div>
+      ${bodyHtml}
       <div class="pair-ids">ID${p.id2 ? 's' : ''}: ${p.id1}${p.id2 ? ', '+p.id2 : ''} · ${p.label1}${p.label2 ? ' + '+p.label2 : ''}</div>
     </div>`;
+
+    const cleanOrig = p.original.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+    const strippedOrig = cleanOrig.replace(/ /g, '').toLowerCase();
+    
+    // Check both exact stripped match AND fuzzy match
+    let isPinned = PINNED_CATEGORIES.includes(strippedOrig);
+    if (!isPinned && cleanOrig.length > 3) {
+      const results = fuse.search(cleanOrig);
+      if (results.length > 0 && results[0].score <= 0.3) {
+        isPinned = true;
+      }
+    }
+
+    if (isPinned) {
+      pinnedHtml += cardHtml;
+    } else {
+      otherHtml += cardHtml;
+    }
   });
-  document.getElementById('pairGrid').innerHTML = html;
 
-  // Restore actual values into inputs (handles special chars)
-  pairs.forEach((p, i) => { document.getElementById(`input-${i}`).value = p.original; });
+  let finalHtml = '';
+  if (pinnedHtml) {
+    finalHtml += `<h3 style="margin-top:10px;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px;"><span style="font-size:1.3rem;">📌</span> Pinned Categories</h3>`;
+    finalHtml += `<div class="pair-grid" style="margin-bottom:32px;">${pinnedHtml}</div>`;
+  }
+  if (otherHtml) {
+    if (pinnedHtml) {
+      finalHtml += `<h3 style="margin-bottom:16px;color:var(--dim);display:flex;align-items:center;gap:8px;"><span style="font-size:1.3rem;">📝</span> Other Texts</h3>`;
+    }
+    finalHtml += `<div class="pair-grid">${otherHtml}</div>`;
+  }
 
-  updatePendingCount();
+  document.getElementById('pairGrid').innerHTML = finalHtml;
+  
+  // Initialize modified states
+  textPairs.forEach((p, i) => onTextEdit(i));
 }
 
-function encodeForAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function onTextEdit(i) {
+  const p = textPairs[i];
+  const card = document.getElementById(`card-text-${i}`);
+  const badge = document.getElementById(`badge-text-${i}`);
+  if (!card) return;
 
-function onEdit(i) {
-  const input = document.getElementById(`input-${i}`);
-  const card = document.getElementById(`card-${i}`);
-  const badge = document.getElementById(`badge-${i}`);
-  const changed = input.value !== pairs[i].original;
-  input.classList.toggle('changed', changed);
+  let changed = false;
+
+  if (p.type === 'pair' && !p.isLinked) {
+    const input1 = document.getElementById(`input-text-${i}-1`);
+    const input2 = document.getElementById(`input-text-${i}-2`);
+    if (input1 && input2) {
+      p.currentVal1 = input1.value;
+      p.currentVal2 = input2.value;
+      const c1 = input1.value !== p.original;
+      const c2 = input2.value !== p.original;
+      input1.classList.toggle('changed', c1);
+      input2.classList.toggle('changed', c2);
+      changed = c1 || c2;
+    }
+  } else {
+    const input = document.getElementById(`input-text-${i}`);
+    if (input) {
+      p.currentVal1 = input.value;
+      p.currentVal2 = input.value;
+      changed = input.value !== p.original;
+      input.classList.toggle('changed', changed);
+    }
+  }
+
   card.classList.toggle('modified', changed);
   badge.classList.toggle('hidden', !changed);
   updatePendingCount();
-}
-
-function updatePendingCount() {
-  let count = 0;
-  pairs.forEach((p, i) => {
-    const input = document.getElementById(`input-${i}`);
-    if (input && input.value !== p.original) count++;
-  });
-  const el = document.getElementById('changeCount');
-  document.getElementById('pendingCount').textContent = count;
-  el.classList.toggle('hidden', count === 0);
 }
 
 function applyBulk() {
@@ -374,57 +589,184 @@ function applyBulk() {
   const newVal = document.getElementById('bulkValue').value.trim();
   if (!newVal) { showToast('Enter a value first', 'error'); return; }
   let count = 0;
-  pairs.forEach((p, i) => {
+  textPairs.forEach((p, i) => {
     if (filter === 'all' || p.original === filter) {
-      document.getElementById(`input-${i}`).value = newVal;
-      onEdit(i);
+      if (p.type === 'pair' && !p.isLinked) {
+        p.currentVal1 = newVal;
+        p.currentVal2 = newVal;
+      } else {
+        p.currentVal1 = newVal;
+      }
       count++;
     }
   });
-  showToast(`Applied "${newVal}" to ${count} text(s)`, 'success');
+  if (count > 0) {
+    renderTextsTab();
+    showToast(`Applied "${newVal}" to ${count} text(s)`, 'success');
+  }
 }
 
-function decodeForAttr(s) { return s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&'); }
-
-function resetAll() {
-  pairs.forEach((p, i) => {
-    document.getElementById(`input-${i}`).value = p.original;
-    onEdit(i);
+function resetAllTexts() {
+  textPairs.forEach((p, i) => {
+    p.currentVal1 = p.original;
+    p.currentVal2 = p.original;
   });
-  showToast('All values reset', 'success');
+  renderTextsTab();
+  showToast('All texts reset', 'success');
 }
 
-function previewChanges() {
-  let changes = [];
-  pairs.forEach((p, i) => {
-    const v = document.getElementById(`input-${i}`).value;
-    if (v !== p.original) changes.push({ from: p.original, to: v, time: formatTime(p.startTime), idx: i+1 });
+// ---- EFFECTS TAB ----
+function renderEffectsTab() {
+  const container = document.getElementById('effectsGrid');
+  const clipContainer = document.getElementById('clipboardStatus');
+  
+  if (effectClipboard.length) {
+    clipContainer.innerHTML = `
+      <div style="margin-bottom:16px;padding:12px;background:var(--surface);border-radius:8px;border:1px dashed var(--success);color:var(--success);display:flex;justify-content:space-between;align-items:center;">
+         <span>📋 <strong>Clipboard Active:</strong> ${effectClipboard.length} effect(s) ready to paste.</span>
+         <button class="btn btn-danger" style="padding:4px 8px;font-size:0.7rem;" onclick="clearClipboard()">Clear</button>
+      </div>`;
+  } else {
+    clipContainer.innerHTML = `
+      <div style="margin-bottom:16px;padding:12px;background:var(--surface);border-radius:8px;border:1px dashed var(--border);color:var(--dim)">
+         📋 <strong>Clipboard Empty.</strong> Find a layer below and click "Copy Effects".
+      </div>`;
+  }
+
+  if (!mediaLayers.length) {
+    container.innerHTML = '<div style="color:var(--dim);text-align:center;padding:40px;">No media layers found in this XML.</div>';
+    return;
+  }
+
+  let html = '';
+  mediaLayers.forEach((layer, i) => {
+    const effBadges = layer.effects.map(eff => {
+      const type = eff.getAttribute('id') || eff.getAttribute('type') || 'Unknown';
+      return `<span class="badge badge-type">${escapeHtml(type)}</span>`;
+    }).join(' ');
+
+    const hasEffects = layer.effects.length > 0;
+    const canPaste = effectClipboard.length > 0;
+
+    html += `
+    <div class="pair-card ${layer.modified ? 'modified' : ''}">
+      <div class="pair-header">
+        <div>
+          <span class="pair-index">#${i+1} ${layer.tagName.toUpperCase()}</span>
+          <span style="font-weight:700;margin-left:8px">${escapeHtml(layer.label)}</span>
+          ${layer.modified ? '<span class="badge badge-mod">modified</span>' : ''}
+        </div>
+      </div>
+      <div style="margin:12px 0;">
+        ${hasEffects ? effBadges : '<span style="color:var(--dim);font-size:0.85rem;font-style:italic;">No effects attached</span>'}
+      </div>
+      <div style="display:flex;gap:8px;">
+        ${hasEffects ? `<button class="btn btn-outline" style="padding:6px 12px;font-size:0.75rem" onclick="copyEffects(${i})">📄 Copy Effects</button>` : ''}
+        ${canPaste ? `<button class="btn btn-success" style="padding:6px 12px;font-size:0.75rem" onclick="pasteEffects(${i})">📋 Paste Effects</button>` : ''}
+        ${hasEffects ? `<button class="btn btn-danger" style="padding:6px 12px;font-size:0.75rem" onclick="clearLayerEffects(${i})">🗑 Clear</button>` : ''}
+      </div>
+    </div>`;
   });
-  if (!changes.length) { showToast('No changes yet', 'error'); return; }
-  let html = `<div class="preview-modal" onclick="if(event.target===this)this.remove()">
-    <div class="preview-content"><h3>📋 ${changes.length} Change${changes.length>1?'s':''}</h3>`;
-  changes.forEach(c => {
-    html += `<div class="preview-item"><span>#${c.idx}:</span>
-      <span class="from">${escapeHtml(c.from)}</span><span>→</span>
-      <span class="to">${escapeHtml(c.to)}</span><span class="at">${c.time}</span></div>`;
+  container.innerHTML = html;
+}
+
+function copyEffects(index) {
+  const layer = mediaLayers[index];
+  effectClipboard = layer.effects.map(eff => eff.cloneNode(true));
+  showToast(`Copied ${effectClipboard.length} effect(s) to Clipboard!`, 'success');
+  renderEffectsTab();
+}
+
+function pasteEffects(index) {
+  if (!effectClipboard.length) return;
+  const layer = mediaLayers[index];
+  const targetEl = layer.el;
+  
+  let wrapper = Array.from(targetEl.children).find(c => c.tagName === 'effects');
+  if (!wrapper) {
+    const usesWrapper = !!xmlDoc.querySelector('effects > effect');
+    if (usesWrapper) {
+      wrapper = xmlDoc.createElement('effects');
+      targetEl.appendChild(wrapper);
+    } else {
+      wrapper = targetEl;
+    }
+  }
+
+  effectClipboard.forEach(eff => {
+    const newEff = eff.cloneNode(true);
+    wrapper.appendChild(newEff);
+    layer.effects.push(newEff);
   });
-  html += `<div style="margin-top:16px;text-align:right"><button class="btn btn-outline" onclick="this.closest('.preview-modal').remove()">Close</button></div></div></div>`;
-  document.body.insertAdjacentHTML('beforeend', html);
+  
+  layer.modified = true;
+  updatePendingCount();
+  renderEffectsTab();
+  showToast(`Pasted ${effectClipboard.length} effect(s)!`, 'success');
+}
+
+function clearLayerEffects(index) {
+  const layer = mediaLayers[index];
+  layer.effects.forEach(eff => eff.remove());
+  layer.effects = [];
+  layer.modified = true;
+  updatePendingCount();
+  renderEffectsTab();
+  showToast('Cleared effects from layer', 'success');
+}
+
+function clearClipboard() {
+  effectClipboard = [];
+  renderEffectsTab();
+  showToast('Clipboard cleared', 'success');
+}
+
+// ---------------------------------------------------------
+// UTILS & EXPORT
+// ---------------------------------------------------------
+function updatePendingCount() {
+  let count = 0;
+  textPairs.forEach(p => {
+    if (p.currentVal1 !== p.original || (p.type === 'pair' && p.currentVal2 !== p.original)) {
+      count++;
+    }
+  });
+  mediaLayers.forEach(l => {
+    if (l.modified) count++;
+  });
+  
+  const el = document.getElementById('changeCount');
+  document.getElementById('pendingCount').textContent = count;
+  el.classList.toggle('hidden', count === 0);
 }
 
 function exportXml() {
   let changeCount = 0;
-  pairs.forEach((p, i) => {
-    const newVal = document.getElementById(`input-${i}`).value.trim();
-    if (newVal && newVal !== p.original) {
-      p.contentEl1.textContent = newVal;
-      if (p.contentEl2) p.contentEl2.textContent = newVal;
-      // Update labels
-      p.textEl1.setAttribute('label', newVal);
-      if (p.textEl2) p.textEl2.setAttribute('label', newVal + ' Copy');
+  
+  // Apply text changes
+  textPairs.forEach(p => {
+    const v1 = p.currentVal1?.trim() || p.original;
+    const v2 = p.currentVal2?.trim() || p.original;
+
+    if (v1 !== p.original || (p.type === 'pair' && v2 !== p.original)) {
+      p.contentEl1.textContent = v1;
+      p.textEl1.setAttribute('label', v1);
+      
+      if (p.contentEl2) {
+        p.contentEl2.textContent = v2;
+        // Keep the "Copy" suffix if it originally had it
+        const suffix = p.label2.endsWith(' Copy') ? ' Copy' : '';
+        p.textEl2.setAttribute('label', v2 + suffix);
+      }
       changeCount++;
     }
   });
+
+  // Apply effect changes
+  mediaLayers.forEach(l => {
+    if (l.modified) changeCount++;
+  });
+
   if (!changeCount) { showToast('No changes to export', 'error'); return; }
 
   const serializer = new XMLSerializer();
@@ -435,11 +777,16 @@ function exportXml() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   const base = fileName.replace(/\.xml$/i, '');
-  a.download = `${base} - Modified.xml`;
+  a.download = `${base} - DuoEdited.xml`;
   a.click();
   URL.revokeObjectURL(a.href);
-  showToast(`Exported with ${changeCount} modified!`, 'success');
+  
+  showToast(`Exported with ${changeCount} changes!`, 'success');
 }
+
+function encodeForAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function decodeForAttr(s) { return s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&'); }
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function showToast(msg, type) {
   const t = document.getElementById('toast');
