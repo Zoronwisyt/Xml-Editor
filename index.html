@@ -113,6 +113,46 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 .link-btn:hover{background:rgba(139,92,246,0.3);}
 .link-btn.unlinked{background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3);}
 .link-btn.unlinked:hover{background:rgba(239,68,68,0.3);}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animated-card {
+  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.collapsible-header {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dim);
+  margin-bottom: 16px;
+}
+.collapsible-header:hover { opacity: 0.8; }
+.collapsible-icon {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.collapsible-header.collapsed .collapsible-icon {
+  transform: rotate(-90deg);
+}
+.collapsible-content {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  opacity: 1;
+}
+.collapsible-content.collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+}
+.collapsible-content-inner {
+  overflow: hidden;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 </head>
@@ -497,7 +537,7 @@ function renderTextsTab() {
     }
 
     const cardHtml = `
-    <div class="pair-card${typeCls}" id="card-text-${i}">
+    <div class="pair-card animated-card${typeCls}" id="card-text-${i}" style="animation-delay: ${i * 0.03}s">
       <div class="pair-header">
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="pair-index">#${i+1}</span>
@@ -536,16 +576,31 @@ function renderTextsTab() {
     finalHtml += `<div class="pair-grid" style="margin-bottom:32px;">${pinnedHtml}</div>`;
   }
   if (otherHtml) {
-    if (pinnedHtml) {
-      finalHtml += `<h3 style="margin-bottom:16px;color:var(--dim);display:flex;align-items:center;gap:8px;"><span style="font-size:1.3rem;">📝</span> Other Texts</h3>`;
-    }
-    finalHtml += `<div class="pair-grid">${otherHtml}</div>`;
+    finalHtml += `
+      <h3 class="collapsible-header" onclick="toggleOtherTexts()" id="otherTextsBtn">
+        <span class="collapsible-icon">▼</span> <span style="font-size:1.3rem;">📝</span> Other Texts
+      </h3>
+      <div class="collapsible-content" id="otherTextsContent">
+        <div class="collapsible-content-inner">
+          <div class="pair-grid">${otherHtml}</div>
+        </div>
+      </div>
+    `;
   }
 
   document.getElementById('pairGrid').innerHTML = finalHtml;
   
   // Initialize modified states
   textPairs.forEach((p, i) => onTextEdit(i));
+}
+
+function toggleOtherTexts() {
+  const content = document.getElementById('otherTextsContent');
+  const btn = document.getElementById('otherTextsBtn');
+  if (content && btn) {
+    content.classList.toggle('collapsed');
+    btn.classList.toggle('collapsed');
+  }
 }
 
 function onTextEdit(i) {
