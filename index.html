@@ -303,41 +303,79 @@ function parseXml() {
     groups[key].push(t);
   });
 
+  // Detect "decorative" singleton layers that appear in every time group
+  // (e.g. a divider layer with content 'i' or 'A' present in nearly all groups)
+  const groupCount = Object.keys(groups).length;
+  const contentFreq = {};
+  Object.values(groups).forEach(els => {
+    const seen = new Set();
+    els.forEach(t => {
+      const c = t.contentEl.textContent;
+      if (!seen.has(c)) { contentFreq[c] = (contentFreq[c] || 0) + 1; seen.add(c); }
+    });
+  });
+  // A content value appearing in >70% of groups is a decorative/structural layer
+  const decorativeContents = new Set(
+    Object.entries(contentFreq)
+      .filter(([c, freq]) => freq / groupCount > 0.7 && c.trim().length <= 3)
+      .map(([c]) => c)
+  );
+
   let textIdx = 0;
   const sortedKeys = Object.keys(groups).sort((a,b) => +a.split('|')[1] - +b.split('|')[1]);
   sortedKeys.forEach(key => {
     const els = groups[key];
+    // Filter out decorative layers from pairing (they'll be ignored entirely)
+    const activeEls = els.filter(t => !decorativeContents.has(t.contentEl.textContent));
     const used = new Set();
-    for (let i = 0; i < els.length; i++) {
+
+    for (let i = 0; i < activeEls.length; i++) {
       if (used.has(i)) continue;
-      const a = els[i];
+      const a = activeEls[i];
       const aLabel = a.el.getAttribute('label') || '';
       const aContent = a.contentEl.textContent;
       let bestJ = -1, bestScore = 0;
-      for (let j = i + 1; j < els.length; j++) {
+
+      for (let j = i + 1; j < activeEls.length; j++) {
         if (used.has(j)) continue;
-        const b = els[j];
+        const b = activeEls[j];
         const bLabel = b.el.getAttribute('label') || '';
         const bContent = b.contentEl.textContent;
         let score = 0;
         const aStripped = aContent.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
         const bStripped = bContent.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
+        // Same-content pairing (category labels like STRENGTH+STRENGTH)
         if (aContent === bContent) score += 10;
         else if (aContent.toUpperCase() === bContent.toUpperCase()) score += 9;
         else if (aStripped.length > 0 && aStripped === bStripped) score += 8;
 
+        // Label Copy suffix pairing
         if (bLabel === aLabel + ' Copy' || aLabel === bLabel + ' Copy') score += 5;
+        // "Copy 2" / "Copy N" pairing for same content
+        if (/Copy\s*\d*$/.test(bLabel) !== /Copy\s*\d*$/.test(aLabel) && aContent === bContent) score += 3;
+
         if (a.el.getAttribute('font') === b.el.getAttribute('font')) score += 2;
         if (a.el.getAttribute('size') === b.el.getAttribute('size')) score += 1;
-        if (score > bestScore && score >= 8) { bestScore = score; bestJ = j; }
+
+        // Duo character name pairing: same timeslot, different content, neither is a "Copy"
+        // These are the left/right character name layers (e.g. SATORU + GOJO)
+        if (score === 0 && !aLabel.includes('Copy') && !bLabel.includes('Copy') &&
+            aContent !== bContent && activeEls.length === 2) {
+          score = 6; // duo character name pair
+        }
+
+        if (score > bestScore && score >= 5) { bestScore = score; bestJ = j; }
       }
 
       if (bestJ >= 0) {
         used.add(i); used.add(bestJ);
-        const b = els[bestJ];
-        const primary = (aLabel.includes('Copy') && !bLabel.includes('Copy')) ? b : a;
+        const b = activeEls[bestJ];
+        const bLabel = b.el.getAttribute('label') || '';
+        // Primary = the one without 'Copy' in label (the "clean" layer)
+        const primary = (aLabel.match(/Copy\s*\d*$/) && !bLabel.match(/Copy\s*\d*$/)) ? b : a;
         const secondary = primary === a ? b : a;
+        const isDuoNamePair = primary.contentEl.textContent !== secondary.contentEl.textContent;
         textPairs.push({
           index: textIdx++,
           startTime: +(primary.el.getAttribute('startTime') || 0),
@@ -349,10 +387,11 @@ function parseXml() {
           contentEl1: primary.contentEl,
           contentEl2: secondary.contentEl,
           original: primary.contentEl.textContent,
+          original2: secondary.contentEl.textContent,
           textEl1: primary.el,
           textEl2: secondary.el,
-          type: 'pair',
-          isLinked: true // New property for DUO pairs
+          type: isDuoNamePair ? 'duo-name' : 'pair',
+          isLinked: !isDuoNamePair // duo name pairs start unlinked (different content)
         });
       } else {
         used.add(i);
@@ -364,6 +403,7 @@ function parseXml() {
           id1: a.el.getAttribute('id') || '',
           contentEl1: a.contentEl,
           original: aContent,
+          original2: aContent,
           textEl1: a.el,
           type: 'single'
         });
@@ -483,18 +523,19 @@ function renderTextsTab() {
   let pinnedHtml = '';
   let otherHtml = '';
   textPairs.forEach((p, i) => {
-    const typeLabel = p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
+    const isDuoName = p.type === 'duo-name';
+    const typeLabel = isDuoName ? '🎭 Duo Names' : p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
     const typeCls = p.type === 'single' ? ' single-layer' : '';
     
     // Ensure we have values
     if (p.currentVal1 === undefined) p.currentVal1 = p.original;
-    if (p.currentVal2 === undefined) p.currentVal2 = p.original;
+    if (p.currentVal2 === undefined) p.currentVal2 = (p.original2 !== undefined ? p.original2 : p.original);
 
     let bodyHtml = '';
     let linkBtn = '';
 
-    if (p.type === 'pair') {
-      if (p.isLinked) {
+    if (p.type === 'pair' || isDuoName) {
+      if (p.isLinked && !isDuoName) {
         linkBtn = `<button class="link-btn" onclick="toggleLink(${i})" title="Linked: Editing will change both layers">🔗 Linked</button>`;
         bodyHtml = `
           <div class="pair-body">
@@ -506,20 +547,25 @@ function renderTextsTab() {
             </div>
           </div>`;
       } else {
-        linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">💔 Unlinked</button>`;
+        if (!isDuoName) {
+          linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">💔 Unlinked</button>`;
+        }
+        const orig2Display = p.original2 !== undefined ? p.original2 : p.original;
+        const p1Label = isDuoName ? p.label1 : 'Layer 1';
+        const p2Label = isDuoName ? p.label2 : 'Layer 2 (Copy)';
         bodyHtml = `
           <div class="pair-body unlinked">
             <div class="pair-row" style="margin-bottom:8px;">
-              <div class="original" style="border-left:3px solid var(--accent)" title="Layer 1">${escapeHtml(p.original)}</div>
+              <div class="original" style="border-left:3px solid var(--accent)" title="${escapeHtml(p1Label)}">${escapeHtml(p.original)}</div>
               <div class="arrow">→</div>
               <input type="text" id="input-text-${i}-1" value="${encodeForAttr(p.currentVal1)}"
-                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="Layer 1 Text">
+                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="${escapeHtml(p1Label)}">
             </div>
             <div class="pair-row">
-              <div class="original" style="border-left:3px solid var(--accent2)" title="Layer 2 (Copy)">${escapeHtml(p.original)}</div>
+              <div class="original" style="border-left:3px solid var(--accent2)" title="${escapeHtml(p2Label)}">${escapeHtml(orig2Display)}</div>
               <div class="arrow">→</div>
               <input type="text" id="input-text-${i}-2" value="${encodeForAttr(p.currentVal2)}"
-                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="Layer 2 Text">
+                     oninput="onTextEdit(${i})" spellcheck="false" placeholder="${escapeHtml(p2Label)}">
             </div>
           </div>`;
       }
@@ -590,8 +636,9 @@ function renderTextsTab() {
 
   document.getElementById('pairGrid').innerHTML = finalHtml;
   
-  // Initialize modified states
-  textPairs.forEach((p, i) => onTextEdit(i));
+  // Initialize modified states without triggering updatePendingCount on every iteration
+  textPairs.forEach((p, i) => onTextEditSilent(i));
+  updatePendingCount();
 }
 
 function toggleOtherTexts() {
@@ -603,7 +650,8 @@ function toggleOtherTexts() {
   }
 }
 
-function onTextEdit(i) {
+// Core update logic — does not trigger updatePendingCount (used during bulk init)
+function onTextEditSilent(i) {
   const p = textPairs[i];
   const card = document.getElementById(`card-text-${i}`);
   const badge = document.getElementById(`badge-text-${i}`);
@@ -635,6 +683,10 @@ function onTextEdit(i) {
 
   card.classList.toggle('modified', changed);
   badge.classList.toggle('hidden', !changed);
+}
+
+function onTextEdit(i) {
+  onTextEditSilent(i);
   updatePendingCount();
 }
 
