@@ -114,6 +114,19 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 .link-btn.unlinked{background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3);}
 .link-btn.unlinked:hover{background:rgba(239,68,68,0.3);}
 
+.role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;max-height:340px;overflow:auto;padding-right:4px;}
+.role-item{display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(0,0,0,0.18);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
+.role-item-info{min-width:0;display:flex;flex-direction:column;gap:2px;}
+.role-item-title{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.role-item-meta{font-size:.75rem;color:var(--dim);font-family:'Courier New',monospace;}
+.role-checks{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.role-checks label{display:flex;align-items:center;gap:4px;font-size:.75rem;color:var(--dim);}
+.role-checks input{accent-color:var(--accent);}
+.beat-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.beat-chip{font-size:.75rem;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,0.25);border:1px solid var(--border);color:var(--dim);}
+.beat-chip.cat{border-color:rgba(16,185,129,0.4);color:#34d399;}
+.beat-chip.win{border-color:rgba(245,158,11,0.45);color:#fbbf24;}
+
 @keyframes slideUpFade {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -184,6 +197,19 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
     <div id="tab-content-texts" class="tab-content active">
       <div class="stats" id="stats"></div>
       <div class="bulk-section">
+        <h3>Role Assignment</h3>
+        <div class="bulk-row">
+          <label for="categoryStartMarker" style="color:var(--dim);font-size:.9rem;">Category starts on marker:</label>
+          <select id="categoryStartMarker" onchange="onCategoryStartMarkerChange(this.value)" style="min-width:220px;"></select>
+        </div>
+        <div id="roleGroupHint" style="margin-top:8px;color:var(--dim);font-size:.8rem;"></div>
+        <div id="roleGrid" class="role-grid" style="margin-top:12px;"></div>
+        <div id="beatPreview" class="beat-preview"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <button class="btn btn-primary" onclick="duplicateRoleLayersAcrossBeats()">Copy Selected Role Layers Across Beats</button>
+        </div>
+      </div>
+      <div class="bulk-section">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <h3>⚡ Bulk Replace</h3>
           <div>
@@ -223,6 +249,10 @@ let xmlText = '', xmlDoc = null, fileName = '';
 let textPairs = [];
 let mediaLayers = [];
 let effectClipboard = [];
+let beatMarkers = [];
+let categoryStartMarkerIndex = 1;
+let categoryLayerIds = new Set();
+let winnerLayerIds = new Set();
 
 const RAW_CATEGORIES = [
   "Strength", "Speed", "Intelligence", "Battle Intelligence", "Durability", "Stamina", "Endurance", "Agility", "Reflexes", "Reaction Speed", "Travel Speed", "Combat Speed", "Attack Speed", "Destructive Capacity", "Attack Potency", "Power", "Offensive Power", "Defensive Power", "Skill", "Combat Skill", "Swordsmanship", "Weapon Mastery", "Hand-To-Hand Combat", "Accuracy", "Precision", "Experience", "Adaptability", "Tactical Ability", "Strategy", "Battle Experience", "Abilities", "Hax", "Versatility", "Techniques", "Transformations", "Energy Control", "Aura", "Presence", "Range", "Mobility", "Regeneration", "Resistance", "Immunities", "Feats", "Statements", "Scaling", "Potential", "Talent", "Mentality", "Mindset", "Clutch Factor", "Fear Factor", "Menace", "Cold Moments", "Drip", "Writing", "Character Design", "Emotional Impact", "Villain Presence", "Main Character Energy", "Legacy", "Goat Status", "Overall", "Difficulty", "Winner"
@@ -286,6 +316,13 @@ function parseXml() {
   xmlDoc = parser.parseFromString(xmlText, 'text/xml');
   textPairs = [];
   mediaLayers = [];
+  beatMarkers = Array.from(xmlDoc.querySelectorAll('bookmark[t]'))
+    .map(b => +(b.getAttribute('t') || 0))
+    .filter(t => !Number.isNaN(t))
+    .sort((a,b) => a - b);
+  categoryLayerIds = new Set();
+  winnerLayerIds = new Set();
+  categoryStartMarkerIndex = beatMarkers.length > 1 && beatMarkers[0] === 0 ? 2 : 1;
 
   const rootScene = xmlDoc.querySelector('scene');
   if (!rootScene) { showToast('No <scene> found in XML. Is it a valid project?', 'error'); return; }
@@ -422,6 +459,7 @@ function parseXml() {
     mediaLayers.push({
       index,
       el,
+      id: el.getAttribute('id') || `${el.tagName}-${index}`,
       tagName: el.tagName,
       label: el.getAttribute('label') || el.tagName,
       effects: ownEffects,
@@ -495,6 +533,8 @@ function toggleLink(i) {
 }
 
 function renderTextsTab() {
+  renderRoleAssignmentPanel();
+
   const categories = {};
   let pairCount = 0, singleCount = 0;
   textPairs.forEach(p => {
@@ -641,6 +681,218 @@ function renderTextsTab() {
   updatePendingCount();
 }
 
+function onCategoryStartMarkerChange(val) {
+  const parsed = parseInt(val, 10);
+  if (!Number.isNaN(parsed) && parsed >= 1) categoryStartMarkerIndex = parsed;
+  renderRoleAssignmentPanel();
+}
+
+function toggleLayerRole(layerId, role, checked) {
+  if (role === 'category') {
+    if (checked) {
+      categoryLayerIds.add(layerId);
+      winnerLayerIds.delete(layerId);
+    } else {
+      categoryLayerIds.delete(layerId);
+    }
+  } else {
+    if (checked) {
+      winnerLayerIds.add(layerId);
+      categoryLayerIds.delete(layerId);
+    } else {
+      winnerLayerIds.delete(layerId);
+    }
+  }
+  renderRoleAssignmentPanel();
+  renderEffectsTab();
+}
+
+function getBeatRole(markerIndex) {
+  const start = Math.max(1, categoryStartMarkerIndex) - 1;
+  if (markerIndex < start) return 'manual';
+  return ((markerIndex - start) % 2 === 0) ? 'category' : 'winner';
+}
+
+function renderRoleAssignmentPanel() {
+  const markerSelect = document.getElementById('categoryStartMarker');
+  const roleGrid = document.getElementById('roleGrid');
+  const hint = document.getElementById('roleGroupHint');
+  const beatPreview = document.getElementById('beatPreview');
+  if (!markerSelect || !roleGrid || !hint || !beatPreview) return;
+
+  if (!beatMarkers.length) {
+    markerSelect.innerHTML = '<option value="1">No bookmarks found</option>';
+    markerSelect.disabled = true;
+  } else {
+    markerSelect.disabled = false;
+    markerSelect.innerHTML = beatMarkers.map((t, i) => {
+      const idx = i + 1;
+      return `<option value="${idx}">#${idx} (${formatTime(t)})</option>`;
+    }).join('');
+    if (categoryStartMarkerIndex > beatMarkers.length) categoryStartMarkerIndex = 1;
+    markerSelect.value = String(categoryStartMarkerIndex);
+  }
+
+  const eligible = mediaLayers.filter(layer => !!layer.label);
+  if (!eligible.length) {
+    roleGrid.innerHTML = '<div style="color:var(--dim);font-size:.85rem;">No labeled media layers available.</div>';
+  } else {
+    roleGrid.innerHTML = eligible.map(layer => `
+      <div class="role-item">
+        <div class="role-item-info">
+          <div class="role-item-title">${escapeHtml(layer.label)}</div>
+          <div class="role-item-meta">${layer.tagName.toUpperCase()} · ID ${escapeHtml(layer.id)}</div>
+        </div>
+        <div class="role-checks">
+          <label>
+            <input type="checkbox" ${categoryLayerIds.has(layer.id) ? 'checked' : ''}
+                   onchange="toggleLayerRole('${encodeForJsString(layer.id)}','category', this.checked)">
+            Category
+          </label>
+          <label>
+            <input type="checkbox" ${winnerLayerIds.has(layer.id) ? 'checked' : ''}
+                   onchange="toggleLayerRole('${encodeForJsString(layer.id)}','winner', this.checked)">
+            Winner
+          </label>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  hint.textContent = `Selected: ${categoryLayerIds.size} category layer(s), ${winnerLayerIds.size} winner layer(s). A layer can only belong to one role.`;
+
+  if (!beatMarkers.length) {
+    beatPreview.innerHTML = '';
+    return;
+  }
+
+  const previewCount = Math.min(10, beatMarkers.length);
+  let chips = '';
+  for (let i = 0; i < previewCount; i++) {
+    const role = getBeatRole(i);
+    if (role === 'manual') {
+      chips += `<span class="beat-chip">#${i+1} manual</span>`;
+    } else if (role === 'category') {
+      chips += `<span class="beat-chip cat">#${i+1} category</span>`;
+    } else {
+      chips += `<span class="beat-chip win">#${i+1} winner</span>`;
+    }
+  }
+  beatPreview.innerHTML = chips;
+}
+
+function getNextNumericLayerId() {
+  const ids = Array.from(xmlDoc.querySelectorAll('[id]'))
+    .map(el => parseInt(el.getAttribute('id'), 10))
+    .filter(n => !Number.isNaN(n));
+  const maxId = ids.length ? Math.max(...ids) : 0;
+  let nextId = maxId + 1;
+  return () => String(nextId++);
+}
+
+function duplicateRoleLayersAcrossBeats() {
+  if (!xmlDoc || !beatMarkers.length) {
+    showToast('Load an XML with beat markers first', 'error');
+    return;
+  }
+  if (!categoryLayerIds.size && !winnerLayerIds.size) {
+    showToast('Select Category/Winner layers first', 'error');
+    return;
+  }
+
+  const scene = xmlDoc.querySelector('scene');
+  if (!scene) {
+    showToast('No scene found in XML', 'error');
+    return;
+  }
+
+  const roleMarkerTimes = { category: [], winner: [] };
+  beatMarkers.forEach((t, i) => {
+    const role = getBeatRole(i);
+    if (role === 'category' || role === 'winner') roleMarkerTimes[role].push(t);
+  });
+
+  const selectedCategoryLayers = mediaLayers.filter(l => categoryLayerIds.has(l.id));
+  const selectedWinnerLayers = mediaLayers.filter(l => winnerLayerIds.has(l.id));
+  const makeId = getNextNumericLayerId();
+  const totalTime = +(scene.getAttribute('totalTime') || 0);
+  let duplicated = 0;
+  const timelineChildren = Array.from(scene.children).filter(el => el.hasAttribute('startTime'));
+
+  const findInsertionAnchor = (targetStart) => {
+    // Insert after the last layer whose startTime is <= targetStart,
+    // so duplicated blocks stay near their timeline position.
+    let anchor = null;
+    for (const child of timelineChildren) {
+      const st = +(child.getAttribute('startTime') || 0);
+      if (st <= targetStart) anchor = child;
+    }
+    return anchor;
+  };
+
+  const buildRolePlans = (layers, role) => {
+    const targets = roleMarkerTimes[role];
+    if (!layers.length || !targets.length) return [];
+    const plans = [];
+    targets.forEach(t => {
+      layers.forEach(layer => {
+        const start = +(layer.el.getAttribute('startTime') || 0);
+        if (t === start) return;
+        const end = +(layer.el.getAttribute('endTime') || start);
+        const duration = Math.max(1, end - start);
+        plans.push({ targetStart: t, layer, duration });
+      });
+    });
+    return plans;
+  };
+
+  const allPlans = [
+    ...buildRolePlans(selectedCategoryLayers, 'category'),
+    ...buildRolePlans(selectedWinnerLayers, 'winner')
+  ].sort((a, b) => {
+    if (a.targetStart !== b.targetStart) return a.targetStart - b.targetStart;
+    return a.layer.index - b.layer.index;
+  });
+
+  let i = 0;
+  while (i < allPlans.length) {
+    const t = allPlans[i].targetStart;
+    const block = [];
+    while (i < allPlans.length && allPlans[i].targetStart === t) {
+      block.push(allPlans[i]);
+      i++;
+    }
+
+    let insertAfter = findInsertionAnchor(t);
+    block.forEach(plan => {
+      const clone = plan.layer.el.cloneNode(true);
+      clone.setAttribute('id', makeId());
+      clone.setAttribute('startTime', String(t));
+      const newEnd = totalTime > 0 ? Math.min(t + plan.duration, totalTime) : (t + plan.duration);
+      clone.setAttribute('endTime', String(newEnd));
+
+      if (insertAfter && insertAfter.parentNode === scene) {
+        scene.insertBefore(clone, insertAfter.nextSibling);
+      } else {
+        scene.appendChild(clone);
+      }
+      insertAfter = clone;
+      timelineChildren.push(clone);
+      duplicated++;
+    });
+  }
+
+  if (!duplicated) {
+    showToast('No new duplicates were needed', 'error');
+    return;
+  }
+
+  const serializer = new XMLSerializer();
+  xmlText = serializer.serializeToString(xmlDoc);
+  parseXml();
+  showToast(`Duplicated ${duplicated} layer(s) across beat markers`, 'success');
+}
+
 function toggleOtherTexts() {
   const content = document.getElementById('otherTextsContent');
   const btn = document.getElementById('otherTextsBtn');
@@ -747,6 +999,11 @@ function renderEffectsTab() {
 
   let html = '';
   mediaLayers.forEach((layer, i) => {
+    const roleBadge = categoryLayerIds.has(layer.id)
+      ? '<span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.35);">Category Role</span>'
+      : winnerLayerIds.has(layer.id)
+      ? '<span class="badge" style="background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.35);">Winner Role</span>'
+      : '';
     const effBadges = layer.effects.map(eff => {
       const type = eff.getAttribute('id') || eff.getAttribute('type') || 'Unknown';
       return `<span class="badge badge-type">${escapeHtml(type)}</span>`;
@@ -761,6 +1018,7 @@ function renderEffectsTab() {
         <div>
           <span class="pair-index">#${i+1} ${layer.tagName.toUpperCase()}</span>
           <span style="font-weight:700;margin-left:8px">${escapeHtml(layer.label)}</span>
+          ${roleBadge}
           ${layer.modified ? '<span class="badge badge-mod">modified</span>' : ''}
         </div>
       </div>
@@ -874,8 +1132,6 @@ function exportXml() {
     if (l.modified) changeCount++;
   });
 
-  if (!changeCount) { showToast('No changes to export', 'error'); return; }
-
   const serializer = new XMLSerializer();
   let output = serializer.serializeToString(xmlDoc);
   if (!output.startsWith('<?xml')) output = "<?xml version='1.0' encoding='UTF-8' ?>\n" + output;
@@ -888,10 +1144,15 @@ function exportXml() {
   a.click();
   URL.revokeObjectURL(a.href);
   
-  showToast(`Exported with ${changeCount} changes!`, 'success');
+  if (changeCount) {
+    showToast(`Exported with ${changeCount} changes!`, 'success');
+  } else {
+    showToast('Exported XML (no edits applied)', 'success');
+  }
 }
 
 function encodeForAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function encodeForJsString(s) { return encodeForAttr(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function decodeForAttr(s) { return s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&'); }
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
