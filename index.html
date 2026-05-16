@@ -3,246 +3,580 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.M Duo XML Editor</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Alight Motion Beat Sync Timeline Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#050508;
-  --surface:rgba(20, 20, 28, 0.6);
-  --card:rgba(30, 30, 42, 0.7);
-  --border:rgba(255, 255, 255, 0.08);
-  --border-hover:rgba(255, 255, 255, 0.15);
-  --accent:#8b5cf6;
-  --accent2:#d946ef;
-  --text:#f8fafc;
-  --dim:#94a3b8;
-  --danger:#ef4444;
-  --success:#10b981;
-  --warn:#f59e0b;
-  --glass: blur(16px);
+  --bg:#080c14;
+  --bg2:#0d1424;
+  --surface:rgba(18, 26, 44, 0.72);
+  --card:rgba(24, 34, 56, 0.85);
+  --rail:#0a0f18;
+  --border:rgba(255,255,255,.07);
+  --border-strong:rgba(255,255,255,.12);
+  --accent:#38bdf8;
+  --accent-soft:rgba(56,189,248,.14);
+  --accent2:#f472b6;
+  --accent2-soft:rgba(244,114,182,.12);
+  --text:#e8eef8;
+  --dim:#8b9cb8;
+  --danger:#f87171;
+  --success:#34d399;
+  --warn:#fbbf24;
+  --glass:blur(20px);
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 18px 50px rgba(0,0,0,.45);
 }
+html{scroll-behavior:smooth}
 body{
-  font-family:'Outfit',sans-serif;
+  font-family:'DM Sans',system-ui,sans-serif;
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(217, 70, 239, 0.15), transparent 25%);
-  background-attachment: fixed;
+  line-height:1.45;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 0% 0%, rgba(56,189,248,.12), transparent 50%),
+    radial-gradient(ellipse 90% 60% at 100% 10%, rgba(244,114,182,.08), transparent 45%),
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg) 40%);
+  background-attachment:fixed;
 }
-.app{max-width:1000px;margin:0 auto;padding:40px 20px 80px}
-header{margin-bottom:32px;text-align:center;animation:fadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);}
-@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;letter-spacing:-0.5px;}
-h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.subtitle{color:var(--dim);font-size:1.05rem;font-weight:400;max-width:600px;margin:0 auto;line-height:1.5;}
-.btn{padding:12px 24px;border:none;border-radius:12px;font-family:inherit;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);display:inline-flex;align-items:center;gap:8px;backdrop-filter:var(--glass);}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.5);}
-.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 15px rgba(16,185,129,0.3);}
-.btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.4);}
-.btn-outline{background:var(--surface);border:1px solid var(--border);color:var(--text);}
-.btn-outline:hover{border-color:var(--border-hover);background:var(--card);transform:translateY(-2px);}
-.btn-danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--danger);}
-.btn-danger:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:translateY(-2px);}
-.drop-zone{border:2px dashed var(--border);border-radius:24px;padding:80px 40px;text-align:center;cursor:pointer;transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);margin-bottom:30px;background:var(--surface);backdrop-filter:var(--glass);position:relative;overflow:hidden;}
-.drop-zone::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(217,70,239,0.1));opacity:0;transition:opacity .4s;}
-.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);transform:scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,0.4);}
-.drop-zone:hover::before,.drop-zone.dragover::before{opacity:1;}
-.drop-zone p{color:var(--dim);font-size:1.1rem;margin-top:8px;position:relative;z-index:1;}
-.drop-zone .icon{font-size:3.5rem;margin-bottom:12px;filter:drop-shadow(0 8px 16px rgba(139,92,246,0.4));position:relative;z-index:1;transition:transform 0.3s;}
-.drop-zone:hover .icon{transform:translateY(-5px);}
+
+.studio-shell{display:flex;min-height:100vh;max-width:1440px;margin:0 auto}
+.studio-rail{
+  width:300px;flex-shrink:0;
+  background:linear-gradient(180deg,var(--rail) 0%,#060a12 100%);
+  border-right:1px solid var(--border);
+  padding:28px 22px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.rail-brand{padding:4px 2px 8px}
+.rail-brand .eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.rail-brand h1{font-size:1.35rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.rail-brand h1 span{color:var(--accent2)}
+.rail-brand p{font-size:.8rem;color:var(--dim);margin-top:8px;line-height:1.5}
+
+.studio-stage{flex:1;min-width:0;display:flex;flex-direction:column;padding:24px 28px 40px;min-height:0}
+.studio-workspace{display:flex;flex:1;flex-direction:column;min-height:0}
+.stage-scroll{flex:1;min-height:0;overflow-y:auto;padding-right:6px}
+.stage-scroll::-webkit-scrollbar{width:8px}
+.stage-scroll::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}
+
+.drop-zone{
+  border:1px dashed var(--border-strong);
+  border-radius:var(--radius-lg);
+  padding:36px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:border-color .25s, box-shadow .25s, transform .2s;
+  background:var(--surface);
+  backdrop-filter:var(--glass);
+  position:relative;
+  overflow:hidden;
+}
+.drop-zone::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--accent-soft),var(--accent2-soft));
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:rgba(56,189,248,.45);
+  box-shadow:0 0 0 1px rgba(56,189,248,.15), var(--shadow);
+  transform:translateY(-1px);
+}
+.drop-zone:hover::after,.drop-zone.dragover::after{opacity:1}
+.drop-zone p,.drop-zone .hint{color:var(--dim);font-size:.88rem;margin-top:8px;position:relative;z-index:1}
+.drop-zone .title{font-size:1rem;font-weight:600;color:var(--text);position:relative;z-index:1;margin-top:4px}
+.drop-zone .icon{font-size:2.25rem;margin-bottom:4px;position:relative;z-index:1;opacity:.9}
 #fileInput{display:none}
 
-/* Tabs */
-.tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--surface);padding:8px;border-radius:16px;backdrop-filter:var(--glass);border:1px solid var(--border);}
-.tab{flex:1;text-align:center;padding:14px 24px;font-weight:600;font-size:1rem;color:var(--dim);cursor:pointer;border-radius:12px;transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);}
-.tab:hover{color:var(--text);background:rgba(255,255,255,0.05);}
-.tab.active{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 15px rgba(139,92,246,0.3);}
-.tab-content{display:none;animation:fadeInScale .4s cubic-bezier(0.16, 1, 0.3, 1);}
-.tab-content.active{display:block;}
-@keyframes fadeInScale{from{opacity:0;transform:translateY(10px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.rail-foot{font-size:.72rem;color:var(--dim);line-height:1.5;padding-top:8px;border-top:1px solid var(--border)}
 
-.stats{display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;margin-bottom:24px;}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 20px;font-size:.9rem;transition:all .3s;backdrop-filter:var(--glass);}
-.stat:hover{border-color:var(--border-hover);transform:translateY(-2px);background:var(--card);}
-.stat span{color:var(--accent2);font-weight:800;font-size:1.2rem;display:block;margin-top:4px;}
-.pair-grid{display:flex;flex-direction:column;gap:12px}
-.pair-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);backdrop-filter:var(--glass);}
-.pair-card:hover{border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.3);}
-.pair-card.modified{border-color:var(--warn);background:rgba(245,158,11,0.05);}
-.pair-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.pair-index{font-weight:800;font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;background:rgba(139,92,246,0.15);padding:4px 10px;border-radius:8px;}
-.pair-time{font-size:.75rem;color:var(--dim);font-family:'Courier New',monospace;background:rgba(0,0,0,0.3);padding:4px 10px;border-radius:8px;}
+.workspace-inner{max-width:920px}
+
+.tabs{display:flex;gap:6px;margin-bottom:22px;padding:5px;background:rgba(0,0,0,.25);border-radius:var(--radius-lg);border:1px solid var(--border)}
+.tab{
+  flex:1;text-align:center;padding:12px 16px;font-weight:600;font-size:.88rem;color:var(--dim);
+  cursor:pointer;border-radius:12px;transition:background .2s,color .2s;
+}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.tab.active{
+  color:#041018;background:linear-gradient(135deg,var(--accent),#22d3ee);
+  box-shadow:0 4px 20px rgba(56,189,248,.25);
+}
+.tab-content{display:none;animation:fadeIn .35s ease}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.btn{
+  padding:11px 20px;border:none;border-radius:11px;font-family:inherit;font-weight:600;font-size:.85rem;
+  cursor:pointer;transition:transform .2s, box-shadow .2s, background .2s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#0ea5e9);color:#061018;box-shadow:0 4px 18px rgba(56,189,248,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(56,189,248,.35)}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 16px rgba(16,185,129,.25)}
+.btn-success:hover{transform:translateY(-1px)}
+.btn-outline{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--border-strong);background:rgba(255,255,255,.07)}
+.btn-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35);color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px}
+.stat{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;font-size:.82rem;transition:border-color .2s, transform .2s;
+  backdrop-filter:var(--glass);
+}
+.stat:hover{border-color:var(--border-strong);transform:translateY(-1px)}
+.stat span{color:var(--accent);font-weight:800;font-size:1.1rem;display:block;margin-top:4px;font-variant-numeric:tabular-nums}
+
+.pair-grid{display:flex;flex-direction:column;gap:10px}
+.pair-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:18px 20px;transition:border-color .2s, box-shadow .2s;backdrop-filter:var(--glass);
+}
+.pair-card:hover{border-color:rgba(56,189,248,.2);box-shadow:var(--shadow)}
+.pair-card.modified{border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.04)}
+.pair-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.pair-index{
+  font-weight:700;font-size:.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;
+  background:var(--accent-soft);padding:4px 10px;border-radius:8px;border:1px solid rgba(56,189,248,.2);
+}
+.pair-time{font-size:.72rem;color:var(--dim);font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,.35);padding:5px 10px;border-radius:8px}
 .pair-body{display:flex;gap:12px;align-items:center}
-.pair-body.unlinked{flex-direction:column;align-items:stretch;}
-.pair-row{display:flex;gap:12px;align-items:center;flex:1;}
-.pair-row input{flex:1;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:var(--text);font-family:inherit;font-size:1rem;font-weight:500;transition:all .3s;}
-.pair-row input:focus{outline:none;border-color:var(--accent);background:rgba(0,0,0,0.4);box-shadow:0 0 0 4px rgba(139,92,246,0.15);}
-.pair-row input.changed{border-color:var(--warn);background:rgba(245,158,11,0.05);}
-.pair-row .arrow{color:var(--dim);font-size:1.2rem;flex-shrink:0}
+.pair-body.unlinked{flex-direction:column;align-items:stretch}
+.pair-row{display:flex;gap:12px;align-items:center;flex:1}
+.pair-row input{
+  flex:1;padding:12px 14px;border-radius:11px;border:1px solid var(--border);
+  background:rgba(0,0,0,.35);color:var(--text);font-family:inherit;font-size:.95rem;font-weight:500;transition:border-color .2s, box-shadow .2s;
+}
+.pair-row input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.pair-row input.changed{border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.06)}
+.pair-row .arrow{color:var(--dim);font-size:1.1rem;flex-shrink:0}
 .pair-card.modified .arrow{color:var(--warn)}
-.pair-row .original{color:var(--dim);font-size:.9rem;min-width:140px;text-align:center;flex-shrink:0;background:rgba(0,0,0,0.2);padding:12px;border-radius:10px;font-weight:500;word-break:break-all;}
-.badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
-.badge-mod{background:rgba(245,158,11,0.15);color:var(--warn)}
-.badge-type{background:rgba(217,70,239,0.1);color:var(--accent2);border:1px solid rgba(217,70,239,0.2);}
-.bulk-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;backdrop-filter:var(--glass);}
-.bulk-section h3{font-size:1.1rem;font-weight:700;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px;}
-.bulk-section h3::before{content:'⚡';font-size:1.2rem;}
-.bulk-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.bulk-row input,.bulk-row select{padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:var(--text);font-family:inherit;font-size:.95rem;transition:all .3s;}
-.bulk-row input:focus,.bulk-row select:focus{outline:none;border-color:var(--accent);background:rgba(0,0,0,0.4);}
-.toast{position:fixed;bottom:30px;right:30px;padding:16px 24px;border-radius:12px;font-size:.95rem;font-weight:600;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);z-index:99;backdrop-filter:var(--glass);box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+.pair-row .original{
+  color:var(--dim);font-size:.85rem;min-width:120px;text-align:center;flex-shrink:0;
+  background:rgba(0,0,0,.35);padding:11px;border-radius:10px;font-weight:500;word-break:break-word;
+}
+
+.badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.badge-mod{background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.25)}
+.badge-type{background:var(--accent2-soft);color:var(--accent2);border:1px solid rgba(244,114,182,.22)}
+
+.bulk-section{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:20px 22px;margin-bottom:18px;backdrop-filter:var(--glass);
+}
+.bulk-section h3{
+  font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--text);
+  display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.bulk-section h3::before{content:none}
+.bulk-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bulk-row input,.bulk-row select{
+  padding:11px 14px;border-radius:10px;border:1px solid var(--border);
+  background:rgba(0,0,0,.35);color:var(--text);font-family:inherit;font-size:.88rem;transition:border-color .2s;
+}
+.bulk-row input:focus,.bulk-row select:focus{outline:none;border-color:var(--accent)}
+
+.toast{
+  position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:12px;font-size:.88rem;font-weight:600;
+  transform:translateY(120%);opacity:0;transition:all .35s cubic-bezier(0.16,1,0.3,1);z-index:200;
+  box-shadow:var(--shadow);max-width:min(420px,calc(100vw - 40px));
+}
 .toast.show{transform:translateY(0);opacity:1}
-.toast-success{background:rgba(16,185,129,0.9);color:#fff;border:1px solid rgba(255,255,255,0.2);}
-.toast-error{background:rgba(239,68,68,0.9);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.toast-success{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:1px solid rgba(255,255,255,.15)}
+.toast-error{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;border:1px solid rgba(255,255,255,.15)}
 .hidden{display:none !important}
-.pair-ids{font-size:.75rem;color:var(--dim);font-family:'Courier New',monospace;margin-top:16px;opacity:.6;background:rgba(0,0,0,0.2);padding:8px 12px;border-radius:8px;display:inline-block;}
-.footer-bar{margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--border);align-items:center;}
-.change-count{position:fixed;top:20px;right:20px;background:var(--surface);border:1px solid var(--warn);border-radius:12px;padding:12px 20px;font-size:.95rem;z-index:50;backdrop-filter:var(--glass);box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:fadeInDown .4s;}
-@keyframes fadeInDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-.change-count span{color:var(--warn);font-weight:800;font-size:1.1rem;margin:0 4px;}
-.file-info{background:linear-gradient(135deg,var(--surface),var(--card));border:1px solid var(--border);border-radius:16px;padding:16px 24px;margin-bottom:24px;font-size:.95rem;color:var(--text);display:flex;justify-content:space-between;align-items:center;backdrop-filter:var(--glass);}
-.file-info .reload{cursor:pointer;color:var(--accent2);font-weight:600;padding:8px 16px;background:rgba(217,70,239,0.1);border-radius:10px;transition:all .2s;}
-.file-info .reload:hover{background:rgba(217,70,239,0.2);transform:translateY(-1px);}
 
-.link-btn{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:var(--accent2);padding:6px 12px;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;}
-.link-btn:hover{background:rgba(139,92,246,0.3);}
-.link-btn.unlinked{background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3);}
-.link-btn.unlinked:hover{background:rgba(239,68,68,0.3);}
+.pair-ids{font-size:.72rem;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-top:14px;opacity:.75;background:rgba(0,0,0,.3);padding:8px 12px;border-radius:8px;display:inline-block}
 
-.role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;max-height:340px;overflow:auto;padding-right:4px;}
-.role-item{display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(0,0,0,0.18);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
-.role-item-info{min-width:0;display:flex;flex-direction:column;gap:2px;}
-.role-item-title{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.role-item-meta{font-size:.75rem;color:var(--dim);font-family:'Courier New',monospace;}
-.role-checks{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.role-checks label{display:flex;align-items:center;gap:4px;font-size:.75rem;color:var(--dim);}
-.role-checks input{accent-color:var(--accent);}
-.beat-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.beat-chip{font-size:.75rem;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,0.25);border:1px solid var(--border);color:var(--dim);}
-.beat-chip.cat{border-color:rgba(16,185,129,0.4);color:#34d399;}
-.beat-chip.win{border-color:rgba(245,158,11,0.45);color:#fbbf24;}
+.footer-bar{
+  margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;padding-top:22px;
+  border-top:1px solid var(--border);align-items:center;
+}
+.footer-hint{font-size:.78rem;color:var(--dim);margin-left:auto;max-width:280px;line-height:1.45}
 
-@keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.change-count{
+  position:fixed;top:18px;right:22px;background:var(--surface);border:1px solid rgba(251,191,36,.4);
+  border-radius:12px;padding:10px 18px;font-size:.85rem;z-index:150;backdrop-filter:var(--glass);
+  box-shadow:var(--shadow);animation:fadeInDown .35s ease;
 }
-.animated-card {
-  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.change-count span{color:var(--warn);font-weight:800;font-size:1.05rem;margin:0 4px;font-variant-numeric:tabular-nums}
+
+.file-info{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:16px 20px;margin-bottom:20px;font-size:.9rem;display:flex;flex-direction:column;gap:6px;
+  backdrop-filter:var(--glass);
 }
-.collapsible-header {
-  cursor: pointer;
-  user-select: none;
-  transition: opacity 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--dim);
-  margin-bottom: 16px;
+.file-info .reload{cursor:pointer;color:var(--accent);font-weight:600;font-size:.82rem;margin-top:4px;width:fit-content}
+.file-info .reload:hover{text-decoration:underline}
+
+.link-btn{
+  background:var(--accent-soft);border:1px solid rgba(56,189,248,.35);color:var(--accent);
+  padding:5px 11px;border-radius:8px;font-size:.75rem;cursor:pointer;font-weight:600;
 }
-.collapsible-header:hover { opacity: 0.8; }
-.collapsible-icon {
-  display: inline-block;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+.link-btn:hover{background:rgba(56,189,248,.22)}
+.link-btn.unlinked{background:rgba(248,113,113,.1);color:var(--danger);border-color:rgba(248,113,113,.35)}
+.link-btn.unlinked:hover{background:rgba(248,113,113,.2)}
+
+.role-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;
+  max-height:320px;overflow:auto;padding:4px 2px 8px 0;
 }
-.collapsible-header.collapsed .collapsible-icon {
-  transform: rotate(-90deg);
+.role-grid::-webkit-scrollbar{width:6px}
+.role-grid::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
+.role-item{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:11px;padding:10px 12px;
 }
-.collapsible-content {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-  opacity: 1;
+.role-item-info{min-width:0;display:flex;flex-direction:column;gap:2px}
+.role-item-title{font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.role-item-meta{font-size:.72rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.role-checks{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.role-checks label{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--dim);cursor:pointer}
+.role-checks input{accent-color:var(--accent);width:15px;height:15px}
+.beat-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.beat-chip{font-size:.7rem;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--dim)}
+.beat-chip.cat{border-color:rgba(52,211,153,.4);color:var(--success)}
+.beat-chip.win{border-color:rgba(251,191,36,.45);color:var(--warn)}
+.shake-toggle.active{border-color:rgba(244,114,182,.45);background:rgba(244,114,182,.14);color:var(--accent2)}
+.beat-role-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-top:10px}
+.beat-role-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid var(--border);border-radius:10px;background:rgba(0,0,0,.22)}
+.beat-role-meta{min-width:0;display:flex;flex-direction:column;gap:1px}
+.beat-role-title{font-size:.8rem;font-weight:700}
+.beat-role-time{font-size:.7rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.beat-role-item select{padding:7px 9px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:inherit;font-size:.76rem}
+
+@keyframes slideUpFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.animated-card{animation:slideUpFade .45s ease backwards}
+
+.collapsible-header{cursor:pointer;user-select:none;transition:color .2s;display:flex;align-items:center;gap:8px;color:var(--dim);margin-bottom:14px;font-size:.95rem;font-weight:600}
+.collapsible-header:hover{color:var(--text)}
+.collapsible-icon{display:inline-block;transition:transform .35s cubic-bezier(0.16,1,0.3,1)}
+.collapsible-header.collapsed .collapsible-icon{transform:rotate(-90deg)}
+.collapsible-content{display:grid;grid-template-rows:1fr;transition:grid-template-rows .35s ease,opacity .3s ease;opacity:1}
+.collapsible-content.collapsed{grid-template-rows:0fr;opacity:0;pointer-events:none}
+.collapsible-content-inner{overflow:hidden}
+
+.clipboard-card{
+  margin-bottom:16px;padding:14px 16px;background:var(--surface);border-radius:var(--radius);
+  border:1px dashed var(--border-strong);font-size:.86rem;display:flex;justify-content:space-between;align-items:center;gap:12px;
 }
-.collapsible-content.collapsed {
-  grid-template-rows: 0fr;
-  opacity: 0;
-  pointer-events: none;
+.clipboard-card.active{border-color:rgba(52,211,153,.45);color:var(--success)}
+[data-project="ae"] .am-only{display:none !important;}
+[data-project="am"] .ae-only{display:none !important;}
+.ae-callout{font-size:.78rem;color:var(--dim);line-height:1.5;padding:10px 12px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.22);border-radius:10px;margin-bottom:12px;}
+.ae-marker-input{width:100%;min-height:72px;resize:vertical;padding:10px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-top:8px;}
+.converter-panel,.timeline-sync-panel{
+  max-width:920px;margin-bottom:16px;border:1px solid var(--border-strong);
+  border-radius:18px;padding:0;overflow:hidden;backdrop-filter:var(--glass);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015)),
+    rgba(14,22,38,.82);
+  box-shadow:0 18px 45px rgba(0,0,0,.24);
 }
-.collapsible-content-inner {
-  overflow: hidden;
+.utility-panel-header{
+  width:100%;border:0;border-bottom:1px solid var(--border);background:rgba(255,255,255,.025);
+  color:var(--text);font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:16px 18px;cursor:pointer;transition:background .2s,border-color .2s;
+}
+.utility-panel-header:hover{background:rgba(255,255,255,.045);border-color:var(--border-strong)}
+.utility-panel-title{display:flex;flex-direction:column;gap:3px;min-width:0}
+.utility-panel-heading{font-size:1rem;font-weight:800;margin:0}
+.utility-panel-title > span:not(.utility-panel-heading){color:var(--dim);font-size:.76rem;font-weight:600}
+.utility-panel-toggle{
+  flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;min-width:78px;
+  padding:7px 10px;border-radius:999px;border:1px solid var(--border-strong);
+  background:rgba(0,0,0,.28);color:var(--accent);font-size:.74rem;font-weight:800;
+}
+.utility-panel-header.collapsed .utility-panel-toggle{color:var(--dim)}
+.utility-panel-toggle::before{content:'Hide'}
+.utility-panel-header.collapsed .utility-panel-toggle::before{content:'Show'}
+.utility-panel-toggle::after{content:'v';margin-left:7px;font-family:'JetBrains Mono',monospace;transition:transform .25s}
+.utility-panel-header.collapsed .utility-panel-toggle::after{transform:rotate(-90deg)}
+.utility-panel-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .28s ease,opacity .22s ease;opacity:1;visibility:visible}
+.utility-panel-body.collapsed{grid-template-rows:0fr;opacity:0;visibility:hidden}
+.utility-panel-body-inner{overflow:hidden;padding:18px 20px 20px}
+.converter-panel p{color:var(--dim);font-size:.82rem;line-height:1.5;margin-bottom:12px}
+.converter-grid{display:grid;grid-template-columns:minmax(220px,1fr) 160px 160px;gap:10px;align-items:end}
+.converter-grid label{display:flex;flex-direction:column;gap:6px;color:var(--dim);font-size:.78rem}
+.converter-grid input,.converter-grid textarea{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+  background:rgba(4,8,15,.62);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.converter-grid input:focus,.converter-grid textarea:focus,.xml-settings-grid input:focus,.xml-settings-grid select:focus{
+  outline:none;border-color:rgba(56,189,248,.55);box-shadow:0 0 0 3px var(--accent-soft);background:rgba(3,7,13,.82);
+}
+.converter-grid textarea{min-height:118px;resize:vertical;grid-row:span 2}
+.converter-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.converter-status{margin-top:10px;color:var(--dim);font-size:.76rem;font-family:'JetBrains Mono',monospace}
+.timeline-top{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:12px;align-items:center;margin-bottom:12px}
+.timeline-top audio{width:100%;height:38px}
+.timeline-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.timeline-canvas-wrap{
+  position:relative;border:1px solid rgba(56,189,248,.16);border-radius:14px;background:#040812;overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 12px 30px rgba(0,0,0,.22);
+}
+#beatTimeline{display:block;width:100%;height:220px;cursor:crosshair;touch-action:none}
+.timeline-readout{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:9px;color:var(--dim);font-size:.76rem;font-family:'JetBrains Mono',monospace}
+.timeline-marker-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:12px;max-height:180px;overflow:auto}
+.timeline-marker-row{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);border-radius:10px;background:rgba(0,0,0,.28)}
+.timeline-marker-row.active{border-color:rgba(52,211,153,.62);background:rgba(52,211,153,.07)}
+.timeline-marker-row span{font-size:.72rem;color:var(--accent);font-weight:800;min-width:34px}
+.timeline-marker-row input{min-width:0;flex:1;padding:7px 8px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.74rem}
+.timeline-marker-row button{padding:7px 8px;font-size:.72rem}
+.xml-settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:10px}
+.xml-settings-grid label{display:flex;flex-direction:column;gap:6px;color:var(--dim);font-size:.78rem}
+.xml-settings-grid input,.xml-settings-grid select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--border);background:rgba(4,8,15,.62);color:var(--text);font-family:inherit;font-size:.78rem;transition:border-color .2s,box-shadow .2s,background .2s}
+.wide-setting{grid-column:span 2}
+
+@media (max-width:960px){
+  .studio-shell{flex-direction:column;max-width:100%}
+  .studio-rail{width:100%;border-right:none;border-bottom:1px solid var(--border)}
+  .studio-stage{padding:18px 16px 32px}
+  .change-count{top:auto;bottom:88px;right:16px;font-size:.8rem;padding:8px 14px}
+  .converter-grid{grid-template-columns:1fr}
+  .converter-grid textarea{grid-row:auto}
+  .timeline-top{grid-template-columns:1fr}
+  .timeline-controls{justify-content:flex-start}
+  .wide-setting{grid-column:auto}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 </head>
 <body>
-<div class="app">
-  <header>
-    <h1><span>A.M</span> Duo Editor</h1>
-    <p class="subtitle">Edit texts (linked or unlinked pairs) and copy/paste shake effects across XMLs!</p>
-  </header>
+<div id="changeCount" class="change-count hidden">Pending: <span id="pendingCount">0</span> changes</div>
 
-  <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
-    <div class="icon">📂</div>
-    <p>Drop your <strong>Project XML</strong> or <strong>Effects Preset XML</strong> here</p>
-    <p style="font-size:0.75rem;margin-top:8px;opacity:0.7;">(You can load a preset, copy its effects, then drop your project here to paste them!)</p>
-    <input type="file" id="fileInput" accept=".xml">
-  </div>
-
-  <div id="changeCount" class="change-count hidden">Pending: <span id="pendingCount">0</span> changes</div>
-
-  <div id="editor" class="hidden">
-    <div id="fileInfo" class="file-info"></div>
-    
-    <div class="tabs">
-      <div class="tab active" id="tab-btn-texts" onclick="switchTab('texts')">📝 Duo Texts Editor</div>
-      <div class="tab" id="tab-btn-effects" onclick="switchTab('effects')">✨ Effects & Media</div>
+<div class="studio-shell">
+  <aside class="studio-rail">
+    <div class="rail-brand">
+      <div class="eyebrow">Alight Motion</div>
+      <h1><span>Beat</span> Sync Studio</h1>
+      <p>All Duo Studio XML/AEPX tools plus local MP3 beat syncing and Alight Motion bookmark export.</p>
     </div>
 
-    <!-- TEXTS TAB -->
-    <div id="tab-content-texts" class="tab-content active">
-      <div class="stats" id="stats"></div>
-      <div class="bulk-section">
-        <h3>Role Assignment</h3>
-        <div class="bulk-row">
-          <label for="categoryStartMarker" style="color:var(--dim);font-size:.9rem;">Category starts on marker:</label>
-          <select id="categoryStartMarker" onchange="onCategoryStartMarkerChange(this.value)" style="min-width:220px;"></select>
-        </div>
-        <div id="roleGroupHint" style="margin-top:8px;color:var(--dim);font-size:.8rem;"></div>
-        <div id="roleGrid" class="role-grid" style="margin-top:12px;"></div>
-        <div id="beatPreview" class="beat-preview"></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-          <button class="btn btn-primary" onclick="duplicateRoleLayersAcrossBeats()">Copy Selected Role Layers Across Beats</button>
+    <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
+      <div class="icon">Import</div>
+      <div class="title">Drop project or preset XML</div>
+      <p>Or click to browse. You can swap files anytime; effect clipboard is kept in memory.</p>
+      <p class="hint">Preset first, then project, works great for shake packs.</p>
+      <input type="file" id="fileInput" accept=".xml,.aepx,application/xml,text/xml">
+    </div>
+
+    <div class="rail-foot">
+      <strong>.aepx</strong>: edit strings and layer list. <strong>.xml</strong>: full pairing, bookmarks, effect clipboard, marker timeline, and configurable export settings.
+    </div>
+  </aside>
+
+  <main class="studio-stage">
+    <section id="beatMarkerConverterPanel" class="converter-panel hidden">
+      <button type="button" class="utility-panel-header" id="beatMarkerConverterToggle" onclick="toggleUtilityPanel('beatMarkerConverter')" aria-expanded="true" aria-controls="beatMarkerConverterBody">
+        <span class="utility-panel-title">
+          <span class="utility-panel-heading">Beat marker XML converter</span>
+          <span>Generate bookmarks, apply marker lists, or export marker-only XML.</span>
+        </span>
+        <span class="utility-panel-toggle" aria-hidden="true"></span>
+      </button>
+      <div class="utility-panel-body" id="beatMarkerConverterBody">
+        <div class="utility-panel-body-inner">
+          <p>Paste millisecond markers or timecode markers to generate Alight Motion bookmarks. With an Alight XML loaded, apply them onto that file; without one, download a marker-only XML.</p>
+          <div class="converter-grid">
+            <label for="standaloneMarkerMsList">
+              Marker times (ms or || H:MM:SS:FF)
+              <textarea id="standaloneMarkerMsList" placeholder="0&#10;1600&#10;|| 0:00:06:21">0
+1600
+2067
+2533
+3000
+3483
+3950
+4450
+4917
+5383
+5867
+6350
+6817
+7333
+7817
+8267
+8717
+9217
+9683
+10167
+10633
+11100
+11567
+12067
+12517
+13000
+13483
+13967
+14433
+14917
+15383
+16817</textarea>
+            </label>
+            <label for="standaloneFps">
+              FPS
+              <input id="standaloneFps" type="number" min="1" max="240" step="1" value="60">
+            </label>
+            <label for="standaloneTitle">
+              XML title
+              <input id="standaloneTitle" type="text" value="Beat Markers">
+            </label>
+          </div>
+          <h3 style="font-size:.88rem;margin-top:14px;margin-bottom:0;">XML settings</h3>
+          <div class="xml-settings-grid">
+            <label for="standaloneWidth">Width <input id="standaloneWidth" type="number" min="1" value="1080"></label>
+            <label for="standaloneHeight">Height <input id="standaloneHeight" type="number" min="1" value="1920"></label>
+            <label for="standaloneExportWidth">Export width <input id="standaloneExportWidth" type="number" min="1" value="1080"></label>
+            <label for="standaloneExportHeight">Export height <input id="standaloneExportHeight" type="number" min="1" value="1920"></label>
+            <label for="standaloneBgColor">Background <input id="standaloneBgColor" type="color" value="#000000"></label>
+            <label for="standaloneDurationMode">Duration
+              <select id="standaloneDurationMode">
+                <option value="markers">Last marker + padding</option>
+                <option value="audio">MP3 length</option>
+                <option value="custom">Custom ms</option>
+              </select>
+            </label>
+            <label for="standaloneCustomDuration">Custom ms <input id="standaloneCustomDuration" type="number" min="100" value="18000"></label>
+            <label for="standaloneDurationPadding">Padding ms <input id="standaloneDurationPadding" type="number" min="0" value="1000"></label>
+            <label class="wide-setting" for="standaloneMarkerPrefix">Marker name prefix <input id="standaloneMarkerPrefix" type="text" value="Beat"></label>
+          </div>
+          <div class="converter-actions">
+            <button type="button" class="btn btn-primary" onclick="downloadMarkerXml()">Download Alight XML</button>
+            <button type="button" class="btn btn-outline" onclick="applyStandaloneMarkersToLoadedXml()">Apply to loaded XML</button>
+            <button type="button" class="btn btn-outline" onclick="copyStandaloneMarkersToBeatTools()">Use in beat tools</button>
+          </div>
+          <div id="standaloneMarkerStatus" class="converter-status"></div>
         </div>
       </div>
-      <div class="bulk-section">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <h3>⚡ Bulk Replace</h3>
-          <div>
-            <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;" onclick="toggleAllLinks(true)">🔗 Link All</button>
-            <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;" onclick="toggleAllLinks(false)">💔 Unlink All</button>
+    </section>
+    <section id="mp3TimelinePanel" class="timeline-sync-panel hidden">
+      <button type="button" class="utility-panel-header" id="mp3TimelineToggle" onclick="toggleUtilityPanel('mp3Timeline')" aria-expanded="true" aria-controls="mp3TimelineBody">
+        <span class="utility-panel-title">
+          <span class="utility-panel-heading">Local MP3 beat sync timeline</span>
+          <span>Load audio, tap markers, nudge timing, and sync marker lists.</span>
+        </span>
+        <span class="utility-panel-toggle" aria-hidden="true"></span>
+      </button>
+      <div class="utility-panel-body" id="mp3TimelineBody">
+        <div class="utility-panel-body-inner">
+          <div class="timeline-top">
+            <div>
+              <label for="timelineAudioFile" style="font-size:.8rem;color:var(--dim);">Import local MP3</label>
+              <input id="timelineAudioFile" type="file" accept=".mp3,audio/mpeg,audio/*" style="margin:8px 0 10px;">
+              <audio id="timelineAudio" controls preload="metadata"></audio>
+            </div>
+            <div class="timeline-controls">
+              <button type="button" class="btn btn-primary" onclick="timelineTapBeat()">Tap beat</button>
+              <button type="button" class="btn btn-outline" onclick="timelineAddAtPlayhead()">Add current</button>
+              <button type="button" class="btn btn-outline" onclick="timelineSetSelectedToPlayhead()">Set selected</button>
+              <button type="button" class="btn btn-danger" onclick="timelineClearMarkers()">Clear</button>
+            </div>
+          </div>
+          <div class="timeline-canvas-wrap">
+            <canvas id="beatTimeline"></canvas>
+          </div>
+          <div class="timeline-readout">
+            <span id="timelineFileName">No MP3 loaded</span>
+            <span id="timelineTimeReadout">0:00.000 / 0:16.817</span>
+            <span id="timelineSelectedReadout">Selected: none</span>
+          </div>
+          <div class="timeline-controls" style="justify-content:flex-start;margin-top:10px;">
+            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(-100)">-100 ms</button>
+            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(-10)">-10 ms</button>
+            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(10)">+10 ms</button>
+            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(100)">+100 ms</button>
+            <button type="button" class="btn btn-outline" onclick="timelinePushToConverter()">Sync to converter + beat tools</button>
+          </div>
+          <div id="timelineMarkerList" class="timeline-marker-list"></div>
+        </div>
+      </div>
+    </section>
+    <div id="editor" class="hidden studio-workspace">
+      <div class="stage-scroll">
+        <div class="workspace-inner">
+          <div id="fileInfo" class="file-info"></div>
+
+          <div class="tabs">
+            <div class="tab active" id="tab-btn-texts" onclick="switchTab('texts')">Texts</div>
+            <div class="tab" id="tab-btn-effects" onclick="switchTab('effects')">Effects &amp; media</div>
+          </div>
+
+          <div id="tab-content-texts" class="tab-content active">
+            <div class="stats" id="stats"></div>
+
+            <div class="bulk-section">
+              <h3>Beats &amp; roles</h3>
+              <div class="ae-only ae-callout">
+                <strong>.aepx</strong> files do not expose Alight-style bookmarks. Paste marker times in <strong>milliseconds</strong> or <strong>|| H:MM:SS:FF</strong> timecode, then apply so category / winner beats match your comp.
+              </div>
+              <div class="ae-only">
+                <label for="aeMarkerMsList" style="font-size:.8rem;color:var(--dim);">Marker times (ms or || H:MM:SS:FF)</label>
+                <textarea id="aeMarkerMsList" class="ae-marker-input" placeholder="0&#10;2817&#10;|| 0:00:06:21"></textarea>
+                <div style="display:flex;gap:8px;margin-top:8px;">
+                  <button type="button" class="btn btn-outline" style="padding:7px 12px;font-size:.78rem;" onclick="applyAeMarkersFromInput()">Apply marker list</button>
+                </div>
+              </div>
+              <div class="bulk-row">
+                <label for="categoryStartMarker" style="color:var(--dim);font-size:.85rem;white-space:nowrap;">Category starts at marker</label>
+                <select id="categoryStartMarker" onchange="onCategoryStartMarkerChange(this.value)" style="min-width:200px;flex:1"></select>
+                <button type="button" id="shakeUsageButton" class="btn btn-outline shake-toggle" onclick="toggleShakeUsage()">Shake usage</button>
+              </div>
+              <div id="roleGroupHint" style="margin-top:10px;color:var(--dim);font-size:.78rem;line-height:1.45;"></div>
+              <div id="beatRoleControls" class="beat-role-controls"></div>
+              <div id="roleGrid" class="role-grid" style="margin-top:10px;"></div>
+              <div id="beatPreview" class="beat-preview"></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+                <button class="btn btn-primary" onclick="duplicateRoleLayersAcrossBeats()">Duplicate role layers across beats</button>
+              </div>
+            </div>
+
+            <div class="bulk-section">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:-4px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+                <h3 style="margin:0;border:none;padding:0;">Bulk replace</h3>
+                <div class="am-only" style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <button class="btn btn-outline" style="padding:7px 12px;font-size:.75rem;" onclick="toggleAllLinks(true)">Link all pairs</button>
+                  <button class="btn btn-outline" style="padding:7px 12px;font-size:.75rem;" onclick="toggleAllLinks(false)">Unlink all</button>
+                </div>
+              </div>
+              <div class="bulk-row">
+                <select id="bulkFilter" style="min-width:160px;flex:1"></select>
+                <span style="color:var(--dim);font-size:1rem">&rarr;</span>
+                <input type="text" id="bulkValue" placeholder="Replacement text" style="flex:2;min-width:140px">
+                <button class="btn btn-primary" onclick="applyBulk()">Apply</button>
+                <button class="btn btn-danger" onclick="resetAllTexts()">Reset</button>
+              </div>
+            </div>
+
+            <div class="pair-grid" id="pairGrid"></div>
+          </div>
+
+          <div id="tab-content-effects" class="tab-content">
+            <div id="clipboardStatus"></div>
+            <div class="pair-grid" id="effectsGrid"></div>
+          </div>
+
+          <div class="footer-bar">
+            <button class="btn btn-success" onclick="exportXml()">Export XML</button>
+            <button class="btn btn-outline" onclick="location.reload()">Start over</button>
+            <span class="footer-hint">Drag a new XML anytime. Pending edits and clipboard persist until you reload.</span>
           </div>
         </div>
-        <div class="bulk-row" style="margin-top:12px;">
-          <select id="bulkFilter"></select>
-          <span style="color:var(--dim);font-size:1.1rem">→</span>
-          <input type="text" id="bulkValue" placeholder="New category text..." style="flex:1;min-width:150px">
-          <button class="btn btn-primary" onclick="applyBulk()">Apply</button>
-          <button class="btn btn-danger" onclick="resetAllTexts()">Reset</button>
-        </div>
       </div>
-      <div class="pair-grid" id="pairGrid"></div>
     </div>
-
-    <!-- EFFECTS TAB -->
-    <div id="tab-content-effects" class="tab-content">
-      <div id="clipboardStatus"></div>
-      <div class="pair-grid" id="effectsGrid"></div>
-    </div>
-
-    <div class="footer-bar">
-      <button class="btn btn-success" onclick="exportXml()">💾 Export Modified XML</button>
-      <button class="btn btn-outline" onclick="location.reload()">🔄 Start Over</button>
-      <span style="color:var(--dim);font-size:0.85rem;margin-left:auto;align-self:center;">Pro Tip: You can drag a new XML at any time. Your clipboard will remain safe!</span>
-    </div>
-  </div>
-
-  <div id="toast" class="toast"></div>
+  </main>
 </div>
+
+<div id="toast" class="toast"></div>
 
 <script>
 let xmlText = '', xmlDoc = null, fileName = '';
@@ -251,8 +585,99 @@ let mediaLayers = [];
 let effectClipboard = [];
 let beatMarkers = [];
 let categoryStartMarkerIndex = 1;
+let shakeUsageEnabled = false;
+let beatRoleOverrides = [];
 let categoryLayerIds = new Set();
 let winnerLayerIds = new Set();
+let projectKind = 'am';
+
+function detectProjectKind(doc, fname) {
+  const lower = (fname || '').toLowerCase();
+  if (lower.endsWith('.aepx')) return 'ae';
+  const root = doc.documentElement;
+  const rootName = root ? (root.localName || root.tagName || '') : '';
+  if (/aftereffects|aepx|aefx/i.test(rootName)) return 'ae';
+  try {
+    if (doc.getElementsByTagName('Layr').length > 0) return 'ae';
+  } catch (e) { /* ignore */ }
+  const head = (typeof xmlText === 'string' ? xmlText : '').slice(0, 12000);
+  if (/<Layr\b/i.test(head) && /bdata="/i.test(head)) return 'ae';
+  return 'am';
+}
+
+function applyAeMarkersFromInput() {
+  const raw = document.getElementById('aeMarkerMsList')?.value || '';
+  const nums = parseMarkerMsText(raw);
+  if (!nums.length) {
+    showToast('Enter at least one marker time in ms', 'error');
+    return;
+  }
+  beatMarkers = nums;
+  categoryStartMarkerIndex = 1;
+  syncBeatRoleOverrides(false);
+  renderRoleAssignmentPanel();
+  showToast(`Applied ${beatMarkers.length} marker(s)`, 'success');
+}
+
+function parseAeProject() {
+  beatMarkers = [];
+  categoryStartMarkerIndex = 1;
+  beatRoleOverrides = [];
+
+  const strEls = Array.from(xmlDoc.getElementsByTagName('string'));
+  let textIdx = 0;
+  const MAX_AE_STRINGS = 800;
+  for (const strEl of strEls) {
+    if (textIdx >= MAX_AE_STRINGS) break;
+    const t = (strEl.textContent || '').trim();
+    if (!t || t === '-_0_/-' || t === '/c') continue;
+    if (t.length > 2000) continue;
+    if (/^[\s.\-_\/\\:]+$/.test(t)) continue;
+    textPairs.push({
+      index: textIdx,
+      startTime: 0,
+      endTime: 0,
+      label1: 'String',
+      id1: 'ae-str-' + textIdx,
+      contentEl1: strEl,
+      original: t,
+      original2: t,
+      currentVal1: t,
+      currentVal2: t,
+      textEl1: strEl,
+      type: 'single'
+    });
+    textIdx++;
+  }
+
+  const layrs = Array.from(xmlDoc.getElementsByTagName('Layr'));
+  layrs.forEach((el, index) => {
+    const subs = el.getElementsByTagName('string');
+    let label = 'Layer ' + (index + 1);
+    if (subs.length) {
+      const cand = (subs[0].textContent || '').trim();
+      if (cand && cand !== '-_0_/-') label = cand.slice(0, 120);
+    }
+    mediaLayers.push({
+      index,
+      el,
+      id: 'Layr-' + index,
+      tagName: 'Layr',
+      label,
+      effects: [],
+      modified: false
+    });
+  });
+
+  const capped = textIdx >= MAX_AE_STRINGS;
+  renderEditor();
+  showToast(
+    capped
+      ? `After Effects loaded (first ${MAX_AE_STRINGS} editable strings). Paste marker times (ms) for beat tools.`
+      : 'After Effects project loaded. Paste marker times (ms) for beat tools; effect clipboard is Alight-only.',
+    'success'
+  );
+}
 
 const RAW_CATEGORIES = [
   "Strength", "Speed", "Intelligence", "Battle Intelligence", "Durability", "Stamina", "Endurance", "Agility", "Reflexes", "Reaction Speed", "Travel Speed", "Combat Speed", "Attack Speed", "Destructive Capacity", "Attack Potency", "Power", "Offensive Power", "Defensive Power", "Skill", "Combat Skill", "Swordsmanship", "Weapon Mastery", "Hand-To-Hand Combat", "Accuracy", "Precision", "Experience", "Adaptability", "Tactical Ability", "Strategy", "Battle Experience", "Abilities", "Hax", "Versatility", "Techniques", "Transformations", "Energy Control", "Aura", "Presence", "Range", "Mobility", "Regeneration", "Resistance", "Immunities", "Feats", "Statements", "Scaling", "Potential", "Talent", "Mentality", "Mindset", "Clutch Factor", "Fear Factor", "Menace", "Cold Moments", "Drip", "Writing", "Character Design", "Emotional Impact", "Villain Presence", "Main Character Energy", "Legacy", "Goat Status", "Overall", "Difficulty", "Winner"
@@ -283,6 +708,12 @@ const editor = document.getElementById('editor');
 dropZone.addEventListener('drop', ev => { if(ev.dataTransfer.files.length) loadFile(ev.dataTransfer.files[0]); });
 document.body.addEventListener('drop', ev => { if(ev.dataTransfer.files.length && !dropZone.contains(ev.target)) loadFile(ev.dataTransfer.files[0]); });
 fileInput.addEventListener('change', ev => { if(ev.target.files.length) loadFile(ev.target.files[0]); });
+const standaloneMarkerInput = document.getElementById('standaloneMarkerMsList');
+if (standaloneMarkerInput) {
+  const refreshStandaloneStatus = () => updateStandaloneMarkerStatus(parseMarkerMsText(standaloneMarkerInput.value));
+  standaloneMarkerInput.addEventListener('input', refreshStandaloneStatus);
+  refreshStandaloneStatus();
+}
 
 function loadFile(file) {
   fileName = file.name;
@@ -294,6 +725,612 @@ function loadFile(file) {
 function formatTime(ms) {
   const s = Math.floor(ms/1000), m = Math.floor(s/60), sec = s%60, millis = ms%1000;
   return `${m}:${String(sec).padStart(2,'0')}.${String(millis).padStart(3,'0')}`;
+}
+
+function getMarkerParseFps() {
+  const fps = parseFloat(document.getElementById('standaloneFps')?.value || '60');
+  return Number.isFinite(fps) && fps > 0 ? fps : 60;
+}
+
+function markerTimecodeToMs(hours, minutes, seconds, frames) {
+  const fps = getMarkerParseFps();
+  const totalSeconds =
+    (parseInt(hours, 10) * 3600) +
+    (parseInt(minutes, 10) * 60) +
+    parseInt(seconds, 10) +
+    (parseInt(frames, 10) / fps);
+  return Math.round(totalSeconds * 1000);
+}
+
+function parseMarkerMsText(raw) {
+  const markers = [];
+  const timecodePattern = /(?:\|\|\s*)?(\d+):([0-5]?\d):([0-5]?\d):(\d{1,3})/g;
+  const textWithoutTimecodes = String(raw || '').replace(timecodePattern, (_match, h, m, s, f) => {
+    markers.push(markerTimecodeToMs(h, m, s, f));
+    return ' ';
+  });
+
+  textWithoutTimecodes
+      .split(/[\s,;]+/)
+      .map(s => parseFloat(String(s).trim()))
+      .filter(n => Number.isFinite(n) && n >= 0)
+      .forEach(n => markers.push(n));
+
+  return [...new Set(markers)].sort((a, b) => a - b);
+}
+
+function getStandaloneMarkerTimes() {
+  const raw = document.getElementById('standaloneMarkerMsList')?.value || '';
+  const markers = parseMarkerMsText(raw);
+  if (!markers.length) {
+    showToast('Enter at least one marker time in ms', 'error');
+    return [];
+  }
+  return markers;
+}
+
+function getStandaloneProjectMeta(markers) {
+  const readInt = (id, fallback, min = 1, max = Infinity) => {
+    const n = parseInt(document.getElementById(id)?.value || String(fallback), 10);
+    return Math.max(min, Math.min(max, Number.isFinite(n) ? n : fallback));
+  };
+  const title = (document.getElementById('standaloneTitle')?.value || 'Beat Markers').trim() || 'Beat Markers';
+  const markerPrefix = (document.getElementById('standaloneMarkerPrefix')?.value || 'Beat').trim() || 'Beat';
+  const padding = readInt('standaloneDurationPadding', 1000, 0);
+  const lastMarkerDuration = (markers[markers.length - 1] || 0) + padding;
+  const audioDuration = getTimelineAudioDurationMs();
+  const durationMode = document.getElementById('standaloneDurationMode')?.value || 'markers';
+  let duration = lastMarkerDuration;
+  if (durationMode === 'audio') duration = Math.max(audioDuration, lastMarkerDuration);
+  if (durationMode === 'custom') duration = Math.max(readInt('standaloneCustomDuration', 18000, 100), (markers[markers.length - 1] || 0) + 1);
+  return {
+    fps: readInt('standaloneFps', 60, 1, 240),
+    title,
+    width: readInt('standaloneWidth', 1080),
+    height: readInt('standaloneHeight', 1920),
+    exportWidth: readInt('standaloneExportWidth', 1080),
+    exportHeight: readInt('standaloneExportHeight', 1920),
+    bgColor: document.getElementById('standaloneBgColor')?.value || '#000000',
+    duration: Math.max(1000, duration),
+    markerPrefix
+  };
+}
+
+function updateStandaloneMarkerStatus(markers) {
+  const status = document.getElementById('standaloneMarkerStatus');
+  if (!status) return;
+  if (!markers.length) {
+    status.textContent = '';
+    return;
+  }
+  status.textContent = `${markers.length} marker(s), ${formatTime(markers[0])} to ${formatTime(markers[markers.length - 1])}`;
+}
+
+function buildMarkerOnlyAlightXml(markers) {
+  const meta = getStandaloneProjectMeta(markers);
+  const doc = document.implementation.createDocument('', 'scene', null);
+  const scene = doc.documentElement;
+  applyStandaloneSettingsToScene(scene, markers);
+  markers.forEach((t, i) => {
+    const bookmark = doc.createElement('bookmark');
+    bookmark.setAttribute('t', String(t));
+    bookmark.setAttribute('name', `${meta.markerPrefix} ${i + 1}`);
+    scene.appendChild(bookmark);
+  });
+  return doc;
+}
+
+function applyStandaloneSettingsToScene(scene, markers) {
+  const meta = getStandaloneProjectMeta(markers);
+  scene.setAttribute('title', meta.title);
+  scene.setAttribute('width', String(meta.width));
+  scene.setAttribute('height', String(meta.height));
+  scene.setAttribute('exportWidth', String(meta.exportWidth));
+  scene.setAttribute('exportHeight', String(meta.exportHeight));
+  scene.setAttribute('fps', String(meta.fps));
+  scene.setAttribute('duration', String(meta.duration));
+  scene.setAttribute('totalTime', String(meta.duration));
+  scene.setAttribute('bgcolor', meta.bgColor);
+  return meta;
+}
+
+function serializeXmlDocument(doc) {
+  const serializer = new XMLSerializer();
+  let output = serializer.serializeToString(doc);
+  if (!output.startsWith('<?xml')) output = "<?xml version='1.0' encoding='UTF-8' ?>\n" + output;
+  return output;
+}
+
+function downloadXmlText(output, downloadName) {
+  const blob = new Blob([output], { type: 'application/xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = downloadName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function addBookmarksToScene(scene, markers) {
+  const meta = applyStandaloneSettingsToScene(scene, markers);
+  Array.from(scene.children)
+    .filter(el => (el.localName || el.tagName) === 'bookmark')
+    .forEach(el => el.remove());
+  const doc = scene.ownerDocument;
+  markers.forEach((t, i) => {
+    const bookmark = doc.createElement('bookmark');
+    bookmark.setAttribute('t', String(t));
+    bookmark.setAttribute('name', `${meta.markerPrefix} ${i + 1}`);
+    scene.appendChild(bookmark);
+  });
+}
+
+function downloadMarkerXml() {
+  const markers = getStandaloneMarkerTimes();
+  if (!markers.length) return;
+  updateStandaloneMarkerStatus(markers);
+  const doc = buildMarkerOnlyAlightXml(markers);
+  const safeTitle = (getStandaloneProjectMeta(markers).title || 'alight-beat-markers').replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '') || 'alight-beat-markers';
+  downloadXmlText(serializeXmlDocument(doc), `${safeTitle}-alight.xml`);
+  showToast(`Downloaded ${markers.length} marker(s) as Alight XML`, 'success');
+}
+
+function applyStandaloneMarkersToLoadedXml() {
+  const markers = getStandaloneMarkerTimes();
+  if (!markers.length) return;
+  updateStandaloneMarkerStatus(markers);
+
+  if (!xmlDoc) {
+    xmlDoc = buildMarkerOnlyAlightXml(markers);
+    xmlText = serializeXmlDocument(xmlDoc);
+    fileName = 'alight-beat-markers.xml';
+    parseXml();
+    showToast(`Created Alight XML with ${markers.length} marker(s)`, 'success');
+    return;
+  }
+
+  if (projectKind === 'ae') {
+    showToast('Loaded file is After Effects. Use Download Alight XML instead.', 'error');
+    return;
+  }
+
+  const scene = xmlDoc.querySelector('scene');
+  if (!scene) {
+    showToast('No scene found in the loaded Alight XML', 'error');
+    return;
+  }
+  addBookmarksToScene(scene, markers);
+  beatMarkers = markers;
+  if (typeof timelineSetMarkers === 'function') timelineSetMarkers(markers, true);
+  categoryStartMarkerIndex = 1;
+  syncBeatRoleOverrides(false);
+  renderRoleAssignmentPanel();
+  showToast(`Applied ${markers.length} bookmark(s) to loaded XML`, 'success');
+}
+
+function copyStandaloneMarkersToBeatTools() {
+  const markers = getStandaloneMarkerTimes();
+  if (!markers.length) return;
+  updateStandaloneMarkerStatus(markers);
+  beatMarkers = markers;
+  if (typeof timelineSetMarkers === 'function') timelineSetMarkers(markers, true);
+  categoryStartMarkerIndex = 1;
+  syncBeatRoleOverrides(false);
+  const aeMarkerInput = document.getElementById('aeMarkerMsList');
+  if (aeMarkerInput) aeMarkerInput.value = markers.join('\n');
+  renderRoleAssignmentPanel();
+  showToast(`Loaded ${markers.length} marker(s) into beat tools`, 'success');
+}
+
+// ---------------------------------------------------------
+// LOCAL MP3 TIMELINE SYNC
+// ---------------------------------------------------------
+const timelineState = {
+  markers: [],
+  selectedId: null,
+  nextId: 1,
+  draggingId: null,
+  audioUrl: '',
+  peaks: [],
+  raf: 0,
+  playbackAnchorMs: 0,
+  playbackAnchorAt: 0
+};
+
+function getTimelineAudio() {
+  return document.getElementById('timelineAudio');
+}
+
+function getTimelineAudioDurationMs() {
+  const audio = getTimelineAudio();
+  return audio && Number.isFinite(audio.duration) ? Math.round(audio.duration * 1000) : 0;
+}
+
+function getTimelineDurationMs() {
+  const markers = timelineState.markers;
+  const last = markers.length ? markers[markers.length - 1].t + 1000 : 0;
+  const custom = parseInt(document.getElementById('standaloneCustomDuration')?.value || '0', 10) || 0;
+  return Math.max(1000, getTimelineAudioDurationMs(), last, custom);
+}
+
+function timelineSyncPlaybackClock() {
+  const audio = getTimelineAudio();
+  timelineState.playbackAnchorMs = (audio?.currentTime || 0) * 1000;
+  timelineState.playbackAnchorAt = performance.now();
+}
+
+function timelinePlayheadMs() {
+  const audio = getTimelineAudio();
+  if (!audio) return 0;
+  if (audio.paused || audio.ended || !timelineState.playbackAnchorAt) {
+    return audio.currentTime * 1000;
+  }
+  const elapsed = (performance.now() - timelineState.playbackAnchorAt) * (audio.playbackRate || 1);
+  return Math.min(getTimelineDurationMs(), timelineState.playbackAnchorMs + elapsed);
+}
+
+function timelineSortMarkers() {
+  timelineState.markers.sort((a, b) => a.t - b.t || a.id - b.id);
+}
+
+function timelineClamp(ms) {
+  return Math.max(0, Math.min(getTimelineDurationMs(), Math.round(ms || 0)));
+}
+
+function timelineSetMarkers(markers, selectFirst = true) {
+  timelineState.markers = markers.map(t => ({ id: timelineState.nextId++, t: timelineClamp(t) }));
+  timelineSortMarkers();
+  timelineState.selectedId = selectFirst ? (timelineState.markers[0]?.id || null) : timelineState.selectedId;
+  timelineRenderAll();
+}
+
+function timelineMarkersAsMs() {
+  timelineSortMarkers();
+  return timelineState.markers.map(m => m.t);
+}
+
+function timelinePushToConverter() {
+  const markers = timelineMarkersAsMs();
+  const input = document.getElementById('standaloneMarkerMsList');
+  if (input) input.value = markers.join('\n');
+  updateStandaloneMarkerStatus(markers);
+  beatMarkers = markers;
+  categoryStartMarkerIndex = 1;
+  syncBeatRoleOverrides(false);
+  const aeMarkerInput = document.getElementById('aeMarkerMsList');
+  if (aeMarkerInput) aeMarkerInput.value = markers.join('\n');
+  renderRoleAssignmentPanel();
+  showToast(`Synced ${markers.length} marker(s) to converter and beat tools`, 'success');
+}
+
+function timelineAddMarker(ms, selectIt = true) {
+  const marker = { id: timelineState.nextId++, t: timelineClamp(ms) };
+  timelineState.markers.push(marker);
+  timelineSortMarkers();
+  if (selectIt) timelineState.selectedId = marker.id;
+  timelineRenderAll();
+  return marker;
+}
+
+function timelineSelectedMarker() {
+  return timelineState.markers.find(m => m.id === timelineState.selectedId) || null;
+}
+
+function timelineTapBeat() {
+  const audio = getTimelineAudio();
+  if (!audio || !Number.isFinite(audio.currentTime)) {
+    showToast('Import an MP3 first', 'error');
+    return;
+  }
+  timelineAddMarker(audio.currentTime * 1000, true);
+  timelinePushToConverter();
+}
+
+function timelineAddAtPlayhead() {
+  const audio = getTimelineAudio();
+  timelineAddMarker((audio?.currentTime || 0) * 1000, true);
+  timelinePushToConverter();
+}
+
+function timelineSetSelectedToPlayhead() {
+  const marker = timelineSelectedMarker();
+  if (!marker) {
+    timelineAddAtPlayhead();
+    return;
+  }
+  const audio = getTimelineAudio();
+  marker.t = timelineClamp((audio?.currentTime || 0) * 1000);
+  timelineRenderAll();
+  timelinePushToConverter();
+}
+
+function timelineNudgeSelected(delta) {
+  const marker = timelineSelectedMarker();
+  if (!marker) return;
+  marker.t = timelineClamp(marker.t + delta);
+  timelineRenderAll();
+  timelinePushToConverter();
+}
+
+function timelineClearMarkers() {
+  timelineState.markers = [];
+  timelineState.selectedId = null;
+  timelineRenderAll();
+  timelinePushToConverter();
+}
+
+function timelineSelectMarker(id) {
+  timelineState.selectedId = id;
+  timelineRenderAll();
+}
+
+function timelineSetMarkerTime(id, value) {
+  const marker = timelineState.markers.find(m => m.id === id);
+  if (!marker) return;
+  marker.t = timelineClamp(parseInt(value || '0', 10) || 0);
+  timelineState.selectedId = id;
+  timelineRenderAll();
+  timelinePushToConverter();
+}
+
+function timelineDeleteMarker(id) {
+  timelineState.markers = timelineState.markers.filter(m => m.id !== id);
+  if (timelineState.selectedId === id) timelineState.selectedId = timelineState.markers[0]?.id || null;
+  timelineRenderAll();
+  timelinePushToConverter();
+}
+
+function timelineSeekToMarker(id) {
+  const marker = timelineState.markers.find(m => m.id === id);
+  const audio = getTimelineAudio();
+  if (!marker || !audio) return;
+  audio.currentTime = marker.t / 1000;
+  timelineState.selectedId = id;
+  timelineRenderAll();
+}
+
+function timelineRenderAll() {
+  timelineSortMarkers();
+  timelineDraw();
+  timelineRenderList();
+  timelineUpdateReadout();
+}
+
+function timelineUpdateReadout() {
+  const current = Math.round(timelinePlayheadMs());
+  const duration = getTimelineDurationMs();
+  const selected = timelineSelectedMarker();
+  const timeEl = document.getElementById('timelineTimeReadout');
+  const selectedEl = document.getElementById('timelineSelectedReadout');
+  if (timeEl) timeEl.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+  if (selectedEl) selectedEl.textContent = selected ? `Selected: ${formatTime(selected.t)}` : 'Selected: none';
+}
+
+function timelineRenderList() {
+  const list = document.getElementById('timelineMarkerList');
+  if (!list) return;
+  if (!timelineState.markers.length) {
+    list.innerHTML = '<div class="converter-status">No timeline markers yet.</div>';
+    return;
+  }
+  list.innerHTML = timelineState.markers.map((m, i) => `
+    <div class="timeline-marker-row ${m.id === timelineState.selectedId ? 'active' : ''}" onclick="timelineSelectMarker(${m.id})">
+      <span>#${i + 1}</span>
+      <input type="number" min="0" step="1" value="${m.t}" onclick="event.stopPropagation()" onchange="timelineSetMarkerTime(${m.id}, this.value)">
+      <button type="button" onclick="event.stopPropagation(); timelineSeekToMarker(${m.id})">Seek</button>
+      <button type="button" onclick="event.stopPropagation(); timelineDeleteMarker(${m.id})">Del</button>
+    </div>
+  `).join('');
+}
+
+function timelineCanvasMsFromEvent(ev) {
+  const canvas = document.getElementById('beatTimeline');
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.max(0, Math.min(rect.width, ev.clientX - rect.left));
+  return (x / Math.max(1, rect.width)) * getTimelineDurationMs();
+}
+
+function timelineMarkerNearEvent(ev) {
+  const canvas = document.getElementById('beatTimeline');
+  const rect = canvas.getBoundingClientRect();
+  const duration = getTimelineDurationMs();
+  const x = ev.clientX - rect.left;
+  let best = null;
+  let bestDistance = 12;
+  timelineState.markers.forEach(marker => {
+    const markerX = (marker.t / duration) * rect.width;
+    const distance = Math.abs(markerX - x);
+    if (distance < bestDistance) {
+      best = marker;
+      bestDistance = distance;
+    }
+  });
+  return best;
+}
+
+function timelineDraw() {
+  const canvas = document.getElementById('beatTimeline');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const width = Math.max(320, Math.round(rect.width));
+  const height = Math.max(180, Math.round(rect.height));
+  if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = '#060a12';
+  ctx.fillRect(0, 0, width, height);
+
+  const duration = getTimelineDurationMs();
+  const seconds = Math.ceil(duration / 1000);
+  const step = seconds > 90 ? 10 : seconds > 35 ? 5 : 1;
+  ctx.strokeStyle = 'rgba(255,255,255,.08)';
+  ctx.fillStyle = 'rgba(232,238,248,.58)';
+  ctx.font = '11px JetBrains Mono, monospace';
+  for (let s = 0; s <= seconds; s += step) {
+    const x = (s * 1000 / duration) * width;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.stroke();
+    ctx.fillText(`${s}s`, x + 4, 15);
+  }
+
+  const mid = height / 2;
+  if (timelineState.peaks.length) {
+    ctx.strokeStyle = 'rgba(56,189,248,.78)';
+    ctx.beginPath();
+    for (let x = 0; x < width; x++) {
+      const peak = timelineState.peaks[Math.floor((x / width) * timelineState.peaks.length)] || 0;
+      const y = peak * height * .36;
+      ctx.moveTo(x, mid - y);
+      ctx.lineTo(x, mid + y);
+    }
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = 'rgba(255,255,255,.08)';
+    ctx.fillRect(0, mid - 2, width, 4);
+  }
+
+  timelineState.markers.forEach((marker, i) => {
+    const x = (marker.t / duration) * width;
+    const active = marker.id === timelineState.selectedId;
+    ctx.strokeStyle = active ? '#34d399' : '#fbbf24';
+    ctx.fillStyle = active ? '#34d399' : '#fbbf24';
+    ctx.lineWidth = active ? 3 : 2;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, 24, active ? 7 : 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = active ? '#d1fae5' : '#fef3c7';
+    ctx.fillText(String(i + 1), x + 7, 38);
+  });
+
+  const playX = Math.min(width, (timelinePlayheadMs() / duration) * width);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(playX, 0);
+  ctx.lineTo(playX, height);
+  ctx.stroke();
+}
+
+async function timelineDecodeWaveform(file) {
+  timelineState.peaks = [];
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const context = new AudioContextClass();
+    const buffer = await file.arrayBuffer();
+    const decoded = await context.decodeAudioData(buffer);
+    const data = decoded.getChannelData(0);
+    const buckets = 1400;
+    const block = Math.max(1, Math.floor(data.length / buckets));
+    timelineState.peaks = Array.from({ length: buckets }, (_, i) => {
+      let max = 0;
+      const start = i * block;
+      const end = Math.min(data.length, start + block);
+      for (let j = start; j < end; j++) max = Math.max(max, Math.abs(data[j]));
+      return Math.min(1, max);
+    });
+    await context.close();
+  } catch (err) {
+    timelineState.peaks = [];
+  }
+  timelineDraw();
+}
+
+function initTimelineSync() {
+  const fileInput = document.getElementById('timelineAudioFile');
+  const audio = getTimelineAudio();
+  const canvas = document.getElementById('beatTimeline');
+  if (!fileInput || !audio || !canvas) return;
+
+  fileInput.addEventListener('change', ev => {
+    const file = ev.target.files?.[0];
+    if (!file) return;
+    if (timelineState.audioUrl) URL.revokeObjectURL(timelineState.audioUrl);
+    timelineState.audioUrl = URL.createObjectURL(file);
+    audio.src = timelineState.audioUrl;
+    document.getElementById('timelineFileName').textContent = file.name;
+    timelineDecodeWaveform(file);
+  });
+  audio.addEventListener('loadedmetadata', () => {
+    const custom = document.getElementById('standaloneCustomDuration');
+    if (custom && Number.isFinite(audio.duration)) custom.value = String(Math.ceil(audio.duration * 1000));
+    timelineSyncPlaybackClock();
+    timelineRenderAll();
+  });
+  audio.addEventListener('timeupdate', () => {
+    if (audio.paused) {
+      timelineSyncPlaybackClock();
+      timelineUpdateReadout();
+      timelineDraw();
+    }
+  });
+  audio.addEventListener('play', () => {
+    cancelAnimationFrame(timelineState.raf);
+    timelineSyncPlaybackClock();
+    const tick = () => {
+      timelineDraw();
+      timelineUpdateReadout();
+      if (!audio.paused) timelineState.raf = requestAnimationFrame(tick);
+    };
+    timelineState.raf = requestAnimationFrame(tick);
+  });
+  audio.addEventListener('pause', () => {
+    cancelAnimationFrame(timelineState.raf);
+    timelineSyncPlaybackClock();
+    timelineRenderAll();
+  });
+  audio.addEventListener('ended', () => {
+    cancelAnimationFrame(timelineState.raf);
+    timelineSyncPlaybackClock();
+    timelineRenderAll();
+  });
+  ['seeking', 'seeked', 'ratechange', 'waiting', 'playing'].forEach(eventName => {
+    audio.addEventListener(eventName, timelineSyncPlaybackClock);
+  });
+  canvas.addEventListener('pointerdown', ev => {
+    canvas.setPointerCapture(ev.pointerId);
+    const hit = timelineMarkerNearEvent(ev);
+    if (hit) {
+      timelineState.selectedId = hit.id;
+      timelineState.draggingId = hit.id;
+    } else {
+      const marker = timelineAddMarker(timelineCanvasMsFromEvent(ev), true);
+      timelineState.draggingId = marker.id;
+    }
+    timelineRenderAll();
+  });
+  canvas.addEventListener('pointermove', ev => {
+    if (!timelineState.draggingId) return;
+    const marker = timelineState.markers.find(m => m.id === timelineState.draggingId);
+    if (!marker) return;
+    marker.t = timelineClamp(timelineCanvasMsFromEvent(ev));
+    timelineState.selectedId = marker.id;
+    timelineRenderAll();
+  });
+  canvas.addEventListener('pointerup', () => {
+    timelineState.draggingId = null;
+    timelinePushToConverter();
+  });
+  window.addEventListener('resize', timelineDraw);
+  ['standaloneDurationMode','standaloneCustomDuration','standaloneDurationPadding'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', timelineRenderAll);
+  });
+  timelineSetMarkers(parseMarkerMsText(document.getElementById('standaloneMarkerMsList')?.value || ''), true);
+  const initialMarkers = timelineMarkersAsMs();
+  beatMarkers = initialMarkers;
+  updateStandaloneMarkerStatus(initialMarkers);
+  syncBeatRoleOverrides(false);
+  renderRoleAssignmentPanel();
 }
 
 // ---------------------------------------------------------
@@ -316,13 +1353,25 @@ function parseXml() {
   xmlDoc = parser.parseFromString(xmlText, 'text/xml');
   textPairs = [];
   mediaLayers = [];
+  projectKind = detectProjectKind(xmlDoc, fileName);
+  categoryLayerIds = new Set();
+  winnerLayerIds = new Set();
+  beatRoleOverrides = [];
+
+  if (projectKind === 'ae') {
+    parseAeProject();
+    return;
+  }
+
   beatMarkers = Array.from(xmlDoc.querySelectorAll('bookmark[t]'))
     .map(b => +(b.getAttribute('t') || 0))
     .filter(t => !Number.isNaN(t))
     .sort((a,b) => a - b);
   categoryLayerIds = new Set();
   winnerLayerIds = new Set();
-  categoryStartMarkerIndex = beatMarkers.length > 1 && beatMarkers[0] === 0 ? 2 : 1;
+  categoryStartMarkerIndex = 1;
+  syncBeatRoleOverrides(false);
+  if (typeof timelineSetMarkers === 'function') timelineSetMarkers(beatMarkers, true);
 
   const rootScene = xmlDoc.querySelector('scene');
   if (!rootScene) { showToast('No <scene> found in XML. Is it a valid project?', 'error'); return; }
@@ -483,18 +1532,61 @@ function switchTab(tabId) {
   document.getElementById(`tab-content-${tabId}`).classList.add('active');
 }
 
+function setUtilityPanelCollapsed(panelId, collapsed, persist = true) {
+  const body = document.getElementById(`${panelId}Body`);
+  const toggle = document.getElementById(`${panelId}Toggle`);
+  if (!body || !toggle) return;
+  body.classList.toggle('collapsed', collapsed);
+  toggle.classList.toggle('collapsed', collapsed);
+  toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  if (persist) {
+    try {
+      localStorage.setItem(`utility-panel-${panelId}`, collapsed ? 'collapsed' : 'open');
+    } catch (_err) {}
+  }
+  if (!collapsed && panelId === 'mp3Timeline') {
+    requestAnimationFrame(() => {
+      if (typeof timelineRenderAll === 'function') timelineRenderAll();
+      else if (typeof timelineDraw === 'function') timelineDraw();
+    });
+  }
+}
+
+function toggleUtilityPanel(panelId) {
+  const body = document.getElementById(`${panelId}Body`);
+  if (!body) return;
+  setUtilityPanelCollapsed(panelId, !body.classList.contains('collapsed'));
+}
+
+function restoreUtilityPanelStates() {
+  ['beatMarkerConverter', 'mp3Timeline'].forEach(panelId => {
+    let state = null;
+    try {
+      state = localStorage.getItem(`utility-panel-${panelId}`);
+    } catch (_err) {}
+    if (state === 'collapsed') setUtilityPanelCollapsed(panelId, true, false);
+  });
+}
+
 function renderEditor() {
   dropZone.classList.add('hidden');
   editor.classList.remove('hidden');
+  document.getElementById('beatMarkerConverterPanel')?.classList.remove('hidden');
+  document.getElementById('mp3TimelinePanel')?.classList.remove('hidden');
+  editor.dataset.project = projectKind;
 
-  const sceneTitle = xmlDoc.querySelector('scene')?.getAttribute('title') || 'Unknown';
+  const sceneTitle = projectKind === 'ae'
+    ? (xmlDoc.documentElement?.getAttribute('name') || xmlDoc.documentElement?.localName || 'After Effects project')
+    : (xmlDoc.querySelector('scene')?.getAttribute('title') || 'Unknown');
+  const kindLabel = projectKind === 'ae' ? 'After Effects (.aepx)' : 'Alight Motion';
   document.getElementById('fileInfo').innerHTML =
-    `<div>📄 <strong>${fileName}</strong> — Project: <strong>${sceneTitle}</strong></div>
-     <div style="font-size:0.85rem;opacity:0.8;margin-top:4px;">(You can drop a new XML anywhere to load it)</div>`;
+    `<div><strong>${escapeHtml(fileName)}</strong> <span style="color:var(--dim);font-size:.8rem;">(${escapeHtml(kindLabel)})</span></div>
+     <div style="font-size:.85rem;color:var(--dim);">${projectKind === 'ae' ? 'Project' : 'Scene'}: <strong style="color:var(--text)">${escapeHtml(sceneTitle)}</strong> &mdash; drop another file to replace.</div>`;
 
   renderTextsTab();
   renderEffectsTab();
   updatePendingCount();
+  timelineRenderAll();
 }
 
 // ---- TEXTS TAB ----
@@ -547,7 +1639,7 @@ function renderTextsTab() {
   if (singleCount) statsHtml += `<div class="stat">Singles: <span>${singleCount}</span></div>`;
   const sorted = Object.entries(categories).sort((a,b) => b[1]-a[1]);
   sorted.slice(0, 6).forEach(([k,v]) => {
-    const display = k.length > 14 ? k.slice(0,12)+'…' : k;
+    const display = k.length > 14 ? k.slice(0,12)+'...' : k;
     statsHtml += `<div class="stat">${display}: <span>${v}</span></div>`;
   });
   if (sorted.length > 6) statsHtml += `<div class="stat">+${sorted.length-6} more</div>`;
@@ -555,7 +1647,7 @@ function renderTextsTab() {
 
   let filterHtml = '<option value="all">All Texts</option>';
   sorted.forEach(([k, v]) => {
-    const display = k.length > 20 ? k.slice(0,18)+'…' : k;
+    const display = k.length > 20 ? k.slice(0,18)+'...' : k;
     filterHtml += `<option value="${encodeForAttr(k)}">Only "${display}" (${v})</option>`;
   });
   document.getElementById('bulkFilter').innerHTML = filterHtml;
@@ -564,7 +1656,7 @@ function renderTextsTab() {
   let otherHtml = '';
   textPairs.forEach((p, i) => {
     const isDuoName = p.type === 'duo-name';
-    const typeLabel = isDuoName ? '🎭 Duo Names' : p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
+    const typeLabel = isDuoName ? 'Duo Names' : p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
     const typeCls = p.type === 'single' ? ' single-layer' : '';
     
     // Ensure we have values
@@ -576,19 +1668,19 @@ function renderTextsTab() {
 
     if (p.type === 'pair' || isDuoName) {
       if (p.isLinked && !isDuoName) {
-        linkBtn = `<button class="link-btn" onclick="toggleLink(${i})" title="Linked: Editing will change both layers">🔗 Linked</button>`;
+        linkBtn = `<button class="link-btn" onclick="toggleLink(${i})" title="Linked: Editing will change both layers">Linked</button>`;
         bodyHtml = `
           <div class="pair-body">
             <div class="pair-row">
               <div class="original" title="Layer 1 & 2">${escapeHtml(p.original)}</div>
-              <div class="arrow">→</div>
+              <div class="arrow">&rarr;</div>
               <input type="text" id="input-text-${i}" value="${encodeForAttr(p.currentVal1)}"
                      oninput="onTextEdit(${i})" spellcheck="false" placeholder="Shared Text">
             </div>
           </div>`;
       } else {
         if (!isDuoName) {
-          linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">💔 Unlinked</button>`;
+          linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">Unlinked</button>`;
         }
         const orig2Display = p.original2 !== undefined ? p.original2 : p.original;
         const p1Label = isDuoName ? p.label1 : 'Layer 1';
@@ -597,13 +1689,13 @@ function renderTextsTab() {
           <div class="pair-body unlinked">
             <div class="pair-row" style="margin-bottom:8px;">
               <div class="original" style="border-left:3px solid var(--accent)" title="${escapeHtml(p1Label)}">${escapeHtml(p.original)}</div>
-              <div class="arrow">→</div>
+              <div class="arrow">&rarr;</div>
               <input type="text" id="input-text-${i}-1" value="${encodeForAttr(p.currentVal1)}"
                      oninput="onTextEdit(${i})" spellcheck="false" placeholder="${escapeHtml(p1Label)}">
             </div>
             <div class="pair-row">
               <div class="original" style="border-left:3px solid var(--accent2)" title="${escapeHtml(p2Label)}">${escapeHtml(orig2Display)}</div>
-              <div class="arrow">→</div>
+              <div class="arrow">&rarr;</div>
               <input type="text" id="input-text-${i}-2" value="${encodeForAttr(p.currentVal2)}"
                      oninput="onTextEdit(${i})" spellcheck="false" placeholder="${escapeHtml(p2Label)}">
             </div>
@@ -615,7 +1707,7 @@ function renderTextsTab() {
         <div class="pair-body">
           <div class="pair-row">
             <div class="original">${escapeHtml(p.original)}</div>
-            <div class="arrow">→</div>
+            <div class="arrow">&rarr;</div>
             <input type="text" id="input-text-${i}" value="${encodeForAttr(p.currentVal1)}"
                    oninput="onTextEdit(${i})" spellcheck="false">
           </div>
@@ -631,10 +1723,10 @@ function renderTextsTab() {
           ${linkBtn}
           <span class="badge hidden badge-mod" id="badge-text-${i}" style="margin:0;">modified</span>
         </div>
-        <span class="pair-time">${formatTime(p.startTime)} → ${formatTime(p.endTime)}</span>
+        <span class="pair-time">${formatTime(p.startTime)} &rarr; ${formatTime(p.endTime)}</span>
       </div>
       ${bodyHtml}
-      <div class="pair-ids">ID${p.id2 ? 's' : ''}: ${p.id1}${p.id2 ? ', '+p.id2 : ''} · ${p.label1}${p.label2 ? ' + '+p.label2 : ''}</div>
+      <div class="pair-ids">ID${p.id2 ? 's' : ''}: ${p.id1}${p.id2 ? ', '+p.id2 : ''} &middot; ${p.label1}${p.label2 ? ' + '+p.label2 : ''}</div>
     </div>`;
 
     const cleanOrig = p.original.replace(/[^a-zA-Z0-9 ]/g, '').trim();
@@ -658,13 +1750,13 @@ function renderTextsTab() {
 
   let finalHtml = '';
   if (pinnedHtml) {
-    finalHtml += `<h3 style="margin-top:10px;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px;"><span style="font-size:1.3rem;">📌</span> Pinned Categories</h3>`;
+    finalHtml += `<h3 style="margin-top:10px;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px;">Pinned Categories</h3>`;
     finalHtml += `<div class="pair-grid" style="margin-bottom:32px;">${pinnedHtml}</div>`;
   }
   if (otherHtml) {
     finalHtml += `
       <h3 class="collapsible-header" onclick="toggleOtherTexts()" id="otherTextsBtn">
-        <span class="collapsible-icon">▼</span> <span style="font-size:1.3rem;">📝</span> Other Texts
+        <span class="collapsible-icon">v</span> Other Texts
       </h3>
       <div class="collapsible-content" id="otherTextsContent">
         <div class="collapsible-content-inner">
@@ -684,6 +1776,34 @@ function renderTextsTab() {
 function onCategoryStartMarkerChange(val) {
   const parsed = parseInt(val, 10);
   if (!Number.isNaN(parsed) && parsed >= 1) categoryStartMarkerIndex = parsed;
+  syncBeatRoleOverrides(shakeUsageEnabled);
+  renderRoleAssignmentPanel();
+}
+
+function getAutoBeatRole(markerIndex) {
+  const start = Math.max(1, categoryStartMarkerIndex) - 1;
+  if (markerIndex < start) return 'manual';
+  return ((markerIndex - start) % 2 === 0) ? 'category' : 'winner';
+}
+
+function syncBeatRoleOverrides(preserveExisting = true) {
+  beatRoleOverrides = beatMarkers.map((_, i) => {
+    const existing = beatRoleOverrides[i];
+    if (preserveExisting && (existing === 'category' || existing === 'winner')) return existing;
+    return getAutoBeatRole(i) === 'winner' ? 'winner' : 'category';
+  });
+}
+
+function toggleShakeUsage() {
+  shakeUsageEnabled = !shakeUsageEnabled;
+  syncBeatRoleOverrides();
+  renderRoleAssignmentPanel();
+  showToast(shakeUsageEnabled ? 'Shake usage on: choose each marker role' : 'Shake usage off: using category/winner order', 'success');
+}
+
+function setBeatRoleOverride(markerIndex, role) {
+  if (role !== 'category' && role !== 'winner') return;
+  beatRoleOverrides[markerIndex] = role;
   renderRoleAssignmentPanel();
 }
 
@@ -708,29 +1828,57 @@ function toggleLayerRole(layerId, role, checked) {
 }
 
 function getBeatRole(markerIndex) {
-  const start = Math.max(1, categoryStartMarkerIndex) - 1;
-  if (markerIndex < start) return 'manual';
-  return ((markerIndex - start) % 2 === 0) ? 'category' : 'winner';
+  if (shakeUsageEnabled) {
+    const override = beatRoleOverrides[markerIndex];
+    return override === 'winner' ? 'winner' : 'category';
+  }
+  return getAutoBeatRole(markerIndex);
 }
 
 function renderRoleAssignmentPanel() {
   const markerSelect = document.getElementById('categoryStartMarker');
+  const shakeButton = document.getElementById('shakeUsageButton');
   const roleGrid = document.getElementById('roleGrid');
   const hint = document.getElementById('roleGroupHint');
   const beatPreview = document.getElementById('beatPreview');
-  if (!markerSelect || !roleGrid || !hint || !beatPreview) return;
+  const beatRoleControls = document.getElementById('beatRoleControls');
+  if (!markerSelect || !roleGrid || !hint || !beatPreview || !beatRoleControls) return;
+
+  if (shakeButton) {
+    shakeButton.classList.toggle('active', shakeUsageEnabled);
+    shakeButton.setAttribute('aria-pressed', shakeUsageEnabled ? 'true' : 'false');
+    shakeButton.title = shakeUsageEnabled ? 'Shake usage is on' : 'Shake usage is off';
+  }
 
   if (!beatMarkers.length) {
     markerSelect.innerHTML = '<option value="1">No bookmarks found</option>';
     markerSelect.disabled = true;
+    beatRoleControls.innerHTML = '';
   } else {
-    markerSelect.disabled = false;
+    markerSelect.disabled = shakeUsageEnabled;
     markerSelect.innerHTML = beatMarkers.map((t, i) => {
       const idx = i + 1;
       return `<option value="${idx}">#${idx} (${formatTime(t)})</option>`;
     }).join('');
     if (categoryStartMarkerIndex > beatMarkers.length) categoryStartMarkerIndex = 1;
+    syncBeatRoleOverrides();
     markerSelect.value = String(categoryStartMarkerIndex);
+    beatRoleControls.innerHTML = shakeUsageEnabled
+      ? beatMarkers.map((t, i) => {
+          const role = getBeatRole(i);
+          return `
+            <div class="beat-role-item">
+              <div class="beat-role-meta">
+                <div class="beat-role-title">Marker #${i + 1}</div>
+                <div class="beat-role-time">${formatTime(t)}</div>
+              </div>
+              <select onchange="setBeatRoleOverride(${i}, this.value)" aria-label="Marker #${i + 1} role">
+                <option value="category" ${role === 'category' ? 'selected' : ''}>Category</option>
+                <option value="winner" ${role === 'winner' ? 'selected' : ''}>Winner</option>
+              </select>
+            </div>`;
+        }).join('')
+      : '';
   }
 
   const eligible = mediaLayers.filter(layer => !!layer.label);
@@ -741,7 +1889,7 @@ function renderRoleAssignmentPanel() {
       <div class="role-item">
         <div class="role-item-info">
           <div class="role-item-title">${escapeHtml(layer.label)}</div>
-          <div class="role-item-meta">${layer.tagName.toUpperCase()} · ID ${escapeHtml(layer.id)}</div>
+          <div class="role-item-meta">${layer.tagName.toUpperCase()} &middot; ID ${escapeHtml(layer.id)}</div>
         </div>
         <div class="role-checks">
           <label>
@@ -759,7 +1907,10 @@ function renderRoleAssignmentPanel() {
     `).join('');
   }
 
-  hint.textContent = `Selected: ${categoryLayerIds.size} category layer(s), ${winnerLayerIds.size} winner layer(s). A layer can only belong to one role.`;
+  const modeHint = shakeUsageEnabled
+    ? 'Shake usage is on: each marker uses the role selected above.'
+    : 'Shake usage is off: markers follow Category, Winner, Category, Winner from the selected start marker.';
+  hint.textContent = `Selected: ${categoryLayerIds.size} category layer(s), ${winnerLayerIds.size} winner layer(s). A layer can only belong to one role. ${modeHint}`;
 
   if (!beatMarkers.length) {
     beatPreview.innerHTML = '';
@@ -800,28 +1951,116 @@ function duplicateRoleLayersAcrossBeats() {
     return;
   }
 
+  // AE (.aepx) path
+  // Layr elements live inside a composition (Comp) element. We
+  // clone role layers and insert them into the same parent Comp
+  // once per matching beat marker. AE XML does not use startTime /
+  // endTime on Layr nodes, so we just append ordered clones and
+  // let the user position them in AE itself.
+  if (projectKind === 'ae') {
+    const selectedLayers = mediaLayers.filter(
+      l => categoryLayerIds.has(l.id) || winnerLayerIds.has(l.id)
+    );
+    if (!selectedLayers.length) {
+      showToast('No role layers selected', 'error');
+      return;
+    }
+
+    const roleMarkerTimes = { category: [], winner: [] };
+    beatMarkers.forEach((t, i) => {
+      const role = getBeatRole(i);
+      if (role === 'category' || role === 'winner') roleMarkerTimes[role].push(t);
+    });
+
+    // Generate unique incrementing indices for cloned Layr nm (name) attributes
+    let cloneCounter = 1;
+    let duplicated = 0;
+
+    const processRole = (layers, role) => {
+      const targets = roleMarkerTimes[role];
+      if (!layers.length || !targets.length) return;
+      targets.forEach(beatMs => {
+        layers.forEach(layer => {
+          const parent = layer.el.parentNode;
+          if (!parent) return;
+          const clone = layer.el.cloneNode(true);
+
+          // Tag the clone so it is identifiable by appending the beat time to nm.
+          const nmEls = clone.getElementsByTagName('string');
+          if (nmEls.length > 0) {
+            const orig = nmEls[0].textContent || '';
+            nmEls[0].textContent = orig + ' [beat ' + beatMs + 'ms #' + cloneCounter + ']';
+          }
+          cloneCounter++;
+
+          // Insert right after the original layer so order is predictable
+          if (layer.el.nextSibling) {
+            parent.insertBefore(clone, layer.el.nextSibling);
+          } else {
+            parent.appendChild(clone);
+          }
+          duplicated++;
+        });
+      });
+    };
+
+    processRole(selectedLayers.filter(l => categoryLayerIds.has(l.id)), 'category');
+    processRole(selectedLayers.filter(l => winnerLayerIds.has(l.id)), 'winner');
+
+    if (!duplicated) {
+      showToast('No new duplicates were needed', 'error');
+      return;
+    }
+
+    const serializer = new XMLSerializer();
+    xmlText = serializer.serializeToString(xmlDoc);
+    parseXml();
+    showToast(`Duplicated ${duplicated} AE layer(s) across beat markers. Re-position them in After Effects.`, 'success');
+    return;
+  }
+
+  // Alight Motion (.xml) path
   const scene = xmlDoc.querySelector('scene');
   if (!scene) {
     showToast('No scene found in XML', 'error');
     return;
   }
 
+  const originalSceneEnd = Math.max(
+    +(scene.getAttribute('totalTime') || 0),
+    +(scene.getAttribute('duration') || 0)
+  );
+  const markerSpans = beatMarkers.map((t, i) => {
+    const nextMarker = beatMarkers.find((candidate, candidateIndex) => candidateIndex > i && candidate > t);
+    const fallbackEnd = originalSceneEnd > t ? originalSceneEnd : t + 1;
+    const rawEnd = nextMarker != null ? nextMarker : fallbackEnd;
+    // Alight can show a layer on its exact end millisecond, so stop just before the next beat.
+    const renderEnd = nextMarker != null ? Math.max(t + 1, rawEnd - 1) : rawEnd;
+    return {
+      time: t,
+      end: renderEnd,
+      rawEnd
+    };
+  });
+  const requiredSceneEnd = markerSpans.reduce((max, span) => Math.max(max, span.rawEnd), originalSceneEnd);
+  if (requiredSceneEnd > originalSceneEnd) {
+    scene.setAttribute('totalTime', String(requiredSceneEnd));
+    scene.setAttribute('duration', String(requiredSceneEnd));
+  }
   const roleMarkerTimes = { category: [], winner: [] };
   beatMarkers.forEach((t, i) => {
     const role = getBeatRole(i);
-    if (role === 'category' || role === 'winner') roleMarkerTimes[role].push(t);
+    if (role === 'category' || role === 'winner') roleMarkerTimes[role].push(markerSpans[i]);
   });
 
   const selectedCategoryLayers = mediaLayers.filter(l => categoryLayerIds.has(l.id));
   const selectedWinnerLayers = mediaLayers.filter(l => winnerLayerIds.has(l.id));
   const makeId = getNextNumericLayerId();
-  const totalTime = +(scene.getAttribute('totalTime') || 0);
   let duplicated = 0;
+  let adjusted = 0;
   const timelineChildren = Array.from(scene.children).filter(el => el.hasAttribute('startTime'));
 
   const findInsertionAnchor = (targetStart) => {
-    // Insert after the last layer whose startTime is <= targetStart,
-    // so duplicated blocks stay near their timeline position.
     let anchor = null;
     for (const child of timelineChildren) {
       const st = +(child.getAttribute('startTime') || 0);
@@ -834,13 +2073,17 @@ function duplicateRoleLayersAcrossBeats() {
     const targets = roleMarkerTimes[role];
     if (!layers.length || !targets.length) return [];
     const plans = [];
-    targets.forEach(t => {
+    targets.forEach(target => {
       layers.forEach(layer => {
         const start = +(layer.el.getAttribute('startTime') || 0);
-        if (t === start) return;
-        const end = +(layer.el.getAttribute('endTime') || start);
-        const duration = Math.max(1, end - start);
-        plans.push({ targetStart: t, layer, duration });
+        const targetEnd = target.end;
+        if (targetEnd <= target.time) return;
+        plans.push({
+          targetStart: target.time,
+          targetEnd,
+          layer,
+          useOriginal: target.time === start
+        });
       });
     });
     return plans;
@@ -865,24 +2108,29 @@ function duplicateRoleLayersAcrossBeats() {
 
     let insertAfter = findInsertionAnchor(t);
     block.forEach(plan => {
-      const clone = plan.layer.el.cloneNode(true);
-      clone.setAttribute('id', makeId());
-      clone.setAttribute('startTime', String(t));
-      const newEnd = totalTime > 0 ? Math.min(t + plan.duration, totalTime) : (t + plan.duration);
-      clone.setAttribute('endTime', String(newEnd));
+      const targetEl = plan.useOriginal ? plan.layer.el : plan.layer.el.cloneNode(true);
+      if (!plan.useOriginal) targetEl.setAttribute('id', makeId());
+      targetEl.setAttribute('startTime', String(t));
+      targetEl.setAttribute('endTime', String(plan.targetEnd));
+
+      if (plan.useOriginal) {
+        plan.layer.modified = true;
+        adjusted++;
+        return;
+      }
 
       if (insertAfter && insertAfter.parentNode === scene) {
-        scene.insertBefore(clone, insertAfter.nextSibling);
+        scene.insertBefore(targetEl, insertAfter.nextSibling);
       } else {
-        scene.appendChild(clone);
+        scene.appendChild(targetEl);
       }
-      insertAfter = clone;
-      timelineChildren.push(clone);
+      insertAfter = targetEl;
+      timelineChildren.push(targetEl);
       duplicated++;
     });
   }
 
-  if (!duplicated) {
+  if (!duplicated && !adjusted) {
     showToast('No new duplicates were needed', 'error');
     return;
   }
@@ -890,7 +2138,7 @@ function duplicateRoleLayersAcrossBeats() {
   const serializer = new XMLSerializer();
   xmlText = serializer.serializeToString(xmlDoc);
   parseXml();
-  showToast(`Duplicated ${duplicated} layer(s) across beat markers`, 'success');
+  showToast(`Duplicated ${duplicated} layer(s) and matched ${adjusted} original layer(s) to marker spans`, 'success');
 }
 
 function toggleOtherTexts() {
@@ -902,7 +2150,7 @@ function toggleOtherTexts() {
   }
 }
 
-// Core update logic — does not trigger updatePendingCount (used during bulk init)
+// Core update logic does not trigger updatePendingCount (used during bulk init).
 function onTextEditSilent(i) {
   const p = textPairs[i];
   const card = document.getElementById(`card-text-${i}`);
@@ -978,17 +2226,49 @@ function resetAllTexts() {
 function renderEffectsTab() {
   const container = document.getElementById('effectsGrid');
   const clipContainer = document.getElementById('clipboardStatus');
+
+  if (projectKind === 'ae') {
+    clipContainer.innerHTML = `
+      <div class="clipboard-card">
+        <span><strong>After Effects</strong> &mdash; Effect copy/paste is for Alight Motion XML only (.aepx stores effects in binary chunks).</span>
+      </div>`;
+    if (!mediaLayers.length) {
+      container.innerHTML = '<div style="color:var(--dim);text-align:center;padding:40px;">No layers found.</div>';
+      return;
+    }
+    let htmlAe = '';
+    mediaLayers.forEach((layer, i) => {
+      const roleBadge = categoryLayerIds.has(layer.id)
+        ? '<span class="badge" style="background:rgba(52,211,153,.12);color:var(--success);border:1px solid rgba(52,211,153,.35);">Category</span>'
+        : winnerLayerIds.has(layer.id)
+        ? '<span class="badge" style="background:rgba(251,191,36,.1);color:var(--warn);border:1px solid rgba(251,191,36,.35);">Winner</span>'
+        : '';
+      htmlAe += `
+      <div class="pair-card">
+        <div class="pair-header">
+          <div>
+            <span class="pair-index">#${i + 1} LAYR</span>
+            <span style="font-weight:700;margin-left:8px">${escapeHtml(layer.label)}</span>
+            ${roleBadge}
+          </div>
+        </div>
+        <p style="color:var(--dim);font-size:.8rem;margin-top:8px;">Read-only preview from project order. Text edits use the Texts tab.</p>
+      </div>`;
+    });
+    container.innerHTML = htmlAe;
+    return;
+  }
   
   if (effectClipboard.length) {
     clipContainer.innerHTML = `
-      <div style="margin-bottom:16px;padding:12px;background:var(--surface);border-radius:8px;border:1px dashed var(--success);color:var(--success);display:flex;justify-content:space-between;align-items:center;">
-         <span>📋 <strong>Clipboard Active:</strong> ${effectClipboard.length} effect(s) ready to paste.</span>
-         <button class="btn btn-danger" style="padding:4px 8px;font-size:0.7rem;" onclick="clearClipboard()">Clear</button>
+      <div class="clipboard-card active">
+         <span><strong>Clipboard</strong> &mdash; ${effectClipboard.length} effect(s) ready to paste.</span>
+         <button class="btn btn-danger" style="padding:5px 10px;font-size:.7rem;" onclick="clearClipboard()">Clear</button>
       </div>`;
   } else {
     clipContainer.innerHTML = `
-      <div style="margin-bottom:16px;padding:12px;background:var(--surface);border-radius:8px;border:1px dashed var(--border);color:var(--dim)">
-         📋 <strong>Clipboard Empty.</strong> Find a layer below and click "Copy Effects".
+      <div class="clipboard-card">
+         <span><strong>Clipboard empty.</strong> Copy effects from a layer below.</span>
       </div>`;
   }
 
@@ -1000,9 +2280,9 @@ function renderEffectsTab() {
   let html = '';
   mediaLayers.forEach((layer, i) => {
     const roleBadge = categoryLayerIds.has(layer.id)
-      ? '<span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.35);">Category Role</span>'
+      ? '<span class="badge" style="background:rgba(52,211,153,.12);color:var(--success);border:1px solid rgba(52,211,153,.35);">Category</span>'
       : winnerLayerIds.has(layer.id)
-      ? '<span class="badge" style="background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.35);">Winner Role</span>'
+      ? '<span class="badge" style="background:rgba(251,191,36,.1);color:var(--warn);border:1px solid rgba(251,191,36,.35);">Winner</span>'
       : '';
     const effBadges = layer.effects.map(eff => {
       const type = eff.getAttribute('id') || eff.getAttribute('type') || 'Unknown';
@@ -1026,9 +2306,9 @@ function renderEffectsTab() {
         ${hasEffects ? effBadges : '<span style="color:var(--dim);font-size:0.85rem;font-style:italic;">No effects attached</span>'}
       </div>
       <div style="display:flex;gap:8px;">
-        ${hasEffects ? `<button class="btn btn-outline" style="padding:6px 12px;font-size:0.75rem" onclick="copyEffects(${i})">📄 Copy Effects</button>` : ''}
-        ${canPaste ? `<button class="btn btn-success" style="padding:6px 12px;font-size:0.75rem" onclick="pasteEffects(${i})">📋 Paste Effects</button>` : ''}
-        ${hasEffects ? `<button class="btn btn-danger" style="padding:6px 12px;font-size:0.75rem" onclick="clearLayerEffects(${i})">🗑 Clear</button>` : ''}
+        ${hasEffects ? `<button class="btn btn-outline" style="padding:6px 12px;font-size:0.75rem" onclick="copyEffects(${i})">Copy Effects</button>` : ''}
+        ${canPaste ? `<button class="btn btn-success" style="padding:6px 12px;font-size:0.75rem" onclick="pasteEffects(${i})">Paste Effects</button>` : ''}
+        ${hasEffects ? `<button class="btn btn-danger" style="padding:6px 12px;font-size:0.75rem" onclick="clearLayerEffects(${i})">Clear</button>` : ''}
       </div>
     </div>`;
   });
@@ -1036,6 +2316,10 @@ function renderEffectsTab() {
 }
 
 function copyEffects(index) {
+  if (projectKind === 'ae') {
+    showToast('Effect clipboard works with Alight Motion XML only.', 'error');
+    return;
+  }
   const layer = mediaLayers[index];
   effectClipboard = layer.effects.map(eff => eff.cloneNode(true));
   showToast(`Copied ${effectClipboard.length} effect(s) to Clipboard!`, 'success');
@@ -1043,6 +2327,10 @@ function copyEffects(index) {
 }
 
 function pasteEffects(index) {
+  if (projectKind === 'ae') {
+    showToast('Paste effects is for Alight Motion XML only.', 'error');
+    return;
+  }
   if (!effectClipboard.length) return;
   const layer = mediaLayers[index];
   const targetEl = layer.el;
@@ -1071,6 +2359,10 @@ function pasteEffects(index) {
 }
 
 function clearLayerEffects(index) {
+  if (projectKind === 'ae') {
+    showToast('Clear effects is for Alight Motion XML only.', 'error');
+    return;
+  }
   const layer = mediaLayers[index];
   layer.effects.forEach(eff => eff.remove());
   layer.effects = [];
@@ -1113,15 +2405,26 @@ function exportXml() {
     const v1 = p.currentVal1?.trim() || p.original;
     const v2 = p.currentVal2?.trim() || p.original;
 
+    if (projectKind === 'ae') {
+      if (v1 !== p.original) {
+        p.contentEl1.textContent = v1;
+        changeCount++;
+      }
+      return;
+    }
+
     if (v1 !== p.original || (p.type === 'pair' && v2 !== p.original)) {
       p.contentEl1.textContent = v1;
-      p.textEl1.setAttribute('label', v1);
+      if (p.textEl1 && p.textEl1.hasAttribute && p.textEl1.hasAttribute('label')) {
+        p.textEl1.setAttribute('label', v1);
+      }
       
       if (p.contentEl2) {
         p.contentEl2.textContent = v2;
-        // Keep the "Copy" suffix if it originally had it
-        const suffix = p.label2.endsWith(' Copy') ? ' Copy' : '';
-        p.textEl2.setAttribute('label', v2 + suffix);
+        const suffix = (p.label2 && p.label2.endsWith(' Copy')) ? ' Copy' : '';
+        if (p.textEl2 && p.textEl2.hasAttribute && p.textEl2.hasAttribute('label')) {
+          p.textEl2.setAttribute('label', v2 + suffix);
+        }
       }
       changeCount++;
     }
@@ -1139,8 +2442,10 @@ function exportXml() {
   const blob = new Blob([output], { type: 'application/xml' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  const base = fileName.replace(/\.xml$/i, '');
-  a.download = `${base} - DuoEdited.xml`;
+  const base = fileName.replace(/\.(xml|aepx)$/i, '');
+  const ext = projectKind === 'ae' && /\.aepx$/i.test(fileName) ? '.aepx' : '.xml';
+  const suffix = projectKind === 'ae' ? 'AE-Edited' : 'DuoEdited';
+  a.download = `${base} - ${suffix}${ext}`;
   a.click();
   URL.revokeObjectURL(a.href);
   
@@ -1163,6 +2468,9 @@ function showToast(msg, type) {
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.remove('show'), 3000);
 }
+restoreUtilityPanelStates();
+initTimelineSync();
 </script>
 </body>
 </html>
+
