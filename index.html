@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alight Motion Beat Sync Timeline Studio</title>
+<title>A.E. Duo Studio — After Effects XML</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -252,6 +252,22 @@ body{
 .beat-role-title{font-size:.8rem;font-weight:700}
 .beat-role-time{font-size:.7rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
 .beat-role-item select{padding:7px 9px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:inherit;font-size:.76rem}
+.generated-beat-panel{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.generated-beat-panel h4{font-size:.88rem;margin-bottom:8px}
+.generated-beat-grid{display:grid;gap:8px;max-height:260px;overflow:auto;padding-right:4px}
+.generated-beat-grid::-webkit-scrollbar{width:6px}
+.generated-beat-grid::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
+.generated-beat-row{display:grid;grid-template-columns:minmax(120px,1.1fr) repeat(4,minmax(96px,.8fr));gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:11px;background:rgba(0,0,0,.22)}
+.generated-beat-row.is-category{border-color:rgba(52,211,153,.24)}
+.generated-beat-row.is-winner{border-color:rgba(251,191,36,.25)}
+.generated-beat-meta{min-width:0}
+.generated-beat-title{font-size:.82rem;font-weight:800}
+.generated-beat-time{font-size:.7rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.generated-slot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.2);font-size:.72rem;color:var(--dim)}
+.generated-slot.active{color:var(--text);border-color:rgba(56,189,248,.25)}
+.generated-slot.missing{color:var(--danger);border-color:rgba(248,113,113,.25)}
+.generated-slot input{width:15px;height:15px;accent-color:var(--accent)}
+.generated-slot input:disabled{opacity:.35}
 
 @keyframes slideUpFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .animated-card{animation:slideUpFade .45s ease backwards}
@@ -273,69 +289,21 @@ body{
 [data-project="am"] .ae-only{display:none !important;}
 .ae-callout{font-size:.78rem;color:var(--dim);line-height:1.5;padding:10px 12px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.22);border-radius:10px;margin-bottom:12px;}
 .ae-marker-input{width:100%;min-height:72px;resize:vertical;padding:10px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-top:8px;}
-.converter-panel,.timeline-sync-panel{
-  max-width:920px;margin-bottom:16px;border:1px solid var(--border-strong);
-  border-radius:18px;padding:0;overflow:hidden;backdrop-filter:var(--glass);
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015)),
-    rgba(14,22,38,.82);
-  box-shadow:0 18px 45px rgba(0,0,0,.24);
+.converter-panel{
+  max-width:920px;margin-bottom:18px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px 22px;backdrop-filter:var(--glass);
 }
-.utility-panel-header{
-  width:100%;border:0;border-bottom:1px solid var(--border);background:rgba(255,255,255,.025);
-  color:var(--text);font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;
-  gap:16px;padding:16px 18px;cursor:pointer;transition:background .2s,border-color .2s;
-}
-.utility-panel-header:hover{background:rgba(255,255,255,.045);border-color:var(--border-strong)}
-.utility-panel-title{display:flex;flex-direction:column;gap:3px;min-width:0}
-.utility-panel-heading{font-size:1rem;font-weight:800;margin:0}
-.utility-panel-title > span:not(.utility-panel-heading){color:var(--dim);font-size:.76rem;font-weight:600}
-.utility-panel-toggle{
-  flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;min-width:78px;
-  padding:7px 10px;border-radius:999px;border:1px solid var(--border-strong);
-  background:rgba(0,0,0,.28);color:var(--accent);font-size:.74rem;font-weight:800;
-}
-.utility-panel-header.collapsed .utility-panel-toggle{color:var(--dim)}
-.utility-panel-toggle::before{content:'Hide'}
-.utility-panel-header.collapsed .utility-panel-toggle::before{content:'Show'}
-.utility-panel-toggle::after{content:'v';margin-left:7px;font-family:'JetBrains Mono',monospace;transition:transform .25s}
-.utility-panel-header.collapsed .utility-panel-toggle::after{transform:rotate(-90deg)}
-.utility-panel-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .28s ease,opacity .22s ease;opacity:1;visibility:visible}
-.utility-panel-body.collapsed{grid-template-rows:0fr;opacity:0;visibility:hidden}
-.utility-panel-body-inner{overflow:hidden;padding:18px 20px 20px}
+.converter-panel h2{font-size:1rem;font-weight:700;margin-bottom:8px}
 .converter-panel p{color:var(--dim);font-size:.82rem;line-height:1.5;margin-bottom:12px}
 .converter-grid{display:grid;grid-template-columns:minmax(220px,1fr) 160px 160px;gap:10px;align-items:end}
 .converter-grid label{display:flex;flex-direction:column;gap:6px;color:var(--dim);font-size:.78rem}
 .converter-grid input,.converter-grid textarea{
   width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
-  background:rgba(4,8,15,.62);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;
-  transition:border-color .2s,box-shadow .2s,background .2s;
-}
-.converter-grid input:focus,.converter-grid textarea:focus,.xml-settings-grid input:focus,.xml-settings-grid select:focus{
-  outline:none;border-color:rgba(56,189,248,.55);box-shadow:0 0 0 3px var(--accent-soft);background:rgba(3,7,13,.82);
+  background:rgba(0,0,0,.35);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;
 }
 .converter-grid textarea{min-height:118px;resize:vertical;grid-row:span 2}
 .converter-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .converter-status{margin-top:10px;color:var(--dim);font-size:.76rem;font-family:'JetBrains Mono',monospace}
-.timeline-top{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:12px;align-items:center;margin-bottom:12px}
-.timeline-top audio{width:100%;height:38px}
-.timeline-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.timeline-canvas-wrap{
-  position:relative;border:1px solid rgba(56,189,248,.16);border-radius:14px;background:#040812;overflow:hidden;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 12px 30px rgba(0,0,0,.22);
-}
-#beatTimeline{display:block;width:100%;height:220px;cursor:crosshair;touch-action:none}
-.timeline-readout{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:9px;color:var(--dim);font-size:.76rem;font-family:'JetBrains Mono',monospace}
-.timeline-marker-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:12px;max-height:180px;overflow:auto}
-.timeline-marker-row{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);border-radius:10px;background:rgba(0,0,0,.28)}
-.timeline-marker-row.active{border-color:rgba(52,211,153,.62);background:rgba(52,211,153,.07)}
-.timeline-marker-row span{font-size:.72rem;color:var(--accent);font-weight:800;min-width:34px}
-.timeline-marker-row input{min-width:0;flex:1;padding:7px 8px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.74rem}
-.timeline-marker-row button{padding:7px 8px;font-size:.72rem}
-.xml-settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:10px}
-.xml-settings-grid label{display:flex;flex-direction:column;gap:6px;color:var(--dim);font-size:.78rem}
-.xml-settings-grid input,.xml-settings-grid select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--border);background:rgba(4,8,15,.62);color:var(--text);font-family:inherit;font-size:.78rem;transition:border-color .2s,box-shadow .2s,background .2s}
-.wide-setting{grid-column:span 2}
 
 @media (max-width:960px){
   .studio-shell{flex-direction:column;max-width:100%}
@@ -344,9 +312,8 @@ body{
   .change-count{top:auto;bottom:88px;right:16px;font-size:.8rem;padding:8px 14px}
   .converter-grid{grid-template-columns:1fr}
   .converter-grid textarea{grid-row:auto}
-  .timeline-top{grid-template-columns:1fr}
-  .timeline-controls{justify-content:flex-start}
-  .wide-setting{grid-column:auto}
+  .generated-beat-row{grid-template-columns:1fr 1fr}
+  .generated-beat-meta{grid-column:1/-1}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
@@ -358,8 +325,8 @@ body{
   <aside class="studio-rail">
     <div class="rail-brand">
       <div class="eyebrow">Alight Motion</div>
-      <h1><span>Beat</span> Sync Studio</h1>
-      <p>All Duo Studio XML/AEPX tools plus local MP3 beat syncing and Alight Motion bookmark export.</p>
+      <h1><span>A.E.</span> Duo Studio</h1>
+      <p>After Effects <strong>.aepx</strong> text edits + layer list. Alight Motion <strong>.xml</strong> keeps full beat + effect tools.</p>
     </div>
 
     <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
@@ -371,26 +338,18 @@ body{
     </div>
 
     <div class="rail-foot">
-      <strong>.aepx</strong>: edit strings and layer list. <strong>.xml</strong>: full pairing, bookmarks, effect clipboard, marker timeline, and configurable export settings.
+      <strong>.aepx</strong>: edit strings and layer list; paste marker ms for beat roles. <strong>.xml</strong> (Alight): full pairing, bookmarks, and effect clipboard.
     </div>
   </aside>
 
   <main class="studio-stage">
-    <section id="beatMarkerConverterPanel" class="converter-panel hidden">
-      <button type="button" class="utility-panel-header" id="beatMarkerConverterToggle" onclick="toggleUtilityPanel('beatMarkerConverter')" aria-expanded="true" aria-controls="beatMarkerConverterBody">
-        <span class="utility-panel-title">
-          <span class="utility-panel-heading">Beat marker XML converter</span>
-          <span>Generate bookmarks, apply marker lists, or export marker-only XML.</span>
-        </span>
-        <span class="utility-panel-toggle" aria-hidden="true"></span>
-      </button>
-      <div class="utility-panel-body" id="beatMarkerConverterBody">
-        <div class="utility-panel-body-inner">
-          <p>Paste millisecond markers or timecode markers to generate Alight Motion bookmarks. With an Alight XML loaded, apply them onto that file; without one, download a marker-only XML.</p>
-          <div class="converter-grid">
-            <label for="standaloneMarkerMsList">
-              Marker times (ms or || H:MM:SS:FF)
-              <textarea id="standaloneMarkerMsList" placeholder="0&#10;1600&#10;|| 0:00:06:21">0
+    <section class="converter-panel">
+      <h2>Beat marker XML converter</h2>
+      <p>Paste millisecond markers to generate Alight Motion bookmarks. With an Alight XML loaded, apply them onto that file; without one, download a marker-only XML.</p>
+      <div class="converter-grid">
+        <label for="standaloneMarkerMsList">
+          Marker times (ms)
+          <textarea id="standaloneMarkerMsList" placeholder="0&#10;1600&#10;2067">0
 1600
 2067
 2533
@@ -422,84 +381,22 @@ body{
 14917
 15383
 16817</textarea>
-            </label>
-            <label for="standaloneFps">
-              FPS
-              <input id="standaloneFps" type="number" min="1" max="240" step="1" value="60">
-            </label>
-            <label for="standaloneTitle">
-              XML title
-              <input id="standaloneTitle" type="text" value="Beat Markers">
-            </label>
-          </div>
-          <h3 style="font-size:.88rem;margin-top:14px;margin-bottom:0;">XML settings</h3>
-          <div class="xml-settings-grid">
-            <label for="standaloneWidth">Width <input id="standaloneWidth" type="number" min="1" value="1080"></label>
-            <label for="standaloneHeight">Height <input id="standaloneHeight" type="number" min="1" value="1920"></label>
-            <label for="standaloneExportWidth">Export width <input id="standaloneExportWidth" type="number" min="1" value="1080"></label>
-            <label for="standaloneExportHeight">Export height <input id="standaloneExportHeight" type="number" min="1" value="1920"></label>
-            <label for="standaloneBgColor">Background <input id="standaloneBgColor" type="color" value="#000000"></label>
-            <label for="standaloneDurationMode">Duration
-              <select id="standaloneDurationMode">
-                <option value="markers">Last marker + padding</option>
-                <option value="audio">MP3 length</option>
-                <option value="custom">Custom ms</option>
-              </select>
-            </label>
-            <label for="standaloneCustomDuration">Custom ms <input id="standaloneCustomDuration" type="number" min="100" value="18000"></label>
-            <label for="standaloneDurationPadding">Padding ms <input id="standaloneDurationPadding" type="number" min="0" value="1000"></label>
-            <label class="wide-setting" for="standaloneMarkerPrefix">Marker name prefix <input id="standaloneMarkerPrefix" type="text" value="Beat"></label>
-          </div>
-          <div class="converter-actions">
-            <button type="button" class="btn btn-primary" onclick="downloadMarkerXml()">Download Alight XML</button>
-            <button type="button" class="btn btn-outline" onclick="applyStandaloneMarkersToLoadedXml()">Apply to loaded XML</button>
-            <button type="button" class="btn btn-outline" onclick="copyStandaloneMarkersToBeatTools()">Use in beat tools</button>
-          </div>
-          <div id="standaloneMarkerStatus" class="converter-status"></div>
-        </div>
+        </label>
+        <label for="standaloneFps">
+          FPS
+          <input id="standaloneFps" type="number" min="1" max="240" step="1" value="60">
+        </label>
+        <label for="standaloneTitle">
+          XML title
+          <input id="standaloneTitle" type="text" value="Beat Markers">
+        </label>
       </div>
-    </section>
-    <section id="mp3TimelinePanel" class="timeline-sync-panel hidden">
-      <button type="button" class="utility-panel-header" id="mp3TimelineToggle" onclick="toggleUtilityPanel('mp3Timeline')" aria-expanded="true" aria-controls="mp3TimelineBody">
-        <span class="utility-panel-title">
-          <span class="utility-panel-heading">Local MP3 beat sync timeline</span>
-          <span>Load audio, tap markers, nudge timing, and sync marker lists.</span>
-        </span>
-        <span class="utility-panel-toggle" aria-hidden="true"></span>
-      </button>
-      <div class="utility-panel-body" id="mp3TimelineBody">
-        <div class="utility-panel-body-inner">
-          <div class="timeline-top">
-            <div>
-              <label for="timelineAudioFile" style="font-size:.8rem;color:var(--dim);">Import local MP3</label>
-              <input id="timelineAudioFile" type="file" accept=".mp3,audio/mpeg,audio/*" style="margin:8px 0 10px;">
-              <audio id="timelineAudio" controls preload="metadata"></audio>
-            </div>
-            <div class="timeline-controls">
-              <button type="button" class="btn btn-primary" onclick="timelineTapBeat()">Tap beat</button>
-              <button type="button" class="btn btn-outline" onclick="timelineAddAtPlayhead()">Add current</button>
-              <button type="button" class="btn btn-outline" onclick="timelineSetSelectedToPlayhead()">Set selected</button>
-              <button type="button" class="btn btn-danger" onclick="timelineClearMarkers()">Clear</button>
-            </div>
-          </div>
-          <div class="timeline-canvas-wrap">
-            <canvas id="beatTimeline"></canvas>
-          </div>
-          <div class="timeline-readout">
-            <span id="timelineFileName">No MP3 loaded</span>
-            <span id="timelineTimeReadout">0:00.000 / 0:16.817</span>
-            <span id="timelineSelectedReadout">Selected: none</span>
-          </div>
-          <div class="timeline-controls" style="justify-content:flex-start;margin-top:10px;">
-            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(-100)">-100 ms</button>
-            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(-10)">-10 ms</button>
-            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(10)">+10 ms</button>
-            <button type="button" class="btn btn-outline" onclick="timelineNudgeSelected(100)">+100 ms</button>
-            <button type="button" class="btn btn-outline" onclick="timelinePushToConverter()">Sync to converter + beat tools</button>
-          </div>
-          <div id="timelineMarkerList" class="timeline-marker-list"></div>
-        </div>
+      <div class="converter-actions">
+        <button type="button" class="btn btn-primary" onclick="downloadMarkerXml()">Download Alight XML</button>
+        <button type="button" class="btn btn-outline" onclick="applyStandaloneMarkersToLoadedXml()">Apply to loaded XML</button>
+        <button type="button" class="btn btn-outline" onclick="copyStandaloneMarkersToBeatTools()">Use in beat tools</button>
       </div>
+      <div id="standaloneMarkerStatus" class="converter-status"></div>
     </section>
     <div id="editor" class="hidden studio-workspace">
       <div class="stage-scroll">
@@ -517,11 +414,11 @@ body{
             <div class="bulk-section">
               <h3>Beats &amp; roles</h3>
               <div class="ae-only ae-callout">
-                <strong>.aepx</strong> files do not expose Alight-style bookmarks. Paste marker times in <strong>milliseconds</strong> or <strong>|| H:MM:SS:FF</strong> timecode, then apply so category / winner beats match your comp.
+                <strong>.aepx</strong> files do not expose Alight-style bookmarks. Paste marker times in <strong>milliseconds</strong> (one per line or comma-separated), then apply so category / winner beats match your comp.
               </div>
               <div class="ae-only">
-                <label for="aeMarkerMsList" style="font-size:.8rem;color:var(--dim);">Marker times (ms or || H:MM:SS:FF)</label>
-                <textarea id="aeMarkerMsList" class="ae-marker-input" placeholder="0&#10;2817&#10;|| 0:00:06:21"></textarea>
+                <label for="aeMarkerMsList" style="font-size:.8rem;color:var(--dim);">Marker times (ms)</label>
+                <textarea id="aeMarkerMsList" class="ae-marker-input" placeholder="0&#10;2817&#10;3267"></textarea>
                 <div style="display:flex;gap:8px;margin-top:8px;">
                   <button type="button" class="btn btn-outline" style="padding:7px 12px;font-size:.78rem;" onclick="applyAeMarkersFromInput()">Apply marker list</button>
                 </div>
@@ -538,6 +435,7 @@ body{
               <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
                 <button class="btn btn-primary" onclick="duplicateRoleLayersAcrossBeats()">Duplicate role layers across beats</button>
               </div>
+              <div id="generatedBeatPanel" class="generated-beat-panel"></div>
             </div>
 
             <div class="bulk-section">
@@ -550,7 +448,7 @@ body{
               </div>
               <div class="bulk-row">
                 <select id="bulkFilter" style="min-width:160px;flex:1"></select>
-                <span style="color:var(--dim);font-size:1rem">&rarr;</span>
+                <span style="color:var(--dim);font-size:1rem">→</span>
                 <input type="text" id="bulkValue" placeholder="Replacement text" style="flex:2;min-width:140px">
                 <button class="btn btn-primary" onclick="applyBulk()">Apply</button>
                 <button class="btn btn-danger" onclick="resetAllTexts()">Reset</button>
@@ -588,8 +486,67 @@ let categoryStartMarkerIndex = 1;
 let shakeUsageEnabled = false;
 let beatRoleOverrides = [];
 let categoryLayerIds = new Set();
+let categoryBLayerIds = new Set();
 let winnerLayerIds = new Set();
+let winnerBLayerIds = new Set();
 let projectKind = 'am';
+
+const MEDIA_ROLE_DEFS = {
+  categoryA: { label: 'Category A', shortLabel: 'Cat A', base: 'category', color: 'success' },
+  categoryB: { label: 'Category B', shortLabel: 'Cat B', base: 'category', color: 'success' },
+  winnerA: { label: 'Winner A', shortLabel: 'Win A', base: 'winner', color: 'warn' },
+  winnerB: { label: 'Winner B', shortLabel: 'Win B', base: 'winner', color: 'warn' }
+};
+const MEDIA_ROLE_ORDER = ['categoryA', 'categoryB', 'winnerA', 'winnerB'];
+
+function getRoleSet(role) {
+  if (role === 'category' || role === 'categoryA') return categoryLayerIds;
+  if (role === 'categoryB') return categoryBLayerIds;
+  if (role === 'winner' || role === 'winnerA') return winnerLayerIds;
+  if (role === 'winnerB') return winnerBLayerIds;
+  return null;
+}
+
+function getRoleLabel(role) {
+  const def = MEDIA_ROLE_DEFS[role === 'category' ? 'categoryA' : role === 'winner' ? 'winnerA' : role];
+  return def ? def.label : role;
+}
+
+function getRoleBase(role) {
+  const def = MEDIA_ROLE_DEFS[role === 'category' ? 'categoryA' : role === 'winner' ? 'winnerA' : role];
+  return def ? def.base : '';
+}
+
+function rolesForBeatRole(beatRole) {
+  if (beatRole === 'category') return ['categoryA', 'categoryB'];
+  if (beatRole === 'winner') return ['winnerA', 'winnerB'];
+  return [];
+}
+
+function removeLayerFromAllRoles(layerId) {
+  MEDIA_ROLE_ORDER.forEach(role => getRoleSet(role).delete(layerId));
+}
+
+function anyRoleLayerSelected() {
+  return MEDIA_ROLE_ORDER.some(role => getRoleSet(role).size > 0);
+}
+
+function selectedLayerRole(layerId) {
+  for (const role of MEDIA_ROLE_ORDER) {
+    if (getRoleSet(role).has(layerId)) return role;
+  }
+  return '';
+}
+
+function roleBadgeHtml(layerId) {
+  const role = selectedLayerRole(layerId);
+  if (!role) return '';
+  const def = MEDIA_ROLE_DEFS[role];
+  const color = def.color === 'warn' ? 'var(--warn)' : 'var(--success)';
+  const border = def.color === 'warn' ? 'rgba(251,191,36,.35)' : 'rgba(52,211,153,.35)';
+  const bg = def.color === 'warn' ? 'rgba(251,191,36,.1)' : 'rgba(52,211,153,.12)';
+  return `<span class="badge" style="background:${bg};color:${color};border:1px solid ${border};">${def.label}</span>`;
+}
 
 function detectProjectKind(doc, fname) {
   const lower = (fname || '').toLowerCase();
@@ -623,6 +580,10 @@ function parseAeProject() {
   beatMarkers = [];
   categoryStartMarkerIndex = 1;
   beatRoleOverrides = [];
+  categoryLayerIds = new Set();
+  categoryBLayerIds = new Set();
+  winnerLayerIds = new Set();
+  winnerBLayerIds = new Set();
 
   const strEls = Array.from(xmlDoc.getElementsByTagName('string'));
   let textIdx = 0;
@@ -727,36 +688,13 @@ function formatTime(ms) {
   return `${m}:${String(sec).padStart(2,'0')}.${String(millis).padStart(3,'0')}`;
 }
 
-function getMarkerParseFps() {
-  const fps = parseFloat(document.getElementById('standaloneFps')?.value || '60');
-  return Number.isFinite(fps) && fps > 0 ? fps : 60;
-}
-
-function markerTimecodeToMs(hours, minutes, seconds, frames) {
-  const fps = getMarkerParseFps();
-  const totalSeconds =
-    (parseInt(hours, 10) * 3600) +
-    (parseInt(minutes, 10) * 60) +
-    parseInt(seconds, 10) +
-    (parseInt(frames, 10) / fps);
-  return Math.round(totalSeconds * 1000);
-}
-
 function parseMarkerMsText(raw) {
-  const markers = [];
-  const timecodePattern = /(?:\|\|\s*)?(\d+):([0-5]?\d):([0-5]?\d):(\d{1,3})/g;
-  const textWithoutTimecodes = String(raw || '').replace(timecodePattern, (_match, h, m, s, f) => {
-    markers.push(markerTimecodeToMs(h, m, s, f));
-    return ' ';
-  });
-
-  textWithoutTimecodes
+  return [...new Set(
+    String(raw || '')
       .split(/[\s,;]+/)
-      .map(s => parseFloat(String(s).trim()))
+      .map(s => Math.round(parseFloat(String(s).trim())))
       .filter(n => Number.isFinite(n) && n >= 0)
-      .forEach(n => markers.push(n));
-
-  return [...new Set(markers)].sort((a, b) => a - b);
+  )].sort((a, b) => a - b);
 }
 
 function getStandaloneMarkerTimes() {
@@ -770,30 +708,12 @@ function getStandaloneMarkerTimes() {
 }
 
 function getStandaloneProjectMeta(markers) {
-  const readInt = (id, fallback, min = 1, max = Infinity) => {
-    const n = parseInt(document.getElementById(id)?.value || String(fallback), 10);
-    return Math.max(min, Math.min(max, Number.isFinite(n) ? n : fallback));
-  };
-  const title = (document.getElementById('standaloneTitle')?.value || 'Beat Markers').trim() || 'Beat Markers';
-  const markerPrefix = (document.getElementById('standaloneMarkerPrefix')?.value || 'Beat').trim() || 'Beat';
-  const padding = readInt('standaloneDurationPadding', 1000, 0);
-  const lastMarkerDuration = (markers[markers.length - 1] || 0) + padding;
-  const audioDuration = getTimelineAudioDurationMs();
-  const durationMode = document.getElementById('standaloneDurationMode')?.value || 'markers';
-  let duration = lastMarkerDuration;
-  if (durationMode === 'audio') duration = Math.max(audioDuration, lastMarkerDuration);
-  if (durationMode === 'custom') duration = Math.max(readInt('standaloneCustomDuration', 18000, 100), (markers[markers.length - 1] || 0) + 1);
-  return {
-    fps: readInt('standaloneFps', 60, 1, 240),
-    title,
-    width: readInt('standaloneWidth', 1080),
-    height: readInt('standaloneHeight', 1920),
-    exportWidth: readInt('standaloneExportWidth', 1080),
-    exportHeight: readInt('standaloneExportHeight', 1920),
-    bgColor: document.getElementById('standaloneBgColor')?.value || '#000000',
-    duration: Math.max(1000, duration),
-    markerPrefix
-  };
+  const fpsInput = document.getElementById('standaloneFps');
+  const titleInput = document.getElementById('standaloneTitle');
+  const fps = Math.max(1, Math.min(240, parseInt(fpsInput?.value || '60', 10) || 60));
+  const title = (titleInput?.value || 'Beat Markers').trim() || 'Beat Markers';
+  const duration = Math.max(1000, (markers[markers.length - 1] || 0) + 1000);
+  return { fps, title, duration };
 }
 
 function updateStandaloneMarkerStatus(markers) {
@@ -807,31 +727,25 @@ function updateStandaloneMarkerStatus(markers) {
 }
 
 function buildMarkerOnlyAlightXml(markers) {
-  const meta = getStandaloneProjectMeta(markers);
+  const { fps, title, duration } = getStandaloneProjectMeta(markers);
   const doc = document.implementation.createDocument('', 'scene', null);
   const scene = doc.documentElement;
-  applyStandaloneSettingsToScene(scene, markers);
+  scene.setAttribute('title', title);
+  scene.setAttribute('width', '1080');
+  scene.setAttribute('height', '1920');
+  scene.setAttribute('exportWidth', '1080');
+  scene.setAttribute('exportHeight', '1920');
+  scene.setAttribute('fps', String(fps));
+  scene.setAttribute('duration', String(duration));
+  scene.setAttribute('totalTime', String(duration));
+  scene.setAttribute('bgcolor', '#000000');
   markers.forEach((t, i) => {
     const bookmark = doc.createElement('bookmark');
     bookmark.setAttribute('t', String(t));
-    bookmark.setAttribute('name', `${meta.markerPrefix} ${i + 1}`);
+    bookmark.setAttribute('name', `Beat ${i + 1}`);
     scene.appendChild(bookmark);
   });
   return doc;
-}
-
-function applyStandaloneSettingsToScene(scene, markers) {
-  const meta = getStandaloneProjectMeta(markers);
-  scene.setAttribute('title', meta.title);
-  scene.setAttribute('width', String(meta.width));
-  scene.setAttribute('height', String(meta.height));
-  scene.setAttribute('exportWidth', String(meta.exportWidth));
-  scene.setAttribute('exportHeight', String(meta.exportHeight));
-  scene.setAttribute('fps', String(meta.fps));
-  scene.setAttribute('duration', String(meta.duration));
-  scene.setAttribute('totalTime', String(meta.duration));
-  scene.setAttribute('bgcolor', meta.bgColor);
-  return meta;
 }
 
 function serializeXmlDocument(doc) {
@@ -851,7 +765,6 @@ function downloadXmlText(output, downloadName) {
 }
 
 function addBookmarksToScene(scene, markers) {
-  const meta = applyStandaloneSettingsToScene(scene, markers);
   Array.from(scene.children)
     .filter(el => (el.localName || el.tagName) === 'bookmark')
     .forEach(el => el.remove());
@@ -859,8 +772,13 @@ function addBookmarksToScene(scene, markers) {
   markers.forEach((t, i) => {
     const bookmark = doc.createElement('bookmark');
     bookmark.setAttribute('t', String(t));
-    bookmark.setAttribute('name', `${meta.markerPrefix} ${i + 1}`);
+    bookmark.setAttribute('name', `Beat ${i + 1}`);
     scene.appendChild(bookmark);
+  });
+  const duration = Math.max(1000, (markers[markers.length - 1] || 0) + 1000);
+  ['duration', 'totalTime'].forEach(attr => {
+    const current = parseInt(scene.getAttribute(attr) || '0', 10) || 0;
+    if (!current || current < duration) scene.setAttribute(attr, String(duration));
   });
 }
 
@@ -869,8 +787,7 @@ function downloadMarkerXml() {
   if (!markers.length) return;
   updateStandaloneMarkerStatus(markers);
   const doc = buildMarkerOnlyAlightXml(markers);
-  const safeTitle = (getStandaloneProjectMeta(markers).title || 'alight-beat-markers').replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '') || 'alight-beat-markers';
-  downloadXmlText(serializeXmlDocument(doc), `${safeTitle}-alight.xml`);
+  downloadXmlText(serializeXmlDocument(doc), 'alight-beat-markers.xml');
   showToast(`Downloaded ${markers.length} marker(s) as Alight XML`, 'success');
 }
 
@@ -900,7 +817,6 @@ function applyStandaloneMarkersToLoadedXml() {
   }
   addBookmarksToScene(scene, markers);
   beatMarkers = markers;
-  if (typeof timelineSetMarkers === 'function') timelineSetMarkers(markers, true);
   categoryStartMarkerIndex = 1;
   syncBeatRoleOverrides(false);
   renderRoleAssignmentPanel();
@@ -912,425 +828,12 @@ function copyStandaloneMarkersToBeatTools() {
   if (!markers.length) return;
   updateStandaloneMarkerStatus(markers);
   beatMarkers = markers;
-  if (typeof timelineSetMarkers === 'function') timelineSetMarkers(markers, true);
   categoryStartMarkerIndex = 1;
   syncBeatRoleOverrides(false);
   const aeMarkerInput = document.getElementById('aeMarkerMsList');
   if (aeMarkerInput) aeMarkerInput.value = markers.join('\n');
   renderRoleAssignmentPanel();
   showToast(`Loaded ${markers.length} marker(s) into beat tools`, 'success');
-}
-
-// ---------------------------------------------------------
-// LOCAL MP3 TIMELINE SYNC
-// ---------------------------------------------------------
-const timelineState = {
-  markers: [],
-  selectedId: null,
-  nextId: 1,
-  draggingId: null,
-  audioUrl: '',
-  peaks: [],
-  raf: 0,
-  playbackAnchorMs: 0,
-  playbackAnchorAt: 0
-};
-
-function getTimelineAudio() {
-  return document.getElementById('timelineAudio');
-}
-
-function getTimelineAudioDurationMs() {
-  const audio = getTimelineAudio();
-  return audio && Number.isFinite(audio.duration) ? Math.round(audio.duration * 1000) : 0;
-}
-
-function getTimelineDurationMs() {
-  const markers = timelineState.markers;
-  const last = markers.length ? markers[markers.length - 1].t + 1000 : 0;
-  const custom = parseInt(document.getElementById('standaloneCustomDuration')?.value || '0', 10) || 0;
-  return Math.max(1000, getTimelineAudioDurationMs(), last, custom);
-}
-
-function timelineSyncPlaybackClock() {
-  const audio = getTimelineAudio();
-  timelineState.playbackAnchorMs = (audio?.currentTime || 0) * 1000;
-  timelineState.playbackAnchorAt = performance.now();
-}
-
-function timelinePlayheadMs() {
-  const audio = getTimelineAudio();
-  if (!audio) return 0;
-  if (audio.paused || audio.ended || !timelineState.playbackAnchorAt) {
-    return audio.currentTime * 1000;
-  }
-  const elapsed = (performance.now() - timelineState.playbackAnchorAt) * (audio.playbackRate || 1);
-  return Math.min(getTimelineDurationMs(), timelineState.playbackAnchorMs + elapsed);
-}
-
-function timelineSortMarkers() {
-  timelineState.markers.sort((a, b) => a.t - b.t || a.id - b.id);
-}
-
-function timelineClamp(ms) {
-  return Math.max(0, Math.min(getTimelineDurationMs(), Math.round(ms || 0)));
-}
-
-function timelineSetMarkers(markers, selectFirst = true) {
-  timelineState.markers = markers.map(t => ({ id: timelineState.nextId++, t: timelineClamp(t) }));
-  timelineSortMarkers();
-  timelineState.selectedId = selectFirst ? (timelineState.markers[0]?.id || null) : timelineState.selectedId;
-  timelineRenderAll();
-}
-
-function timelineMarkersAsMs() {
-  timelineSortMarkers();
-  return timelineState.markers.map(m => m.t);
-}
-
-function timelinePushToConverter() {
-  const markers = timelineMarkersAsMs();
-  const input = document.getElementById('standaloneMarkerMsList');
-  if (input) input.value = markers.join('\n');
-  updateStandaloneMarkerStatus(markers);
-  beatMarkers = markers;
-  categoryStartMarkerIndex = 1;
-  syncBeatRoleOverrides(false);
-  const aeMarkerInput = document.getElementById('aeMarkerMsList');
-  if (aeMarkerInput) aeMarkerInput.value = markers.join('\n');
-  renderRoleAssignmentPanel();
-  showToast(`Synced ${markers.length} marker(s) to converter and beat tools`, 'success');
-}
-
-function timelineAddMarker(ms, selectIt = true) {
-  const marker = { id: timelineState.nextId++, t: timelineClamp(ms) };
-  timelineState.markers.push(marker);
-  timelineSortMarkers();
-  if (selectIt) timelineState.selectedId = marker.id;
-  timelineRenderAll();
-  return marker;
-}
-
-function timelineSelectedMarker() {
-  return timelineState.markers.find(m => m.id === timelineState.selectedId) || null;
-}
-
-function timelineTapBeat() {
-  const audio = getTimelineAudio();
-  if (!audio || !Number.isFinite(audio.currentTime)) {
-    showToast('Import an MP3 first', 'error');
-    return;
-  }
-  timelineAddMarker(audio.currentTime * 1000, true);
-  timelinePushToConverter();
-}
-
-function timelineAddAtPlayhead() {
-  const audio = getTimelineAudio();
-  timelineAddMarker((audio?.currentTime || 0) * 1000, true);
-  timelinePushToConverter();
-}
-
-function timelineSetSelectedToPlayhead() {
-  const marker = timelineSelectedMarker();
-  if (!marker) {
-    timelineAddAtPlayhead();
-    return;
-  }
-  const audio = getTimelineAudio();
-  marker.t = timelineClamp((audio?.currentTime || 0) * 1000);
-  timelineRenderAll();
-  timelinePushToConverter();
-}
-
-function timelineNudgeSelected(delta) {
-  const marker = timelineSelectedMarker();
-  if (!marker) return;
-  marker.t = timelineClamp(marker.t + delta);
-  timelineRenderAll();
-  timelinePushToConverter();
-}
-
-function timelineClearMarkers() {
-  timelineState.markers = [];
-  timelineState.selectedId = null;
-  timelineRenderAll();
-  timelinePushToConverter();
-}
-
-function timelineSelectMarker(id) {
-  timelineState.selectedId = id;
-  timelineRenderAll();
-}
-
-function timelineSetMarkerTime(id, value) {
-  const marker = timelineState.markers.find(m => m.id === id);
-  if (!marker) return;
-  marker.t = timelineClamp(parseInt(value || '0', 10) || 0);
-  timelineState.selectedId = id;
-  timelineRenderAll();
-  timelinePushToConverter();
-}
-
-function timelineDeleteMarker(id) {
-  timelineState.markers = timelineState.markers.filter(m => m.id !== id);
-  if (timelineState.selectedId === id) timelineState.selectedId = timelineState.markers[0]?.id || null;
-  timelineRenderAll();
-  timelinePushToConverter();
-}
-
-function timelineSeekToMarker(id) {
-  const marker = timelineState.markers.find(m => m.id === id);
-  const audio = getTimelineAudio();
-  if (!marker || !audio) return;
-  audio.currentTime = marker.t / 1000;
-  timelineState.selectedId = id;
-  timelineRenderAll();
-}
-
-function timelineRenderAll() {
-  timelineSortMarkers();
-  timelineDraw();
-  timelineRenderList();
-  timelineUpdateReadout();
-}
-
-function timelineUpdateReadout() {
-  const current = Math.round(timelinePlayheadMs());
-  const duration = getTimelineDurationMs();
-  const selected = timelineSelectedMarker();
-  const timeEl = document.getElementById('timelineTimeReadout');
-  const selectedEl = document.getElementById('timelineSelectedReadout');
-  if (timeEl) timeEl.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
-  if (selectedEl) selectedEl.textContent = selected ? `Selected: ${formatTime(selected.t)}` : 'Selected: none';
-}
-
-function timelineRenderList() {
-  const list = document.getElementById('timelineMarkerList');
-  if (!list) return;
-  if (!timelineState.markers.length) {
-    list.innerHTML = '<div class="converter-status">No timeline markers yet.</div>';
-    return;
-  }
-  list.innerHTML = timelineState.markers.map((m, i) => `
-    <div class="timeline-marker-row ${m.id === timelineState.selectedId ? 'active' : ''}" onclick="timelineSelectMarker(${m.id})">
-      <span>#${i + 1}</span>
-      <input type="number" min="0" step="1" value="${m.t}" onclick="event.stopPropagation()" onchange="timelineSetMarkerTime(${m.id}, this.value)">
-      <button type="button" onclick="event.stopPropagation(); timelineSeekToMarker(${m.id})">Seek</button>
-      <button type="button" onclick="event.stopPropagation(); timelineDeleteMarker(${m.id})">Del</button>
-    </div>
-  `).join('');
-}
-
-function timelineCanvasMsFromEvent(ev) {
-  const canvas = document.getElementById('beatTimeline');
-  const rect = canvas.getBoundingClientRect();
-  const x = Math.max(0, Math.min(rect.width, ev.clientX - rect.left));
-  return (x / Math.max(1, rect.width)) * getTimelineDurationMs();
-}
-
-function timelineMarkerNearEvent(ev) {
-  const canvas = document.getElementById('beatTimeline');
-  const rect = canvas.getBoundingClientRect();
-  const duration = getTimelineDurationMs();
-  const x = ev.clientX - rect.left;
-  let best = null;
-  let bestDistance = 12;
-  timelineState.markers.forEach(marker => {
-    const markerX = (marker.t / duration) * rect.width;
-    const distance = Math.abs(markerX - x);
-    if (distance < bestDistance) {
-      best = marker;
-      bestDistance = distance;
-    }
-  });
-  return best;
-}
-
-function timelineDraw() {
-  const canvas = document.getElementById('beatTimeline');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const rect = canvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  const width = Math.max(320, Math.round(rect.width));
-  const height = Math.max(180, Math.round(rect.height));
-  if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-  }
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = '#060a12';
-  ctx.fillRect(0, 0, width, height);
-
-  const duration = getTimelineDurationMs();
-  const seconds = Math.ceil(duration / 1000);
-  const step = seconds > 90 ? 10 : seconds > 35 ? 5 : 1;
-  ctx.strokeStyle = 'rgba(255,255,255,.08)';
-  ctx.fillStyle = 'rgba(232,238,248,.58)';
-  ctx.font = '11px JetBrains Mono, monospace';
-  for (let s = 0; s <= seconds; s += step) {
-    const x = (s * 1000 / duration) * width;
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, height);
-    ctx.stroke();
-    ctx.fillText(`${s}s`, x + 4, 15);
-  }
-
-  const mid = height / 2;
-  if (timelineState.peaks.length) {
-    ctx.strokeStyle = 'rgba(56,189,248,.78)';
-    ctx.beginPath();
-    for (let x = 0; x < width; x++) {
-      const peak = timelineState.peaks[Math.floor((x / width) * timelineState.peaks.length)] || 0;
-      const y = peak * height * .36;
-      ctx.moveTo(x, mid - y);
-      ctx.lineTo(x, mid + y);
-    }
-    ctx.stroke();
-  } else {
-    ctx.fillStyle = 'rgba(255,255,255,.08)';
-    ctx.fillRect(0, mid - 2, width, 4);
-  }
-
-  timelineState.markers.forEach((marker, i) => {
-    const x = (marker.t / duration) * width;
-    const active = marker.id === timelineState.selectedId;
-    ctx.strokeStyle = active ? '#34d399' : '#fbbf24';
-    ctx.fillStyle = active ? '#34d399' : '#fbbf24';
-    ctx.lineWidth = active ? 3 : 2;
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, height);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(x, 24, active ? 7 : 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = active ? '#d1fae5' : '#fef3c7';
-    ctx.fillText(String(i + 1), x + 7, 38);
-  });
-
-  const playX = Math.min(width, (timelinePlayheadMs() / duration) * width);
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(playX, 0);
-  ctx.lineTo(playX, height);
-  ctx.stroke();
-}
-
-async function timelineDecodeWaveform(file) {
-  timelineState.peaks = [];
-  try {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
-    const context = new AudioContextClass();
-    const buffer = await file.arrayBuffer();
-    const decoded = await context.decodeAudioData(buffer);
-    const data = decoded.getChannelData(0);
-    const buckets = 1400;
-    const block = Math.max(1, Math.floor(data.length / buckets));
-    timelineState.peaks = Array.from({ length: buckets }, (_, i) => {
-      let max = 0;
-      const start = i * block;
-      const end = Math.min(data.length, start + block);
-      for (let j = start; j < end; j++) max = Math.max(max, Math.abs(data[j]));
-      return Math.min(1, max);
-    });
-    await context.close();
-  } catch (err) {
-    timelineState.peaks = [];
-  }
-  timelineDraw();
-}
-
-function initTimelineSync() {
-  const fileInput = document.getElementById('timelineAudioFile');
-  const audio = getTimelineAudio();
-  const canvas = document.getElementById('beatTimeline');
-  if (!fileInput || !audio || !canvas) return;
-
-  fileInput.addEventListener('change', ev => {
-    const file = ev.target.files?.[0];
-    if (!file) return;
-    if (timelineState.audioUrl) URL.revokeObjectURL(timelineState.audioUrl);
-    timelineState.audioUrl = URL.createObjectURL(file);
-    audio.src = timelineState.audioUrl;
-    document.getElementById('timelineFileName').textContent = file.name;
-    timelineDecodeWaveform(file);
-  });
-  audio.addEventListener('loadedmetadata', () => {
-    const custom = document.getElementById('standaloneCustomDuration');
-    if (custom && Number.isFinite(audio.duration)) custom.value = String(Math.ceil(audio.duration * 1000));
-    timelineSyncPlaybackClock();
-    timelineRenderAll();
-  });
-  audio.addEventListener('timeupdate', () => {
-    if (audio.paused) {
-      timelineSyncPlaybackClock();
-      timelineUpdateReadout();
-      timelineDraw();
-    }
-  });
-  audio.addEventListener('play', () => {
-    cancelAnimationFrame(timelineState.raf);
-    timelineSyncPlaybackClock();
-    const tick = () => {
-      timelineDraw();
-      timelineUpdateReadout();
-      if (!audio.paused) timelineState.raf = requestAnimationFrame(tick);
-    };
-    timelineState.raf = requestAnimationFrame(tick);
-  });
-  audio.addEventListener('pause', () => {
-    cancelAnimationFrame(timelineState.raf);
-    timelineSyncPlaybackClock();
-    timelineRenderAll();
-  });
-  audio.addEventListener('ended', () => {
-    cancelAnimationFrame(timelineState.raf);
-    timelineSyncPlaybackClock();
-    timelineRenderAll();
-  });
-  ['seeking', 'seeked', 'ratechange', 'waiting', 'playing'].forEach(eventName => {
-    audio.addEventListener(eventName, timelineSyncPlaybackClock);
-  });
-  canvas.addEventListener('pointerdown', ev => {
-    canvas.setPointerCapture(ev.pointerId);
-    const hit = timelineMarkerNearEvent(ev);
-    if (hit) {
-      timelineState.selectedId = hit.id;
-      timelineState.draggingId = hit.id;
-    } else {
-      const marker = timelineAddMarker(timelineCanvasMsFromEvent(ev), true);
-      timelineState.draggingId = marker.id;
-    }
-    timelineRenderAll();
-  });
-  canvas.addEventListener('pointermove', ev => {
-    if (!timelineState.draggingId) return;
-    const marker = timelineState.markers.find(m => m.id === timelineState.draggingId);
-    if (!marker) return;
-    marker.t = timelineClamp(timelineCanvasMsFromEvent(ev));
-    timelineState.selectedId = marker.id;
-    timelineRenderAll();
-  });
-  canvas.addEventListener('pointerup', () => {
-    timelineState.draggingId = null;
-    timelinePushToConverter();
-  });
-  window.addEventListener('resize', timelineDraw);
-  ['standaloneDurationMode','standaloneCustomDuration','standaloneDurationPadding'].forEach(id => {
-    document.getElementById(id)?.addEventListener('input', timelineRenderAll);
-  });
-  timelineSetMarkers(parseMarkerMsText(document.getElementById('standaloneMarkerMsList')?.value || ''), true);
-  const initialMarkers = timelineMarkersAsMs();
-  beatMarkers = initialMarkers;
-  updateStandaloneMarkerStatus(initialMarkers);
-  syncBeatRoleOverrides(false);
-  renderRoleAssignmentPanel();
 }
 
 // ---------------------------------------------------------
@@ -1355,7 +858,9 @@ function parseXml() {
   mediaLayers = [];
   projectKind = detectProjectKind(xmlDoc, fileName);
   categoryLayerIds = new Set();
+  categoryBLayerIds = new Set();
   winnerLayerIds = new Set();
+  winnerBLayerIds = new Set();
   beatRoleOverrides = [];
 
   if (projectKind === 'ae') {
@@ -1368,10 +873,11 @@ function parseXml() {
     .filter(t => !Number.isNaN(t))
     .sort((a,b) => a - b);
   categoryLayerIds = new Set();
+  categoryBLayerIds = new Set();
   winnerLayerIds = new Set();
+  winnerBLayerIds = new Set();
   categoryStartMarkerIndex = 1;
   syncBeatRoleOverrides(false);
-  if (typeof timelineSetMarkers === 'function') timelineSetMarkers(beatMarkers, true);
 
   const rootScene = xmlDoc.querySelector('scene');
   if (!rootScene) { showToast('No <scene> found in XML. Is it a valid project?', 'error'); return; }
@@ -1532,47 +1038,9 @@ function switchTab(tabId) {
   document.getElementById(`tab-content-${tabId}`).classList.add('active');
 }
 
-function setUtilityPanelCollapsed(panelId, collapsed, persist = true) {
-  const body = document.getElementById(`${panelId}Body`);
-  const toggle = document.getElementById(`${panelId}Toggle`);
-  if (!body || !toggle) return;
-  body.classList.toggle('collapsed', collapsed);
-  toggle.classList.toggle('collapsed', collapsed);
-  toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-  if (persist) {
-    try {
-      localStorage.setItem(`utility-panel-${panelId}`, collapsed ? 'collapsed' : 'open');
-    } catch (_err) {}
-  }
-  if (!collapsed && panelId === 'mp3Timeline') {
-    requestAnimationFrame(() => {
-      if (typeof timelineRenderAll === 'function') timelineRenderAll();
-      else if (typeof timelineDraw === 'function') timelineDraw();
-    });
-  }
-}
-
-function toggleUtilityPanel(panelId) {
-  const body = document.getElementById(`${panelId}Body`);
-  if (!body) return;
-  setUtilityPanelCollapsed(panelId, !body.classList.contains('collapsed'));
-}
-
-function restoreUtilityPanelStates() {
-  ['beatMarkerConverter', 'mp3Timeline'].forEach(panelId => {
-    let state = null;
-    try {
-      state = localStorage.getItem(`utility-panel-${panelId}`);
-    } catch (_err) {}
-    if (state === 'collapsed') setUtilityPanelCollapsed(panelId, true, false);
-  });
-}
-
 function renderEditor() {
   dropZone.classList.add('hidden');
   editor.classList.remove('hidden');
-  document.getElementById('beatMarkerConverterPanel')?.classList.remove('hidden');
-  document.getElementById('mp3TimelinePanel')?.classList.remove('hidden');
   editor.dataset.project = projectKind;
 
   const sceneTitle = projectKind === 'ae'
@@ -1581,12 +1049,11 @@ function renderEditor() {
   const kindLabel = projectKind === 'ae' ? 'After Effects (.aepx)' : 'Alight Motion';
   document.getElementById('fileInfo').innerHTML =
     `<div><strong>${escapeHtml(fileName)}</strong> <span style="color:var(--dim);font-size:.8rem;">(${escapeHtml(kindLabel)})</span></div>
-     <div style="font-size:.85rem;color:var(--dim);">${projectKind === 'ae' ? 'Project' : 'Scene'}: <strong style="color:var(--text)">${escapeHtml(sceneTitle)}</strong> &mdash; drop another file to replace.</div>`;
+     <div style="font-size:.85rem;color:var(--dim);">${projectKind === 'ae' ? 'Project' : 'Scene'}: <strong style="color:var(--text)">${escapeHtml(sceneTitle)}</strong> — drop another file to replace.</div>`;
 
   renderTextsTab();
   renderEffectsTab();
   updatePendingCount();
-  timelineRenderAll();
 }
 
 // ---- TEXTS TAB ----
@@ -1639,7 +1106,7 @@ function renderTextsTab() {
   if (singleCount) statsHtml += `<div class="stat">Singles: <span>${singleCount}</span></div>`;
   const sorted = Object.entries(categories).sort((a,b) => b[1]-a[1]);
   sorted.slice(0, 6).forEach(([k,v]) => {
-    const display = k.length > 14 ? k.slice(0,12)+'...' : k;
+    const display = k.length > 14 ? k.slice(0,12)+'…' : k;
     statsHtml += `<div class="stat">${display}: <span>${v}</span></div>`;
   });
   if (sorted.length > 6) statsHtml += `<div class="stat">+${sorted.length-6} more</div>`;
@@ -1647,7 +1114,7 @@ function renderTextsTab() {
 
   let filterHtml = '<option value="all">All Texts</option>';
   sorted.forEach(([k, v]) => {
-    const display = k.length > 20 ? k.slice(0,18)+'...' : k;
+    const display = k.length > 20 ? k.slice(0,18)+'…' : k;
     filterHtml += `<option value="${encodeForAttr(k)}">Only "${display}" (${v})</option>`;
   });
   document.getElementById('bulkFilter').innerHTML = filterHtml;
@@ -1656,7 +1123,7 @@ function renderTextsTab() {
   let otherHtml = '';
   textPairs.forEach((p, i) => {
     const isDuoName = p.type === 'duo-name';
-    const typeLabel = isDuoName ? 'Duo Names' : p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
+    const typeLabel = isDuoName ? '🎭 Duo Names' : p.type === 'pair' ? 'Duo Pair' : 'Single Layer';
     const typeCls = p.type === 'single' ? ' single-layer' : '';
     
     // Ensure we have values
@@ -1668,19 +1135,19 @@ function renderTextsTab() {
 
     if (p.type === 'pair' || isDuoName) {
       if (p.isLinked && !isDuoName) {
-        linkBtn = `<button class="link-btn" onclick="toggleLink(${i})" title="Linked: Editing will change both layers">Linked</button>`;
+        linkBtn = `<button class="link-btn" onclick="toggleLink(${i})" title="Linked: Editing will change both layers">🔗 Linked</button>`;
         bodyHtml = `
           <div class="pair-body">
             <div class="pair-row">
               <div class="original" title="Layer 1 & 2">${escapeHtml(p.original)}</div>
-              <div class="arrow">&rarr;</div>
+              <div class="arrow">→</div>
               <input type="text" id="input-text-${i}" value="${encodeForAttr(p.currentVal1)}"
                      oninput="onTextEdit(${i})" spellcheck="false" placeholder="Shared Text">
             </div>
           </div>`;
       } else {
         if (!isDuoName) {
-          linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">Unlinked</button>`;
+          linkBtn = `<button class="link-btn unlinked" onclick="toggleLink(${i})" title="Unlinked: Edit layers independently">💔 Unlinked</button>`;
         }
         const orig2Display = p.original2 !== undefined ? p.original2 : p.original;
         const p1Label = isDuoName ? p.label1 : 'Layer 1';
@@ -1689,13 +1156,13 @@ function renderTextsTab() {
           <div class="pair-body unlinked">
             <div class="pair-row" style="margin-bottom:8px;">
               <div class="original" style="border-left:3px solid var(--accent)" title="${escapeHtml(p1Label)}">${escapeHtml(p.original)}</div>
-              <div class="arrow">&rarr;</div>
+              <div class="arrow">→</div>
               <input type="text" id="input-text-${i}-1" value="${encodeForAttr(p.currentVal1)}"
                      oninput="onTextEdit(${i})" spellcheck="false" placeholder="${escapeHtml(p1Label)}">
             </div>
             <div class="pair-row">
               <div class="original" style="border-left:3px solid var(--accent2)" title="${escapeHtml(p2Label)}">${escapeHtml(orig2Display)}</div>
-              <div class="arrow">&rarr;</div>
+              <div class="arrow">→</div>
               <input type="text" id="input-text-${i}-2" value="${encodeForAttr(p.currentVal2)}"
                      oninput="onTextEdit(${i})" spellcheck="false" placeholder="${escapeHtml(p2Label)}">
             </div>
@@ -1707,7 +1174,7 @@ function renderTextsTab() {
         <div class="pair-body">
           <div class="pair-row">
             <div class="original">${escapeHtml(p.original)}</div>
-            <div class="arrow">&rarr;</div>
+            <div class="arrow">→</div>
             <input type="text" id="input-text-${i}" value="${encodeForAttr(p.currentVal1)}"
                    oninput="onTextEdit(${i})" spellcheck="false">
           </div>
@@ -1723,10 +1190,10 @@ function renderTextsTab() {
           ${linkBtn}
           <span class="badge hidden badge-mod" id="badge-text-${i}" style="margin:0;">modified</span>
         </div>
-        <span class="pair-time">${formatTime(p.startTime)} &rarr; ${formatTime(p.endTime)}</span>
+        <span class="pair-time">${formatTime(p.startTime)} → ${formatTime(p.endTime)}</span>
       </div>
       ${bodyHtml}
-      <div class="pair-ids">ID${p.id2 ? 's' : ''}: ${p.id1}${p.id2 ? ', '+p.id2 : ''} &middot; ${p.label1}${p.label2 ? ' + '+p.label2 : ''}</div>
+      <div class="pair-ids">ID${p.id2 ? 's' : ''}: ${p.id1}${p.id2 ? ', '+p.id2 : ''} · ${p.label1}${p.label2 ? ' + '+p.label2 : ''}</div>
     </div>`;
 
     const cleanOrig = p.original.replace(/[^a-zA-Z0-9 ]/g, '').trim();
@@ -1750,13 +1217,13 @@ function renderTextsTab() {
 
   let finalHtml = '';
   if (pinnedHtml) {
-    finalHtml += `<h3 style="margin-top:10px;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px;">Pinned Categories</h3>`;
+    finalHtml += `<h3 style="margin-top:10px;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px;"><span style="font-size:1.3rem;">📌</span> Pinned Categories</h3>`;
     finalHtml += `<div class="pair-grid" style="margin-bottom:32px;">${pinnedHtml}</div>`;
   }
   if (otherHtml) {
     finalHtml += `
       <h3 class="collapsible-header" onclick="toggleOtherTexts()" id="otherTextsBtn">
-        <span class="collapsible-icon">v</span> Other Texts
+        <span class="collapsible-icon">▼</span> <span style="font-size:1.3rem;">📝</span> Other Texts
       </h3>
       <div class="collapsible-content" id="otherTextsContent">
         <div class="collapsible-content-inner">
@@ -1808,20 +1275,13 @@ function setBeatRoleOverride(markerIndex, role) {
 }
 
 function toggleLayerRole(layerId, role, checked) {
-  if (role === 'category') {
-    if (checked) {
-      categoryLayerIds.add(layerId);
-      winnerLayerIds.delete(layerId);
-    } else {
-      categoryLayerIds.delete(layerId);
-    }
+  const roleSet = getRoleSet(role);
+  if (!roleSet) return;
+  if (checked) {
+    removeLayerFromAllRoles(layerId);
+    roleSet.add(layerId);
   } else {
-    if (checked) {
-      winnerLayerIds.add(layerId);
-      categoryLayerIds.delete(layerId);
-    } else {
-      winnerLayerIds.delete(layerId);
-    }
+    roleSet.delete(layerId);
   }
   renderRoleAssignmentPanel();
   renderEffectsTab();
@@ -1889,19 +1349,16 @@ function renderRoleAssignmentPanel() {
       <div class="role-item">
         <div class="role-item-info">
           <div class="role-item-title">${escapeHtml(layer.label)}</div>
-          <div class="role-item-meta">${layer.tagName.toUpperCase()} &middot; ID ${escapeHtml(layer.id)}</div>
+          <div class="role-item-meta">${layer.tagName.toUpperCase()} · ID ${escapeHtml(layer.id)}</div>
         </div>
         <div class="role-checks">
-          <label>
-            <input type="checkbox" ${categoryLayerIds.has(layer.id) ? 'checked' : ''}
-                   onchange="toggleLayerRole('${encodeForJsString(layer.id)}','category', this.checked)">
-            Category
-          </label>
-          <label>
-            <input type="checkbox" ${winnerLayerIds.has(layer.id) ? 'checked' : ''}
-                   onchange="toggleLayerRole('${encodeForJsString(layer.id)}','winner', this.checked)">
-            Winner
-          </label>
+          ${MEDIA_ROLE_ORDER.map(role => `
+            <label>
+              <input type="checkbox" ${getRoleSet(role).has(layer.id) ? 'checked' : ''}
+                     onchange="toggleLayerRole('${encodeForJsString(layer.id)}','${role}', this.checked)">
+              ${MEDIA_ROLE_DEFS[role].shortLabel}
+            </label>
+          `).join('')}
         </div>
       </div>
     `).join('');
@@ -1910,10 +1367,11 @@ function renderRoleAssignmentPanel() {
   const modeHint = shakeUsageEnabled
     ? 'Shake usage is on: each marker uses the role selected above.'
     : 'Shake usage is off: markers follow Category, Winner, Category, Winner from the selected start marker.';
-  hint.textContent = `Selected: ${categoryLayerIds.size} category layer(s), ${winnerLayerIds.size} winner layer(s). A layer can only belong to one role. ${modeHint}`;
+  hint.textContent = `Selected: ${categoryLayerIds.size} Category A, ${categoryBLayerIds.size} Category B, ${winnerLayerIds.size} Winner A, ${winnerBLayerIds.size} Winner B. A layer can only belong to one role. ${modeHint}`;
 
   if (!beatMarkers.length) {
     beatPreview.innerHTML = '';
+    renderGeneratedBeatPanel();
     return;
   }
 
@@ -1930,6 +1388,158 @@ function renderRoleAssignmentPanel() {
     }
   }
   beatPreview.innerHTML = chips;
+  renderGeneratedBeatPanel();
+}
+
+function generatedRoleToken(role) {
+  return getRoleLabel(role).replace(/\s+/g, ' ');
+}
+
+function labelWithGeneratedTag(label, role, beatIndex, beatMs, counter) {
+  const cleanLabel = String(label || '').replace(/\s*\[(Category|Winner)(\s+[AB])?\s+beat\s+#?\d+.*?\]\s*$/i, '');
+  return `${cleanLabel} [${generatedRoleToken(role)} beat #${beatIndex + 1} ${beatMs}ms #${counter}]`;
+}
+
+function tagGeneratedLayer(el, role, beatIndex, beatMs, sourceId, sourceLabel) {
+  el.setAttribute('data-duo-generated', 'true');
+  el.setAttribute('data-duo-role', role);
+  el.setAttribute('data-duo-beat-index', String(beatIndex));
+  el.setAttribute('data-duo-beat-ms', String(beatMs));
+  el.setAttribute('data-duo-source-id', sourceId || '');
+  el.setAttribute('data-duo-source-label', sourceLabel || '');
+  el.setAttribute('data-duo-visible', 'true');
+}
+
+function roleFromGeneratedLabel(label) {
+  const text = String(label || '');
+  if (/\bCategory\s+B\s+beat\b/i.test(text)) return 'categoryB';
+  if (/\bCategory(\s+A)?\s+beat\b/i.test(text)) return 'categoryA';
+  if (/\bWinner\s+B\s+beat\b/i.test(text)) return 'winnerB';
+  if (/\bWinner(\s+A)?\s+beat\b/i.test(text)) return 'winnerA';
+  return '';
+}
+
+function generatedInfoFromLayer(layer) {
+  if (!layer || !layer.el) return null;
+  const el = layer.el;
+  const tagged = el.getAttribute('data-duo-generated') === 'true';
+  const role = el.getAttribute('data-duo-role') || roleFromGeneratedLabel(layer.label);
+  if (!role || !MEDIA_ROLE_DEFS[role]) return null;
+
+  let beatIndex = parseInt(el.getAttribute('data-duo-beat-index') || '', 10);
+  if (Number.isNaN(beatIndex)) {
+    const beatMsAttr = parseInt(el.getAttribute('data-duo-beat-ms') || '', 10);
+    const labelMatch = String(layer.label || '').match(/\bbeat\s+#?(\d+)?\s*([0-9]+)?ms/i);
+    if (labelMatch && labelMatch[1]) beatIndex = parseInt(labelMatch[1], 10) - 1;
+    if (Number.isNaN(beatIndex) && !Number.isNaN(beatMsAttr)) beatIndex = beatMarkers.indexOf(beatMsAttr);
+    if (Number.isNaN(beatIndex) && labelMatch && labelMatch[2]) beatIndex = beatMarkers.indexOf(parseInt(labelMatch[2], 10));
+  }
+
+  if (Number.isNaN(beatIndex) || beatIndex < 0) return null;
+  return { role, beatIndex, tagged };
+}
+
+function generatedLayersForBeatSlot(beatIndex, role) {
+  const taggedLayers = mediaLayers.filter(layer => {
+    const info = generatedInfoFromLayer(layer);
+    return info && info.beatIndex === beatIndex && info.role === role;
+  });
+  if (projectKind !== 'am' || beatMarkers[beatIndex] === undefined) return taggedLayers;
+
+  const targetStart = beatMarkers[beatIndex];
+  const roleSet = getRoleSet(role);
+  mediaLayers.forEach(layer => {
+    if (!roleSet.has(layer.id)) return;
+    const start = +(layer.el.getAttribute('startTime') || 0);
+    if (start === targetStart && !taggedLayers.includes(layer)) taggedLayers.push(layer);
+  });
+  return taggedLayers;
+}
+
+function isGeneratedLayerVisible(layer) {
+  const el = layer && layer.el;
+  if (!el) return false;
+  return el.getAttribute('data-duo-visible') !== 'false' && el.getAttribute('hidden') !== 'true';
+}
+
+function setGeneratedLayerVisible(layer, visible) {
+  const el = layer && layer.el;
+  if (!el) return;
+  if (visible) {
+    el.removeAttribute('hidden');
+    el.setAttribute('data-duo-visible', 'true');
+  } else {
+    el.setAttribute('hidden', 'true');
+    el.setAttribute('data-duo-visible', 'false');
+  }
+}
+
+function generatedSlotState(beatIndex, role) {
+  const beatRole = getBeatRole(beatIndex);
+  if (getRoleBase(role) !== beatRole) return '-';
+  const layers = generatedLayersForBeatSlot(beatIndex, role);
+  if (!layers.length) return 'Missing';
+  const visible = layers.filter(isGeneratedLayerVisible).length;
+  if (!visible) return 'Off';
+  if (visible === layers.length) return 'On';
+  return 'Mix';
+}
+
+function setGeneratedBeatMediaVisible(beatIndex, role, visible) {
+  const layers = generatedLayersForBeatSlot(beatIndex, role);
+  if (!layers.length) {
+    showToast(`${getRoleLabel(role)} media is missing on beat #${beatIndex + 1}`, 'error');
+    renderGeneratedBeatPanel();
+    return;
+  }
+  layers.forEach(layer => setGeneratedLayerVisible(layer, visible));
+  xmlText = new XMLSerializer().serializeToString(xmlDoc);
+  renderGeneratedBeatPanel();
+  renderEffectsTab();
+  showToast(`${getRoleLabel(role)} ${visible ? 'enabled' : 'disabled'} on beat #${beatIndex + 1}`, 'success');
+}
+
+function renderGeneratedSlot(beatIndex, role) {
+  const state = generatedSlotState(beatIndex, role);
+  const isRelevant = getRoleBase(role) === getBeatRole(beatIndex);
+  const canToggle = isRelevant && state !== 'Missing' && state !== '-';
+  const checked = state === 'On' || state === 'Mix';
+  const cls = state === 'Missing' ? ' missing' : canToggle ? ' active' : '';
+  return `
+    <label class="generated-slot${cls}" title="${getRoleLabel(role)}: ${state}">
+      <span>${MEDIA_ROLE_DEFS[role].shortLabel} <strong>${state}</strong></span>
+      <input type="checkbox" ${checked ? 'checked' : ''} ${canToggle ? '' : 'disabled'}
+             onchange="setGeneratedBeatMediaVisible(${beatIndex}, '${role}', this.checked)">
+    </label>`;
+}
+
+function renderGeneratedBeatPanel() {
+  const panel = document.getElementById('generatedBeatPanel');
+  if (!panel) return;
+
+  if (!beatMarkers.length) {
+    panel.innerHTML = '';
+    return;
+  }
+
+  const rows = beatMarkers.map((t, i) => {
+    const role = getBeatRole(i);
+    if (role !== 'category' && role !== 'winner') return '';
+    return `
+      <div class="generated-beat-row is-${role}">
+        <div class="generated-beat-meta">
+          <div class="generated-beat-title">#${i + 1} ${role.toUpperCase()}</div>
+          <div class="generated-beat-time">${formatTime(t)}</div>
+        </div>
+        ${MEDIA_ROLE_ORDER.map(slot => renderGeneratedSlot(i, slot)).join('')}
+      </div>`;
+  }).filter(Boolean).join('');
+
+  panel.innerHTML = `
+    <h4>Generated beat media</h4>
+    <div class="generated-beat-grid">
+      ${rows || '<div style="color:var(--dim);font-size:.82rem;">No category/winner beats available.</div>'}
+    </div>`;
 }
 
 function getNextNumericLayerId() {
@@ -1941,17 +1551,48 @@ function getNextNumericLayerId() {
   return () => String(nextId++);
 }
 
+function snapshotRoleAssignments() {
+  const describe = id => {
+    const layer = mediaLayers.find(item => item.id === id);
+    return { id, label: layer ? layer.label : '' };
+  };
+  return {
+    categoryA: Array.from(categoryLayerIds).map(describe),
+    categoryB: Array.from(categoryBLayerIds).map(describe),
+    winnerA: Array.from(winnerLayerIds).map(describe),
+    winnerB: Array.from(winnerBLayerIds).map(describe)
+  };
+}
+
+function restoreRoleAssignments(snapshot) {
+  if (!snapshot) return;
+  const validIds = new Set(mediaLayers.map(layer => layer.id));
+  const restoreSet = items => new Set(Array.from(items || []).map(item => {
+    if (typeof item === 'string') return validIds.has(item) ? item : '';
+    if (item && validIds.has(item.id)) return item.id;
+    const byLabel = item && item.label
+      ? mediaLayers.find(layer => layer.label === item.label && !generatedInfoFromLayer(layer))
+      : null;
+    return byLabel ? byLabel.id : '';
+  }).filter(Boolean));
+  categoryLayerIds = restoreSet(snapshot.categoryA);
+  categoryBLayerIds = restoreSet(snapshot.categoryB);
+  winnerLayerIds = restoreSet(snapshot.winnerA);
+  winnerBLayerIds = restoreSet(snapshot.winnerB);
+}
+
 function duplicateRoleLayersAcrossBeats() {
   if (!xmlDoc || !beatMarkers.length) {
     showToast('Load an XML with beat markers first', 'error');
     return;
   }
-  if (!categoryLayerIds.size && !winnerLayerIds.size) {
-    showToast('Select Category/Winner layers first', 'error');
+  if (!anyRoleLayerSelected()) {
+    showToast('Select Category A/B or Winner A/B layers first', 'error');
     return;
   }
+  const roleSnapshot = snapshotRoleAssignments();
 
-  // AE (.aepx) path
+  // ── AE (.aepx) path ──────────────────────────────────────────
   // Layr elements live inside a composition (Comp) element. We
   // clone role layers and insert them into the same parent Comp
   // once per matching beat marker. AE XML does not use startTime /
@@ -1959,7 +1600,7 @@ function duplicateRoleLayersAcrossBeats() {
   // let the user position them in AE itself.
   if (projectKind === 'ae') {
     const selectedLayers = mediaLayers.filter(
-      l => categoryLayerIds.has(l.id) || winnerLayerIds.has(l.id)
+      l => MEDIA_ROLE_ORDER.some(role => getRoleSet(role).has(l.id))
     );
     if (!selectedLayers.length) {
       showToast('No role layers selected', 'error');
@@ -1969,27 +1610,28 @@ function duplicateRoleLayersAcrossBeats() {
     const roleMarkerTimes = { category: [], winner: [] };
     beatMarkers.forEach((t, i) => {
       const role = getBeatRole(i);
-      if (role === 'category' || role === 'winner') roleMarkerTimes[role].push(t);
+      if (role === 'category' || role === 'winner') roleMarkerTimes[role].push({ t, index: i });
     });
 
     // Generate unique incrementing indices for cloned Layr nm (name) attributes
     let cloneCounter = 1;
     let duplicated = 0;
 
-    const processRole = (layers, role) => {
-      const targets = roleMarkerTimes[role];
+    const processRole = (layers, mediaRole) => {
+      const targets = roleMarkerTimes[getRoleBase(mediaRole)];
       if (!layers.length || !targets.length) return;
-      targets.forEach(beatMs => {
+      targets.forEach(target => {
         layers.forEach(layer => {
           const parent = layer.el.parentNode;
           if (!parent) return;
           const clone = layer.el.cloneNode(true);
+          tagGeneratedLayer(clone, mediaRole, target.index, target.t, layer.id, layer.label);
 
-          // Tag the clone so it is identifiable by appending the beat time to nm.
+          // Tag the clone so it's identifiable — append beat time to nm
           const nmEls = clone.getElementsByTagName('string');
           if (nmEls.length > 0) {
             const orig = nmEls[0].textContent || '';
-            nmEls[0].textContent = orig + ' [beat ' + beatMs + 'ms #' + cloneCounter + ']';
+            nmEls[0].textContent = labelWithGeneratedTag(orig, mediaRole, target.index, target.t, cloneCounter);
           }
           cloneCounter++;
 
@@ -2004,8 +1646,9 @@ function duplicateRoleLayersAcrossBeats() {
       });
     };
 
-    processRole(selectedLayers.filter(l => categoryLayerIds.has(l.id)), 'category');
-    processRole(selectedLayers.filter(l => winnerLayerIds.has(l.id)), 'winner');
+    MEDIA_ROLE_ORDER.forEach(role => {
+      processRole(selectedLayers.filter(l => getRoleSet(role).has(l.id)), role);
+    });
 
     if (!duplicated) {
       showToast('No new duplicates were needed', 'error');
@@ -2015,49 +1658,29 @@ function duplicateRoleLayersAcrossBeats() {
     const serializer = new XMLSerializer();
     xmlText = serializer.serializeToString(xmlDoc);
     parseXml();
+    restoreRoleAssignments(roleSnapshot);
+    renderRoleAssignmentPanel();
+    renderEffectsTab();
     showToast(`Duplicated ${duplicated} AE layer(s) across beat markers. Re-position them in After Effects.`, 'success');
     return;
   }
 
-  // Alight Motion (.xml) path
+  // ── Alight Motion (.xml) path ────────────────────────────────
   const scene = xmlDoc.querySelector('scene');
   if (!scene) {
     showToast('No scene found in XML', 'error');
     return;
   }
 
-  const originalSceneEnd = Math.max(
-    +(scene.getAttribute('totalTime') || 0),
-    +(scene.getAttribute('duration') || 0)
-  );
-  const markerSpans = beatMarkers.map((t, i) => {
-    const nextMarker = beatMarkers.find((candidate, candidateIndex) => candidateIndex > i && candidate > t);
-    const fallbackEnd = originalSceneEnd > t ? originalSceneEnd : t + 1;
-    const rawEnd = nextMarker != null ? nextMarker : fallbackEnd;
-    // Alight can show a layer on its exact end millisecond, so stop just before the next beat.
-    const renderEnd = nextMarker != null ? Math.max(t + 1, rawEnd - 1) : rawEnd;
-    return {
-      time: t,
-      end: renderEnd,
-      rawEnd
-    };
-  });
-  const requiredSceneEnd = markerSpans.reduce((max, span) => Math.max(max, span.rawEnd), originalSceneEnd);
-  if (requiredSceneEnd > originalSceneEnd) {
-    scene.setAttribute('totalTime', String(requiredSceneEnd));
-    scene.setAttribute('duration', String(requiredSceneEnd));
-  }
   const roleMarkerTimes = { category: [], winner: [] };
   beatMarkers.forEach((t, i) => {
     const role = getBeatRole(i);
-    if (role === 'category' || role === 'winner') roleMarkerTimes[role].push(markerSpans[i]);
+    if (role === 'category' || role === 'winner') roleMarkerTimes[role].push({ t, index: i });
   });
 
-  const selectedCategoryLayers = mediaLayers.filter(l => categoryLayerIds.has(l.id));
-  const selectedWinnerLayers = mediaLayers.filter(l => winnerLayerIds.has(l.id));
   const makeId = getNextNumericLayerId();
+  const totalTime = +(scene.getAttribute('totalTime') || 0);
   let duplicated = 0;
-  let adjusted = 0;
   const timelineChildren = Array.from(scene.children).filter(el => el.hasAttribute('startTime'));
 
   const findInsertionAnchor = (targetStart) => {
@@ -2069,30 +1692,26 @@ function duplicateRoleLayersAcrossBeats() {
     return anchor;
   };
 
-  const buildRolePlans = (layers, role) => {
-    const targets = roleMarkerTimes[role];
+  const buildRolePlans = (layers, mediaRole) => {
+    const targets = roleMarkerTimes[getRoleBase(mediaRole)];
     if (!layers.length || !targets.length) return [];
     const plans = [];
     targets.forEach(target => {
       layers.forEach(layer => {
         const start = +(layer.el.getAttribute('startTime') || 0);
-        const targetEnd = target.end;
-        if (targetEnd <= target.time) return;
-        plans.push({
-          targetStart: target.time,
-          targetEnd,
-          layer,
-          useOriginal: target.time === start
-        });
+        if (target.t === start) return;
+        const end = +(layer.el.getAttribute('endTime') || start);
+        const duration = Math.max(1, end - start);
+        plans.push({ targetStart: target.t, beatIndex: target.index, mediaRole, layer, duration });
       });
     });
     return plans;
   };
 
-  const allPlans = [
-    ...buildRolePlans(selectedCategoryLayers, 'category'),
-    ...buildRolePlans(selectedWinnerLayers, 'winner')
-  ].sort((a, b) => {
+  const allPlans = MEDIA_ROLE_ORDER.reduce((plans, role) => {
+    const layers = mediaLayers.filter(l => getRoleSet(role).has(l.id));
+    return plans.concat(buildRolePlans(layers, role));
+  }, []).sort((a, b) => {
     if (a.targetStart !== b.targetStart) return a.targetStart - b.targetStart;
     return a.layer.index - b.layer.index;
   });
@@ -2108,29 +1727,26 @@ function duplicateRoleLayersAcrossBeats() {
 
     let insertAfter = findInsertionAnchor(t);
     block.forEach(plan => {
-      const targetEl = plan.useOriginal ? plan.layer.el : plan.layer.el.cloneNode(true);
-      if (!plan.useOriginal) targetEl.setAttribute('id', makeId());
-      targetEl.setAttribute('startTime', String(t));
-      targetEl.setAttribute('endTime', String(plan.targetEnd));
-
-      if (plan.useOriginal) {
-        plan.layer.modified = true;
-        adjusted++;
-        return;
-      }
+      const clone = plan.layer.el.cloneNode(true);
+      clone.setAttribute('id', makeId());
+      clone.setAttribute('startTime', String(t));
+      const newEnd = totalTime > 0 ? Math.min(t + plan.duration, totalTime) : (t + plan.duration);
+      clone.setAttribute('endTime', String(newEnd));
+      clone.setAttribute('label', labelWithGeneratedTag(clone.getAttribute('label') || plan.layer.label, plan.mediaRole, plan.beatIndex, t, duplicated + 1));
+      tagGeneratedLayer(clone, plan.mediaRole, plan.beatIndex, t, plan.layer.id, plan.layer.label);
 
       if (insertAfter && insertAfter.parentNode === scene) {
-        scene.insertBefore(targetEl, insertAfter.nextSibling);
+        scene.insertBefore(clone, insertAfter.nextSibling);
       } else {
-        scene.appendChild(targetEl);
+        scene.appendChild(clone);
       }
-      insertAfter = targetEl;
-      timelineChildren.push(targetEl);
+      insertAfter = clone;
+      timelineChildren.push(clone);
       duplicated++;
     });
   }
 
-  if (!duplicated && !adjusted) {
+  if (!duplicated) {
     showToast('No new duplicates were needed', 'error');
     return;
   }
@@ -2138,7 +1754,10 @@ function duplicateRoleLayersAcrossBeats() {
   const serializer = new XMLSerializer();
   xmlText = serializer.serializeToString(xmlDoc);
   parseXml();
-  showToast(`Duplicated ${duplicated} layer(s) and matched ${adjusted} original layer(s) to marker spans`, 'success');
+  restoreRoleAssignments(roleSnapshot);
+  renderRoleAssignmentPanel();
+  renderEffectsTab();
+  showToast(`Duplicated ${duplicated} layer(s) across beat markers`, 'success');
 }
 
 function toggleOtherTexts() {
@@ -2150,7 +1769,7 @@ function toggleOtherTexts() {
   }
 }
 
-// Core update logic does not trigger updatePendingCount (used during bulk init).
+// Core update logic — does not trigger updatePendingCount (used during bulk init)
 function onTextEditSilent(i) {
   const p = textPairs[i];
   const card = document.getElementById(`card-text-${i}`);
@@ -2230,7 +1849,7 @@ function renderEffectsTab() {
   if (projectKind === 'ae') {
     clipContainer.innerHTML = `
       <div class="clipboard-card">
-        <span><strong>After Effects</strong> &mdash; Effect copy/paste is for Alight Motion XML only (.aepx stores effects in binary chunks).</span>
+        <span><strong>After Effects</strong> — Effect copy/paste is for Alight Motion XML only (.aepx stores effects in binary chunks).</span>
       </div>`;
     if (!mediaLayers.length) {
       container.innerHTML = '<div style="color:var(--dim);text-align:center;padding:40px;">No layers found.</div>';
@@ -2238,11 +1857,7 @@ function renderEffectsTab() {
     }
     let htmlAe = '';
     mediaLayers.forEach((layer, i) => {
-      const roleBadge = categoryLayerIds.has(layer.id)
-        ? '<span class="badge" style="background:rgba(52,211,153,.12);color:var(--success);border:1px solid rgba(52,211,153,.35);">Category</span>'
-        : winnerLayerIds.has(layer.id)
-        ? '<span class="badge" style="background:rgba(251,191,36,.1);color:var(--warn);border:1px solid rgba(251,191,36,.35);">Winner</span>'
-        : '';
+      const roleBadge = roleBadgeHtml(layer.id);
       htmlAe += `
       <div class="pair-card">
         <div class="pair-header">
@@ -2262,7 +1877,7 @@ function renderEffectsTab() {
   if (effectClipboard.length) {
     clipContainer.innerHTML = `
       <div class="clipboard-card active">
-         <span><strong>Clipboard</strong> &mdash; ${effectClipboard.length} effect(s) ready to paste.</span>
+         <span><strong>Clipboard</strong> — ${effectClipboard.length} effect(s) ready to paste.</span>
          <button class="btn btn-danger" style="padding:5px 10px;font-size:.7rem;" onclick="clearClipboard()">Clear</button>
       </div>`;
   } else {
@@ -2279,11 +1894,7 @@ function renderEffectsTab() {
 
   let html = '';
   mediaLayers.forEach((layer, i) => {
-    const roleBadge = categoryLayerIds.has(layer.id)
-      ? '<span class="badge" style="background:rgba(52,211,153,.12);color:var(--success);border:1px solid rgba(52,211,153,.35);">Category</span>'
-      : winnerLayerIds.has(layer.id)
-      ? '<span class="badge" style="background:rgba(251,191,36,.1);color:var(--warn);border:1px solid rgba(251,191,36,.35);">Winner</span>'
-      : '';
+    const roleBadge = roleBadgeHtml(layer.id);
     const effBadges = layer.effects.map(eff => {
       const type = eff.getAttribute('id') || eff.getAttribute('type') || 'Unknown';
       return `<span class="badge badge-type">${escapeHtml(type)}</span>`;
@@ -2306,9 +1917,9 @@ function renderEffectsTab() {
         ${hasEffects ? effBadges : '<span style="color:var(--dim);font-size:0.85rem;font-style:italic;">No effects attached</span>'}
       </div>
       <div style="display:flex;gap:8px;">
-        ${hasEffects ? `<button class="btn btn-outline" style="padding:6px 12px;font-size:0.75rem" onclick="copyEffects(${i})">Copy Effects</button>` : ''}
-        ${canPaste ? `<button class="btn btn-success" style="padding:6px 12px;font-size:0.75rem" onclick="pasteEffects(${i})">Paste Effects</button>` : ''}
-        ${hasEffects ? `<button class="btn btn-danger" style="padding:6px 12px;font-size:0.75rem" onclick="clearLayerEffects(${i})">Clear</button>` : ''}
+        ${hasEffects ? `<button class="btn btn-outline" style="padding:6px 12px;font-size:0.75rem" onclick="copyEffects(${i})">📄 Copy Effects</button>` : ''}
+        ${canPaste ? `<button class="btn btn-success" style="padding:6px 12px;font-size:0.75rem" onclick="pasteEffects(${i})">📋 Paste Effects</button>` : ''}
+        ${hasEffects ? `<button class="btn btn-danger" style="padding:6px 12px;font-size:0.75rem" onclick="clearLayerEffects(${i})">🗑 Clear</button>` : ''}
       </div>
     </div>`;
   });
@@ -2468,9 +2079,6 @@ function showToast(msg, type) {
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.remove('show'), 3000);
 }
-restoreUtilityPanelStates();
-initTimelineSync();
 </script>
 </body>
 </html>
-
