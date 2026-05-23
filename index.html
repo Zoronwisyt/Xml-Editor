@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.E. Duo Studio — After Effects XML</title>
+<title>A.E. Duo Studio — Media Preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -232,15 +232,32 @@ body{
 .role-grid::-webkit-scrollbar{width:6px}
 .role-grid::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
 .role-item{
-  display:flex;justify-content:space-between;align-items:center;gap:12px;
-  background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:11px;padding:10px 12px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;gap:10px;backdrop-filter:var(--glass);
 }
-.role-item-info{min-width:0;display:flex;flex-direction:column;gap:2px}
-.role-item-title{font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.role-item-meta{font-size:.72rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
-.role-checks{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.role-checks label{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--dim);cursor:pointer}
-.role-checks input{accent-color:var(--accent);width:15px;height:15px}
+.role-item-info{width:100%;display:flex;flex-direction:column;gap:4px}
+.role-item-title{font-size:.9rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.role-item-meta{font-size:.7rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.role-checks{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  width:100%;margin-top:6px;border-top:1px solid var(--border);padding-top:10px;
+}
+.role-checks label{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--dim);
+  cursor:pointer;padding:6px 2px;background:rgba(0,0,0,.22);
+  border:1px solid var(--border);border-radius:7px;
+  transition:background .2s, border-color .2s, color .2s;
+}
+.role-checks label:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.role-checks label:has(input:checked){
+  background:var(--accent-soft);border-color:rgba(56,189,248,.4);color:var(--accent);
+}
+.role-checks label.role-win:has(input:checked){
+  background:var(--accent2-soft) !important;border-color:rgba(244,114,182,.4) !important;color:var(--accent2) !important;
+}
+.role-checks input{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
 .beat-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .beat-chip{font-size:.7rem;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--dim)}
 .beat-chip.cat{border-color:rgba(52,211,153,.4);color:var(--success)}
@@ -252,22 +269,79 @@ body{
 .beat-role-title{font-size:.8rem;font-weight:700}
 .beat-role-time{font-size:.7rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
 .beat-role-item select{padding:7px 9px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:var(--text);font-family:inherit;font-size:.76rem}
-.generated-beat-panel{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.generated-beat-panel h4{font-size:.88rem;margin-bottom:8px}
-.generated-beat-grid{display:grid;gap:8px;max-height:260px;overflow:auto;padding-right:4px}
+.generated-beat-panel{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.generated-beat-panel h4{font-size:1.05rem;margin-bottom:10px;font-weight:800;color:var(--text)}
+.generated-beat-grid{display:grid;gap:10px;max-height:420px;overflow:auto;padding-right:4px}
 .generated-beat-grid::-webkit-scrollbar{width:6px}
 .generated-beat-grid::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px}
-.generated-beat-row{display:grid;grid-template-columns:minmax(120px,1.1fr) repeat(4,minmax(96px,.8fr));gap:8px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:11px;background:rgba(0,0,0,.22)}
-.generated-beat-row.is-category{border-color:rgba(52,211,153,.24)}
-.generated-beat-row.is-winner{border-color:rgba(251,191,36,.25)}
+.generated-beat-row{display:grid;grid-template-columns:minmax(160px,2fr) 100px minmax(100px,1fr);gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,.22)}
+.generated-beat-row.is-category{border-color:rgba(52,211,153,.3)}
+.generated-beat-row.is-winner{border-color:rgba(251,191,36,.3)}
 .generated-beat-meta{min-width:0}
-.generated-beat-title{font-size:.82rem;font-weight:800}
-.generated-beat-time{font-size:.7rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
-.generated-slot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.2);font-size:.72rem;color:var(--dim)}
-.generated-slot.active{color:var(--text);border-color:rgba(56,189,248,.25)}
-.generated-slot.missing{color:var(--danger);border-color:rgba(248,113,113,.25)}
-.generated-slot input{width:15px;height:15px;accent-color:var(--accent)}
+.generated-beat-title{font-size:.9rem;font-weight:800}
+.generated-beat-time{font-size:.78rem;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-top:3px}
+.generated-slot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:rgba(0,0,0,.2);font-size:.84rem;color:var(--dim)}
+.generated-slot.active{color:var(--text);border-color:rgba(56,189,248,.35)}
+.generated-slot.missing{color:var(--danger);border-color:rgba(248,113,113,.35)}
+.generated-slot input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 .generated-slot input:disabled{opacity:.35}
+
+/* ── Media type / content preview badges ── */
+.media-type-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:7px;font-size:.65rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;
+}
+.media-type-badge.type-shape{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
+.media-type-badge.type-text{background:rgba(56,189,248,.12);color:var(--accent);border:1px solid rgba(56,189,248,.25)}
+.media-type-badge.type-audio{background:rgba(251,191,36,.12);color:var(--warn);border:1px solid rgba(251,191,36,.3)}
+.media-type-badge.type-video{background:rgba(244,114,182,.12);color:var(--accent2);border:1px solid rgba(244,114,182,.25)}
+.media-type-badge.type-image{background:rgba(52,211,153,.12);color:var(--success);border:1px solid rgba(52,211,153,.3)}
+.media-type-badge.type-scene{background:rgba(251,191,36,.08);color:#d4a017;border:1px solid rgba(251,191,36,.2)}
+.media-type-badge.type-unknown{background:rgba(255,255,255,.05);color:var(--dim);border:1px solid var(--border)}
+.media-content-preview{
+  font-size:.72rem;color:var(--dim);font-style:italic;
+  margin-top:2px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  line-height:1.3;
+}
+.media-content-preview .content-value{color:var(--text);font-style:normal;font-weight:500}
+.media-detail-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px}
+.media-shape-icon{font-size:.82rem;line-height:1}
+.media-fill-chip{
+  display:inline-block;padding:2px 7px;border-radius:5px;font-size:.6rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.03em;
+  background:rgba(255,255,255,.06);color:var(--dim);border:1px solid var(--border);
+}
+.media-fill-chip.fill-color{border-color:rgba(139,92,246,.25)}
+.media-fill-chip.fill-media{border-color:rgba(244,114,182,.25);color:var(--accent2)}
+.media-fill-chip.fill-gradient{border-color:rgba(52,211,153,.25);color:var(--success)}
+
+/* ── Prominent Text Content styling ── */
+.media-text-content-display {
+  margin-top: 5px;
+  padding: 6px 10px;
+  background: rgba(56, 189, 248, 0.06);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: block;
+  width: 100%;
+  word-break: break-word;
+  white-space: normal;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+.media-text-content-display .text-quote {
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-family: serif;
+  line-height: 1;
+}
+.media-text-content-display .text-body-val {
+  margin: 0 2px;
+}
 
 @keyframes slideUpFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .animated-card{animation:slideUpFade .45s ease backwards}
@@ -485,6 +559,8 @@ let beatMarkers = [];
 let categoryStartMarkerIndex = 1;
 let shakeUsageEnabled = false;
 let beatRoleOverrides = [];
+let beatSlotVariant = {}; // { beatIndex: 'A' | 'B' } — default 'A'
+let hasDuplicatedBeats = false;
 let categoryLayerIds = new Set();
 let categoryBLayerIds = new Set();
 let winnerLayerIds = new Set();
@@ -498,6 +574,149 @@ const MEDIA_ROLE_DEFS = {
   winnerB: { label: 'Winner B', shortLabel: 'Win B', base: 'winner', color: 'warn' }
 };
 const MEDIA_ROLE_ORDER = ['categoryA', 'categoryB', 'winnerA', 'winnerB'];
+
+// ── Shape name mapping ──
+const SHAPE_NAMES = {
+  '.rect': 'Rectangle',
+  '.ellipse': 'Ellipse',
+  '.circle': 'Circle',
+  '.triangle': 'Triangle',
+  '.star': 'Star',
+  '.pentagon': 'Pentagon',
+  '.hexagon': 'Hexagon',
+  '.line': 'Line',
+  '.arrow': 'Arrow',
+  '.ring': 'Ring',
+  '.roundedrect': 'Rounded Rect',
+  '.polygon': 'Polygon',
+  '.heart': 'Heart',
+  '.cross': 'Cross',
+  '.crescent': 'Crescent',
+};
+const SHAPE_ICONS = {
+  '.rect': '▬', '.ellipse': '⬭', '.circle': '●', '.triangle': '▲',
+  '.star': '★', '.pentagon': '⬠', '.hexagon': '⬡', '.line': '━',
+  '.arrow': '➤', '.ring': '◎', '.roundedrect': '▢', '.polygon': '⬡',
+  '.heart': '♥', '.cross': '✚', '.crescent': '☽',
+};
+
+/**
+ * Inspects a media layer's XML element and returns a structured description
+ * { type, typeLabel, icon, content, fillType, shape, shapeLabel, shapeIcon, timeRange }
+ */
+function getLayerMediaDescription(layer) {
+  const el = layer.el;
+  const tag = (el.tagName || el.localName || '').toLowerCase();
+  const desc = {
+    type: 'unknown',
+    typeLabel: tag.toUpperCase() || 'Unknown',
+    icon: '❓',
+    content: '',
+    fillType: '',
+    shape: '',
+    shapeLabel: '',
+    shapeIcon: '',
+    startTime: +(el.getAttribute('startTime') || 0),
+    endTime: +(el.getAttribute('endTime') || 0),
+  };
+
+  if (tag === 'text') {
+    desc.type = 'text';
+    desc.typeLabel = 'TEXT';
+    desc.icon = '𝐓';
+    const contentEl = el.querySelector('content');
+    desc.content = contentEl ? (contentEl.textContent || '').trim() : '';
+  } else if (tag === 'shape') {
+    desc.type = 'shape';
+    desc.typeLabel = 'SHAPE';
+    desc.icon = '◆';
+    const s = el.getAttribute('s') || '';
+    desc.shape = s;
+    desc.shapeLabel = SHAPE_NAMES[s] || (s ? s.replace(/^\./, '') : 'Custom');
+    desc.shapeIcon = SHAPE_ICONS[s] || '◇';
+    desc.fillType = el.getAttribute('fillType') || '';
+    // If it's a shape with fillType="media", note the media source
+    if (desc.fillType === 'media') {
+      const src = el.getAttribute('fillVideo') || el.getAttribute('fillImage') || '';
+      const fname = src.split('/').pop() || '';
+      desc.content = fname ? fname.slice(0, 30) : 'media fill';
+    }
+  } else if (tag === 'audio') {
+    desc.type = 'audio';
+    desc.typeLabel = 'AUDIO';
+    desc.icon = '🔊';
+    const src = el.getAttribute('src') || '';
+    desc.content = src.split('/').pop() || '';
+  } else if (tag === 'video') {
+    desc.type = 'video';
+    desc.typeLabel = 'VIDEO';
+    desc.icon = '🎬';
+    const src = el.getAttribute('src') || el.getAttribute('uri') || '';
+    desc.content = src.split('/').pop() || '';
+  } else if (tag === 'image') {
+    desc.type = 'image';
+    desc.typeLabel = 'IMAGE';
+    desc.icon = '🖼';
+    const src = el.getAttribute('src') || el.getAttribute('uri') || '';
+    desc.content = src.split('/').pop() || '';
+  } else if (tag === 'embedscene') {
+    desc.type = 'scene';
+    desc.typeLabel = 'SCENE';
+    desc.icon = '🎞';
+    const innerScene = el.querySelector('scene');
+    desc.content = innerScene ? (innerScene.getAttribute('title') || '') : '';
+  } else if (tag === 'layr') {
+    // AE Layr elements
+    desc.type = 'unknown';
+    desc.typeLabel = 'LAYR';
+    desc.icon = '📦';
+  }
+
+  return desc;
+}
+
+/**
+ * Builds an HTML snippet showing the media type badge + content preview
+ * mode: 'compact' for role grid, 'full' for effects tab
+ */
+function mediaDescriptionHtml(layer, mode) {
+  const d = getLayerMediaDescription(layer);
+  let html = '';
+
+  // Type badge
+  html += `<span class="media-type-badge type-${d.type}">`;
+  if (d.type === 'shape' && d.shapeIcon) {
+    html += `<span class="media-shape-icon">${d.shapeIcon}</span> `;
+  }
+  html += `${escapeHtml(d.typeLabel)}`;
+  if (d.type === 'shape' && d.shapeLabel) {
+    html += ` · ${escapeHtml(d.shapeLabel)}`;
+  }
+  html += `</span>`;
+
+  // Fill type chip for shapes
+  if (d.type === 'shape' && d.fillType) {
+    const fillCls = d.fillType === 'media' ? 'fill-media' : d.fillType === 'gradient' ? 'fill-gradient' : 'fill-color';
+    html += ` <span class="media-fill-chip ${fillCls}">${escapeHtml(d.fillType)}</span>`;
+  }
+
+  // Content preview
+  if (d.content) {
+    if (d.type === 'text') {
+      html += `<div class="media-text-content-display" title="${encodeForAttr(d.content)}">` +
+              `<span class="text-quote">“</span>` +
+              `<span class="text-body-val">${escapeHtml(d.content)}</span>` +
+              `<span class="text-quote">”</span>` +
+              `</div>`;
+    } else {
+      const truncated = d.content.length > 40 ? d.content.slice(0, 38) + '…' : d.content;
+      html += `<div class="media-content-preview" title="${encodeForAttr(d.content)}">` +
+              `<span class="content-value">${escapeHtml(truncated)}</span></div>`;
+    }
+  }
+
+  return html;
+}
 
 function getRoleSet(role) {
   if (role === 'category' || role === 'categoryA') return categoryLayerIds;
@@ -571,6 +790,7 @@ function applyAeMarkersFromInput() {
   }
   beatMarkers = nums;
   categoryStartMarkerIndex = 1;
+  beatSlotVariant = {};
   syncBeatRoleOverrides(false);
   renderRoleAssignmentPanel();
   showToast(`Applied ${beatMarkers.length} marker(s)`, 'success');
@@ -678,6 +898,7 @@ if (standaloneMarkerInput) {
 
 function loadFile(file) {
   fileName = file.name;
+  hasDuplicatedBeats = false;
   const reader = new FileReader();
   reader.onload = e => { xmlText = e.target.result; parseXml(); };
   reader.readAsText(file);
@@ -818,6 +1039,7 @@ function applyStandaloneMarkersToLoadedXml() {
   addBookmarksToScene(scene, markers);
   beatMarkers = markers;
   categoryStartMarkerIndex = 1;
+  beatSlotVariant = {};
   syncBeatRoleOverrides(false);
   renderRoleAssignmentPanel();
   showToast(`Applied ${markers.length} bookmark(s) to loaded XML`, 'success');
@@ -829,6 +1051,7 @@ function copyStandaloneMarkersToBeatTools() {
   updateStandaloneMarkerStatus(markers);
   beatMarkers = markers;
   categoryStartMarkerIndex = 1;
+  beatSlotVariant = {};
   syncBeatRoleOverrides(false);
   const aeMarkerInput = document.getElementById('aeMarkerMsList');
   if (aeMarkerInput) aeMarkerInput.value = markers.join('\n');
@@ -877,6 +1100,7 @@ function parseXml() {
   winnerLayerIds = new Set();
   winnerBLayerIds = new Set();
   categoryStartMarkerIndex = 1;
+  beatSlotVariant = {};
   syncBeatRoleOverrides(false);
 
   const rootScene = xmlDoc.querySelector('scene');
@@ -1004,7 +1228,7 @@ function parseXml() {
   });
 
   // 2. EFFECTS & MEDIA PARSING
-  const layerNodes = Array.from(xmlDoc.querySelectorAll('*')).filter(el => {
+  const layerNodes = Array.from(rootScene.children).filter(el => {
     return el.hasAttribute('label') && el.hasAttribute('startTime') && el.tagName !== 'scene';
   });
 
@@ -1023,6 +1247,8 @@ function parseXml() {
   });
 
   mediaLayers.sort((a,b) => +(a.el.getAttribute('startTime')||0) - +(b.el.getAttribute('startTime')||0));
+  normalizeGeneratedBeatLayerDurations();
+  hydrateGeneratedBeatStateFromLayers();
 
   renderEditor();
   showToast('XML loaded successfully!', 'success');
@@ -1244,6 +1470,7 @@ function onCategoryStartMarkerChange(val) {
   const parsed = parseInt(val, 10);
   if (!Number.isNaN(parsed) && parsed >= 1) categoryStartMarkerIndex = parsed;
   syncBeatRoleOverrides(shakeUsageEnabled);
+  applyAllGeneratedBeatVisibility(true);
   renderRoleAssignmentPanel();
 }
 
@@ -1264,6 +1491,7 @@ function syncBeatRoleOverrides(preserveExisting = true) {
 function toggleShakeUsage() {
   shakeUsageEnabled = !shakeUsageEnabled;
   syncBeatRoleOverrides();
+  applyAllGeneratedBeatVisibility(true);
   renderRoleAssignmentPanel();
   showToast(shakeUsageEnabled ? 'Shake usage on: choose each marker role' : 'Shake usage off: using category/winner order', 'success');
 }
@@ -1271,6 +1499,7 @@ function toggleShakeUsage() {
 function setBeatRoleOverride(markerIndex, role) {
   if (role !== 'category' && role !== 'winner') return;
   beatRoleOverrides[markerIndex] = role;
+  applyExclusiveBeatVisibility(markerIndex, true);
   renderRoleAssignmentPanel();
 }
 
@@ -1288,10 +1517,8 @@ function toggleLayerRole(layerId, role, checked) {
 }
 
 function getBeatRole(markerIndex) {
-  if (shakeUsageEnabled) {
-    const override = beatRoleOverrides[markerIndex];
-    return override === 'winner' ? 'winner' : 'category';
-  }
+  const override = beatRoleOverrides[markerIndex];
+  if (override === 'winner' || override === 'category') return override;
   return getAutoBeatRole(markerIndex);
 }
 
@@ -1341,27 +1568,41 @@ function renderRoleAssignmentPanel() {
       : '';
   }
 
-  const eligible = mediaLayers.filter(layer => !!layer.label);
+  const eligible = mediaLayers.filter(layer => !!layer.label).sort((a, b) => {
+    if (projectKind === 'ae') {
+      return a.index - b.index;
+    } else {
+      return b.index - a.index;
+    }
+  });
   if (!eligible.length) {
     roleGrid.innerHTML = '<div style="color:var(--dim);font-size:.85rem;">No labeled media layers available.</div>';
   } else {
-    roleGrid.innerHTML = eligible.map(layer => `
+    roleGrid.innerHTML = eligible.map(layer => {
+      const mediaHtml = mediaDescriptionHtml(layer, 'compact');
+      return `
       <div class="role-item">
         <div class="role-item-info">
-          <div class="role-item-title">${escapeHtml(layer.label)}</div>
-          <div class="role-item-meta">${layer.tagName.toUpperCase()} · ID ${escapeHtml(layer.id)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:2px;">
+            <div class="role-item-title" title="${escapeHtml(layer.label)}">${escapeHtml(layer.label)}</div>
+            <div class="role-item-meta">ID ${escapeHtml(layer.id)}</div>
+          </div>
+          <div class="media-detail-row">${mediaHtml}</div>
         </div>
         <div class="role-checks">
-          ${MEDIA_ROLE_ORDER.map(role => `
-            <label>
+          ${MEDIA_ROLE_ORDER.map(role => {
+            const isWin = MEDIA_ROLE_DEFS[role].color === 'warn';
+            const labelCls = isWin ? 'class="role-win"' : '';
+            return `
+            <label ${labelCls}>
               <input type="checkbox" ${getRoleSet(role).has(layer.id) ? 'checked' : ''}
                      onchange="toggleLayerRole('${encodeForJsString(layer.id)}','${role}', this.checked)">
               ${MEDIA_ROLE_DEFS[role].shortLabel}
-            </label>
-          `).join('')}
+            </label>`;
+          }).join('')}
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   const modeHint = shakeUsageEnabled
@@ -1400,14 +1641,19 @@ function labelWithGeneratedTag(label, role, beatIndex, beatMs, counter) {
   return `${cleanLabel} [${generatedRoleToken(role)} beat #${beatIndex + 1} ${beatMs}ms #${counter}]`;
 }
 
-function tagGeneratedLayer(el, role, beatIndex, beatMs, sourceId, sourceLabel) {
+function tagGeneratedLayer(el, role, beatIndex, beatMs, sourceId, sourceLabel, visible = true) {
   el.setAttribute('data-duo-generated', 'true');
   el.setAttribute('data-duo-role', role);
   el.setAttribute('data-duo-beat-index', String(beatIndex));
   el.setAttribute('data-duo-beat-ms', String(beatMs));
   el.setAttribute('data-duo-source-id', sourceId || '');
   el.setAttribute('data-duo-source-label', sourceLabel || '');
-  el.setAttribute('data-duo-visible', 'true');
+  el.setAttribute('data-duo-visible', visible ? 'true' : 'false');
+  if (!visible) {
+    el.setAttribute('hidden', 'true');
+  } else {
+    el.removeAttribute('hidden');
+  }
 }
 
 function roleFromGeneratedLabel(label) {
@@ -1439,21 +1685,121 @@ function generatedInfoFromLayer(layer) {
   return { role, beatIndex, tagged };
 }
 
+function getBeatIntervalEnd(beatIndex, fallbackDuration = 1) {
+  const start = beatMarkers[beatIndex];
+  if (!Number.isFinite(start)) return null;
+  const next = beatMarkers[beatIndex + 1];
+  if (Number.isFinite(next) && next > start) return Math.max(start + 1, next - 1);
+  const scene = projectKind === 'am' ? xmlDoc?.querySelector('scene') : null;
+  const totalTime = scene ? +(scene.getAttribute('totalTime') || scene.getAttribute('duration') || 0) : 0;
+  if (totalTime > start) return totalTime;
+  return start + Math.max(1, fallbackDuration);
+}
+
+function setLayerToBeatInterval(layer, beatIndex) {
+  const el = layer && layer.el;
+  const start = beatMarkers[beatIndex];
+  if (!el || !Number.isFinite(start)) return false;
+  const oldStart = +(el.getAttribute('startTime') || start);
+  const oldEnd = +(el.getAttribute('endTime') || oldStart + 1);
+  const fallbackDuration = Math.max(1, oldEnd - oldStart);
+  const end = getBeatIntervalEnd(beatIndex, fallbackDuration);
+  if (!Number.isFinite(end)) return false;
+
+  const duration = Math.max(1, end - start);
+  el.setAttribute('startTime', String(start));
+  el.setAttribute('endTime', String(end));
+
+  if (el.tagName === 'embedScene') {
+    el.setAttribute('outTime', String(duration));
+    const innerScene = el.querySelector('scene');
+    if (innerScene) {
+      innerScene.setAttribute('totalTime', String(duration));
+      Array.from(innerScene.children)
+        .filter(child => child.hasAttribute('endTime'))
+        .forEach(child => child.setAttribute('endTime', String(duration)));
+    }
+  }
+  return true;
+}
+
+function normalizeGeneratedBeatLayerDurations() {
+  if (projectKind !== 'am' || !beatMarkers.length) return;
+  let touched = false;
+  mediaLayers.forEach(layer => {
+    const info = generatedInfoFromLayer(layer);
+    if (info && setLayerToBeatInterval(layer, info.beatIndex)) touched = true;
+  });
+  if (touched) xmlText = new XMLSerializer().serializeToString(xmlDoc);
+}
+
+function getBeatSlotVariant(beatIndex) {
+  return beatSlotVariant[beatIndex] === 'B' ? 'B' : 'A';
+}
+
+function roleForBeatSlot(beatIndex) {
+  const beatRole = getBeatRole(beatIndex);
+  if (beatRole !== 'category' && beatRole !== 'winner') return '';
+  const suffix = getBeatSlotVariant(beatIndex);
+  return beatRole + suffix;
+}
+
+function applyExclusiveBeatVisibility(beatIndex, activeVisible = true) {
+  const activeRole = roleForBeatSlot(beatIndex);
+  if (!activeRole) return false;
+
+  let touched = false;
+  MEDIA_ROLE_ORDER.forEach(role => {
+    const shouldBeVisible = role === activeRole && activeVisible;
+    generatedLayersForBeatSlot(beatIndex, role).forEach(layer => {
+      setGeneratedLayerVisible(layer, shouldBeVisible);
+      touched = true;
+    });
+  });
+
+  if (touched) xmlText = new XMLSerializer().serializeToString(xmlDoc);
+  return touched;
+}
+
+function applyAllGeneratedBeatVisibility(activeVisible = true) {
+  if (!xmlDoc || !hasDuplicatedBeats) return;
+  let touched = false;
+  beatMarkers.forEach((_, i) => {
+    if (applyExclusiveBeatVisibility(i, activeVisible)) touched = true;
+  });
+  if (touched) xmlText = new XMLSerializer().serializeToString(xmlDoc);
+}
+
+function hydrateGeneratedBeatStateFromLayers() {
+  const generated = mediaLayers
+    .map(layer => ({ layer, info: generatedInfoFromLayer(layer) }))
+    .filter(item => item.info);
+
+  if (!generated.length) return;
+  hasDuplicatedBeats = true;
+
+  generated.forEach(({ layer, info }) => {
+    if (!isGeneratedLayerVisible(layer)) return;
+    const base = getRoleBase(info.role);
+    if (base !== 'category' && base !== 'winner') return;
+    beatRoleOverrides[info.beatIndex] = base;
+    beatSlotVariant[info.beatIndex] = info.role.endsWith('B') ? 'B' : 'A';
+  });
+  syncBeatRoleOverrides(true);
+}
+
+function setSlotVariant(beatIndex, variant) {
+  beatSlotVariant[beatIndex] = variant === 'B' ? 'B' : 'A';
+  applyExclusiveBeatVisibility(beatIndex, true);
+  renderGeneratedBeatPanel();
+  renderEffectsTab();
+}
+
 function generatedLayersForBeatSlot(beatIndex, role) {
-  const taggedLayers = mediaLayers.filter(layer => {
+  return mediaLayers.filter(layer => {
     const info = generatedInfoFromLayer(layer);
     return info && info.beatIndex === beatIndex && info.role === role;
   });
-  if (projectKind !== 'am' || beatMarkers[beatIndex] === undefined) return taggedLayers;
-
-  const targetStart = beatMarkers[beatIndex];
-  const roleSet = getRoleSet(role);
-  mediaLayers.forEach(layer => {
-    if (!roleSet.has(layer.id)) return;
-    const start = +(layer.el.getAttribute('startTime') || 0);
-    if (start === targetStart && !taggedLayers.includes(layer)) taggedLayers.push(layer);
-  });
-  return taggedLayers;
 }
 
 function isGeneratedLayerVisible(layer) {
@@ -1475,8 +1821,6 @@ function setGeneratedLayerVisible(layer, visible) {
 }
 
 function generatedSlotState(beatIndex, role) {
-  const beatRole = getBeatRole(beatIndex);
-  if (getRoleBase(role) !== beatRole) return '-';
   const layers = generatedLayersForBeatSlot(beatIndex, role);
   if (!layers.length) return 'Missing';
   const visible = layers.filter(isGeneratedLayerVisible).length;
@@ -1492,54 +1836,92 @@ function setGeneratedBeatMediaVisible(beatIndex, role, visible) {
     renderGeneratedBeatPanel();
     return;
   }
-  layers.forEach(layer => setGeneratedLayerVisible(layer, visible));
-  xmlText = new XMLSerializer().serializeToString(xmlDoc);
+  const base = getRoleBase(role);
+  if (base === 'category' || base === 'winner') beatRoleOverrides[beatIndex] = base;
+  beatSlotVariant[beatIndex] = role.endsWith('B') ? 'B' : 'A';
+  applyExclusiveBeatVisibility(beatIndex, visible);
   renderGeneratedBeatPanel();
   renderEffectsTab();
   showToast(`${getRoleLabel(role)} ${visible ? 'enabled' : 'disabled'} on beat #${beatIndex + 1}`, 'success');
 }
 
-function renderGeneratedSlot(beatIndex, role) {
-  const state = generatedSlotState(beatIndex, role);
-  const isRelevant = getRoleBase(role) === getBeatRole(beatIndex);
-  const canToggle = isRelevant && state !== 'Missing' && state !== '-';
+function renderGeneratedBeatRow(i, t) {
+  const beatRole = getBeatRole(i);
+  if (beatRole !== 'category' && beatRole !== 'winner') return '';
+  const variant = getBeatSlotVariant(i);
+  const effectiveRole = beatRole === 'category'
+    ? (variant === 'A' ? 'categoryA' : 'categoryB')
+    : (variant === 'A' ? 'winnerA' : 'winnerB');
+
+  const state = generatedSlotState(i, effectiveRole);
+  const canToggle = state !== 'Missing';
   const checked = state === 'On' || state === 'Mix';
-  const cls = state === 'Missing' ? ' missing' : canToggle ? ' active' : '';
+  const slotCls = state === 'Missing' ? ' missing' : canToggle ? ' active' : '';
+
+  const isCategory = beatRole === 'category';
+  const variantColor = isCategory ? 'var(--success)' : 'var(--warn)';
+
   return `
-    <label class="generated-slot${cls}" title="${getRoleLabel(role)}: ${state}">
-      <span>${MEDIA_ROLE_DEFS[role].shortLabel} <strong>${state}</strong></span>
-      <input type="checkbox" ${checked ? 'checked' : ''} ${canToggle ? '' : 'disabled'}
-             onchange="setGeneratedBeatMediaVisible(${beatIndex}, '${role}', this.checked)">
-    </label>`;
+    <div class="generated-beat-row is-${beatRole}">
+      <div class="generated-beat-meta">
+        <div class="generated-beat-title">
+          <select onchange="changeGeneratedBeatRole(${i}, this.value)" aria-label="Beat #${i+1} Role"
+            style="background:rgba(0,0,0,0.3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:0.86rem;font-weight:700;cursor:pointer;outline:none;">
+            <option value="category" ${beatRole === 'category' ? 'selected' : ''}>#${i+1} CATEGORY</option>
+            <option value="winner" ${beatRole === 'winner' ? 'selected' : ''}>#${i+1} WINNER</option>
+          </select>
+        </div>
+        <div class="generated-beat-time">${formatTime(t)}</div>
+      </div>
+      <select
+        aria-label="Variant A or B"
+        onchange="setSlotVariant(${i}, this.value)"
+        style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.35);color:${variantColor};font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;width:100%;"
+      >
+        <option value="A" ${variant === 'A' ? 'selected' : ''}>A</option>
+        <option value="B" ${variant === 'B' ? 'selected' : ''}>B</option>
+      </select>
+      <label class="generated-slot${slotCls}" title="${getRoleLabel(effectiveRole)}: ${state}" style="justify-content:space-between;cursor:pointer;">
+        <span><strong>${state}</strong></span>
+        <input type="checkbox" ${checked ? 'checked' : ''} ${canToggle ? '' : 'disabled'}
+               onchange="setGeneratedBeatMediaVisible(${i}, '${effectiveRole}', this.checked)">
+      </label>
+    </div>`;
+}
+
+function changeGeneratedBeatRole(beatIndex, newRole) {
+  if (newRole !== 'category' && newRole !== 'winner') return;
+  beatRoleOverrides[beatIndex] = newRole;
+  applyExclusiveBeatVisibility(beatIndex, true);
+  renderRoleAssignmentPanel();
+  renderEffectsTab();
+  showToast(`Beat #${beatIndex + 1} changed to ${newRole.toUpperCase()}`, 'success');
 }
 
 function renderGeneratedBeatPanel() {
   const panel = document.getElementById('generatedBeatPanel');
   if (!panel) return;
 
-  if (!beatMarkers.length) {
+  if (!beatMarkers.length || !hasDuplicatedBeats) {
     panel.innerHTML = '';
     return;
   }
 
-  const rows = beatMarkers.map((t, i) => {
-    const role = getBeatRole(i);
-    if (role !== 'category' && role !== 'winner') return '';
-    return `
-      <div class="generated-beat-row is-${role}">
-        <div class="generated-beat-meta">
-          <div class="generated-beat-title">#${i + 1} ${role.toUpperCase()}</div>
-          <div class="generated-beat-time">${formatTime(t)}</div>
-        </div>
-        ${MEDIA_ROLE_ORDER.map(slot => renderGeneratedSlot(i, slot)).join('')}
-      </div>`;
-  }).filter(Boolean).join('');
+  // Save scroll position before re-render
+  const grid = panel.querySelector('.generated-beat-grid');
+  const scrollTop = grid ? grid.scrollTop : 0;
+
+  const rows = beatMarkers.map((t, i) => renderGeneratedBeatRow(i, t)).filter(Boolean).join('');
 
   panel.innerHTML = `
     <h4>Generated beat media</h4>
     <div class="generated-beat-grid">
       ${rows || '<div style="color:var(--dim);font-size:.82rem;">No category/winner beats available.</div>'}
     </div>`;
+
+  // Restore scroll position after re-render
+  const newGrid = panel.querySelector('.generated-beat-grid');
+  if (newGrid && scrollTop) newGrid.scrollTop = scrollTop;
 }
 
 function getNextNumericLayerId() {
@@ -1592,6 +1974,14 @@ function duplicateRoleLayersAcrossBeats() {
   }
   const roleSnapshot = snapshotRoleAssignments();
 
+  const allTargetBeats = [];
+  beatMarkers.forEach((t, i) => {
+    const role = getBeatRole(i);
+    if (role === 'category' || role === 'winner') {
+      allTargetBeats.push({ t, index: i, role });
+    }
+  });
+
   // ── AE (.aepx) path ──────────────────────────────────────────
   // Layr elements live inside a composition (Comp) element. We
   // clone role layers and insert them into the same parent Comp
@@ -1607,25 +1997,22 @@ function duplicateRoleLayersAcrossBeats() {
       return;
     }
 
-    const roleMarkerTimes = { category: [], winner: [] };
-    beatMarkers.forEach((t, i) => {
-      const role = getBeatRole(i);
-      if (role === 'category' || role === 'winner') roleMarkerTimes[role].push({ t, index: i });
-    });
-
     // Generate unique incrementing indices for cloned Layr nm (name) attributes
     let cloneCounter = 1;
     let duplicated = 0;
 
     const processRole = (layers, mediaRole) => {
-      const targets = roleMarkerTimes[getRoleBase(mediaRole)];
-      if (!layers.length || !targets.length) return;
-      targets.forEach(target => {
+      if (!layers.length || !allTargetBeats.length) return;
+      allTargetBeats.forEach(target => {
         layers.forEach(layer => {
           const parent = layer.el.parentNode;
           if (!parent) return;
           const clone = layer.el.cloneNode(true);
-          tagGeneratedLayer(clone, mediaRole, target.index, target.t, layer.id, layer.label);
+          const isRoleMatch = getRoleBase(mediaRole) === target.role;
+          const suffix = mediaRole.endsWith('B') ? 'B' : 'A';
+          const selectedVariant = beatSlotVariant[target.index] || 'A';
+          const visible = isRoleMatch && (suffix === selectedVariant);
+          tagGeneratedLayer(clone, mediaRole, target.index, target.t, layer.id, layer.label, visible);
 
           // Tag the clone so it's identifiable — append beat time to nm
           const nmEls = clone.getElementsByTagName('string');
@@ -1657,6 +2044,7 @@ function duplicateRoleLayersAcrossBeats() {
 
     const serializer = new XMLSerializer();
     xmlText = serializer.serializeToString(xmlDoc);
+    hasDuplicatedBeats = true;
     parseXml();
     restoreRoleAssignments(roleSnapshot);
     renderRoleAssignmentPanel();
@@ -1672,14 +2060,7 @@ function duplicateRoleLayersAcrossBeats() {
     return;
   }
 
-  const roleMarkerTimes = { category: [], winner: [] };
-  beatMarkers.forEach((t, i) => {
-    const role = getBeatRole(i);
-    if (role === 'category' || role === 'winner') roleMarkerTimes[role].push({ t, index: i });
-  });
-
   const makeId = getNextNumericLayerId();
-  const totalTime = +(scene.getAttribute('totalTime') || 0);
   let duplicated = 0;
   const timelineChildren = Array.from(scene.children).filter(el => el.hasAttribute('startTime'));
 
@@ -1693,16 +2074,18 @@ function duplicateRoleLayersAcrossBeats() {
   };
 
   const buildRolePlans = (layers, mediaRole) => {
-    const targets = roleMarkerTimes[getRoleBase(mediaRole)];
-    if (!layers.length || !targets.length) return [];
+    if (!layers.length || !allTargetBeats.length) return [];
     const plans = [];
-    targets.forEach(target => {
+    allTargetBeats.forEach(target => {
       layers.forEach(layer => {
         const start = +(layer.el.getAttribute('startTime') || 0);
-        if (target.t === start) return;
         const end = +(layer.el.getAttribute('endTime') || start);
         const duration = Math.max(1, end - start);
-        plans.push({ targetStart: target.t, beatIndex: target.index, mediaRole, layer, duration });
+        const isRoleMatch = getRoleBase(mediaRole) === target.role;
+        const suffix = mediaRole.endsWith('B') ? 'B' : 'A';
+        const selectedVariant = beatSlotVariant[target.index] || 'A';
+        const visible = isRoleMatch && (suffix === selectedVariant);
+        plans.push({ targetStart: target.t, beatIndex: target.index, beatRole: target.role, mediaRole, layer, duration, visible });
       });
     });
     return plans;
@@ -1728,12 +2111,33 @@ function duplicateRoleLayersAcrossBeats() {
     let insertAfter = findInsertionAnchor(t);
     block.forEach(plan => {
       const clone = plan.layer.el.cloneNode(true);
-      clone.setAttribute('id', makeId());
+      
+      const elementsWithId = [clone, ...Array.from(clone.querySelectorAll('[id]'))];
+      elementsWithId.forEach(el => {
+        if (el.tagName !== 'effect') {
+          el.setAttribute('id', makeId());
+        }
+      });
+      
+      const intervalEnd = getBeatIntervalEnd(plan.beatIndex, plan.duration);
+      const exactDuration = Math.max(1, intervalEnd - t);
+
       clone.setAttribute('startTime', String(t));
-      const newEnd = totalTime > 0 ? Math.min(t + plan.duration, totalTime) : (t + plan.duration);
-      clone.setAttribute('endTime', String(newEnd));
+      clone.setAttribute('endTime', String(intervalEnd));
+
+      if (clone.tagName === 'embedScene') {
+        clone.setAttribute('outTime', String(exactDuration));
+        const innerScene = clone.querySelector('scene');
+        if (innerScene) {
+          innerScene.setAttribute('totalTime', String(exactDuration));
+          
+          // Match nested group layers to the beat interval so they cannot bleed into the next marker.
+          const innerChildren = Array.from(innerScene.children).filter(el => el.hasAttribute('endTime'));
+          innerChildren.forEach(child => child.setAttribute('endTime', String(exactDuration)));
+        }
+      }
       clone.setAttribute('label', labelWithGeneratedTag(clone.getAttribute('label') || plan.layer.label, plan.mediaRole, plan.beatIndex, t, duplicated + 1));
-      tagGeneratedLayer(clone, plan.mediaRole, plan.beatIndex, t, plan.layer.id, plan.layer.label);
+      tagGeneratedLayer(clone, plan.mediaRole, plan.beatIndex, t, plan.layer.id, plan.layer.label, plan.visible);
 
       if (insertAfter && insertAfter.parentNode === scene) {
         scene.insertBefore(clone, insertAfter.nextSibling);
@@ -1746,6 +2150,20 @@ function duplicateRoleLayersAcrossBeats() {
     });
   }
 
+  // Remove the original role layers since they have been duplicated/replaced by managed clones
+  const originalIdsToDelete = new Set();
+  MEDIA_ROLE_ORDER.forEach(role => {
+    getRoleSet(role).forEach(id => originalIdsToDelete.add(id));
+  });
+
+  mediaLayers.forEach(layer => {
+    if (originalIdsToDelete.has(layer.id) && !layer.el.hasAttribute('data-duo-generated')) {
+      if (layer.el.parentNode) {
+        layer.el.parentNode.removeChild(layer.el);
+      }
+    }
+  });
+
   if (!duplicated) {
     showToast('No new duplicates were needed', 'error');
     return;
@@ -1753,6 +2171,7 @@ function duplicateRoleLayersAcrossBeats() {
 
   const serializer = new XMLSerializer();
   xmlText = serializer.serializeToString(xmlDoc);
+  hasDuplicatedBeats = true;
   parseXml();
   restoreRoleAssignments(roleSnapshot);
   renderRoleAssignmentPanel();
@@ -1858,6 +2277,7 @@ function renderEffectsTab() {
     let htmlAe = '';
     mediaLayers.forEach((layer, i) => {
       const roleBadge = roleBadgeHtml(layer.id);
+      const mediaHtml = mediaDescriptionHtml(layer, 'full');
       htmlAe += `
       <div class="pair-card">
         <div class="pair-header">
@@ -1867,6 +2287,7 @@ function renderEffectsTab() {
             ${roleBadge}
           </div>
         </div>
+        <div style="margin:8px 0;">${mediaHtml}</div>
         <p style="color:var(--dim);font-size:.8rem;margin-top:8px;">Read-only preview from project order. Text edits use the Texts tab.</p>
       </div>`;
     });
@@ -1895,6 +2316,7 @@ function renderEffectsTab() {
   let html = '';
   mediaLayers.forEach((layer, i) => {
     const roleBadge = roleBadgeHtml(layer.id);
+    const mediaHtml = mediaDescriptionHtml(layer, 'full');
     const effBadges = layer.effects.map(eff => {
       const type = eff.getAttribute('id') || eff.getAttribute('type') || 'Unknown';
       return `<span class="badge badge-type">${escapeHtml(type)}</span>`;
@@ -1913,6 +2335,7 @@ function renderEffectsTab() {
           ${layer.modified ? '<span class="badge badge-mod">modified</span>' : ''}
         </div>
       </div>
+      <div style="margin:8px 0;">${mediaHtml}</div>
       <div style="margin:12px 0;">
         ${hasEffects ? effBadges : '<span style="color:var(--dim);font-size:0.85rem;font-style:italic;">No effects attached</span>'}
       </div>
@@ -2046,8 +2469,23 @@ function exportXml() {
     if (l.modified) changeCount++;
   });
 
+  const exportDoc = xmlDoc.cloneNode(true);
+
+  // Remove layers that are marked as hidden (i.e. 'Off' for that beat)
+  Array.from(exportDoc.querySelectorAll('[data-duo-visible="false"]')).forEach(el => {
+    if (el.parentNode) el.parentNode.removeChild(el);
+  });
+
+  // Strip custom data-duo-* attributes and 'hidden' attr that Alight Motion can't parse
+  const DUO_ATTRS = ['data-duo-generated','data-duo-role','data-duo-beat-index','data-duo-beat-ms','data-duo-source-id','data-duo-source-label','data-duo-visible'];
+  Array.from(exportDoc.querySelectorAll('[data-duo-generated],[data-duo-role],[data-duo-visible]')).forEach(el => {
+    DUO_ATTRS.forEach(attr => el.removeAttribute(attr));
+    if (el.getAttribute('hidden') === 'true') el.removeAttribute('hidden');
+  });
+
   const serializer = new XMLSerializer();
-  let output = serializer.serializeToString(xmlDoc);
+  let output = serializer.serializeToString(exportDoc);
+
   if (!output.startsWith('<?xml')) output = "<?xml version='1.0' encoding='UTF-8' ?>\n" + output;
 
   const blob = new Blob([output], { type: 'application/xml' });
